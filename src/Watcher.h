@@ -28,6 +28,16 @@ public:
     static void setError(bool cond);
     static void setMaxConsume(float to_float);
 
+    /**
+     * @enum ModeType
+     * @brief Represents the operational modes of the system.
+     *
+     * The ModeType enumeration is used to define the different modes
+     * that the system can operate in. These include:
+     * - CONSUME: A mode where the system prioritizes consumption behavior.
+     * - DYNAMIC: A mode where the system operates dynamically, using external
+     *   Housemeter.
+     */
     enum ModeType
     {
         CONSUME, DYNAMIC
