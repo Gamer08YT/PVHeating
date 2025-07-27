@@ -7,6 +7,15 @@
 #include "utils/HANumeric.h"
 
 
+/**
+ * @class Watcher
+ * @brief A class to handle sensor readings, button inputs, and system states.
+ *
+ * The Watcher class is responsible for managing hardware-specific tasks such as
+ * handling sensor data, monitoring system states (standby, error), controlling
+ * button LEDs, and maintaining operational settings like power consumption limits
+ * and operation modes.
+ */
 class Watcher
 {
 public:
@@ -34,6 +43,8 @@ public:
     static float maxConsume;
 
 private:
+    static void readLocalPower();
+    static void readHouseMeterPower();
     static void handleStandbyLedFade(bool cond);
     static void handleErrorLedFade(bool cond);
     static void setupPins();

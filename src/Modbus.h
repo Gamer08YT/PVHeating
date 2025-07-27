@@ -6,7 +6,15 @@
 #define MODBUS_H
 
 
-
+/**
+ * @class Modbus
+ *
+ * @brief Provides functionality for initializing and managing the Modbus communication.
+ *
+ * The Modbus class is designed to handle Modbus communication protocols.
+ * It contains methods to initialize the communication and execute the
+ * main loop for processing messages or tasks related to Modbus.
+ */
 class Modbus {
 public:
     static void begin();

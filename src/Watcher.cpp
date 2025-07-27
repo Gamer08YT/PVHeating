@@ -37,7 +37,8 @@ LEDFader faultLed(LED_FAULT);
 LEDFader modeLed(LED_MODE);
 
 // Store Timer.
-SimpleTimer sensorInterval(1000);
+SimpleTimer fastInterval(500);
+SimpleTimer slowInterval(2000);
 
 /**
  * @brief Updates the fault and mode LEDs using their respective controllers.
@@ -55,16 +56,48 @@ void Watcher::handleButtonLeds()
     modeLed.update();
 }
 
+void Watcher::readHouseMeterPower()
+{
+}
+
+/**
+ * @brief Handles periodic operations on sensors using predefined intervals.
+ *
+ * This method utilizes two timer intervals, `fastInterval` and `slowInterval`, to manage
+ * sensor-related tasks efficiently. It resets the `fastInterval` timer when it's ready,
+ * ensuring continuous operation for high-frequency tasks.
+ *
+ * Additionally, when the `slowInterval` timer is ready, it performs a set of sensor-related
+ * actions, such as printing a log via `Guardian::println`, and prepares for the next execution
+ * by resetting the timer.
+ *
+ * Designed to operate within the main program loop for periodic updates and maintaining
+ * consistent interaction with sensors.
+ */
 void Watcher::handleSensors()
 {
-    if (sensorInterval.isReady())
+    if (fastInterval.isReady())
+    {
+        readLocalPower();
+
+        // Reset Timer (Endless Loop);
+        fastInterval.reset();
+    }
+
+    if (slowInterval.isReady())
     {
         Guardian::println("S > Sensors");
         // Read Temperatures via OneWire.
         //readTemperature();
 
+        // Read HA Power to compensate.
+        if (mode == ModeType::DYNAMIC)
+        {
+            readHouseMeterPower();
+        }
+
         // Reset Timer (Endless Loop).
-        sensorInterval.reset();
+        slowInterval.reset();
     }
 }
 
@@ -195,6 +228,10 @@ void Watcher::setMode(ModeType cond)
     Guardian::println("S > Mode");
 
     mode = cond;
+}
+
+void Watcher::readLocalPower()
+{
 }
 
 /**

@@ -6,6 +6,14 @@
 #define LOCALNETWORK_H
 
 
+/**
+ * @class LocalNetwork
+ * @brief A class that handles initialization and management of the local network, including
+ * retrieving MAC addresses and enabling OTA (Over-the-Air) updates.
+ *
+ * This class provides functionality to initialize and update the local network using an
+ * Ethernet driver. It also supports managing and obtaining the MAC address for the device.
+ */
 class LocalNetwork
 {
 private:
