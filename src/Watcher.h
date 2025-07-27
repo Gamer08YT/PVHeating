@@ -6,11 +6,15 @@
 #define WATCHER_H
 
 
+class Watcher
+{
+public:
+    static void loop();
+    static void setup();
 
-class Watcher {
-
+private:
+    static void readTemperature();
 };
-
 
 
 #endif //WATCHER_H

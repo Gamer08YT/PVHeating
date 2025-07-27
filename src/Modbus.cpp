@@ -5,8 +5,15 @@
 
 #include <HardwareSerial.h>
 
+#include "DFRobot_RTU.h"
+#include "Guardian.h"
+#include "PinOut.h"
+
 // Begin HW Serial 2 (TX=17, RX=16).
 HardwareSerial serial(2);
+
+// Store Modbus Instance.
+DFRobot_RTU modbus(&serial, MODBUS_RE);
 
 
 /**
@@ -23,6 +30,11 @@ HardwareSerial serial(2);
  **/
 void Modbus::begin()
 {
+    // Begin Second Serial Channel.
+    serial.begin(9600, SERIAL_8N1, MODBUS_RX, MODBUS_TX);
+
+    // Print Debug Message.
+    Guardian::println("Modbus ready");
 }
 
 void Modbus::loop()

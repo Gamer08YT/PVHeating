@@ -25,7 +25,7 @@ HADevice device;
 HAMqtt mqtt(client, device, 16);
 
 // Store HAVAC Instance.
-HAHVAC heating("heating", HAHVAC::TargetTemperatureFeature | HAHVAC::PowerFeature | HAHVAC::ModesFeature);
+HAHVAC heating("heating", HAHVAC::TargetTemperatureFeature | HAHVAC::ModesFeature);
 
 // Store Power Usage Instance.
 HASensorNumber power("heating_load", HABaseDeviceType::PrecisionP2);
@@ -38,7 +38,7 @@ HABinarySensor fault("heating_fault");
 
 
 unsigned long lastTempPublishAt = 0;
-float lastTemp = 0;
+float lastTemp = 45;
 
 /**
  * @brief Configures the heating instance with the required parameters
@@ -68,26 +68,30 @@ void HomeAssistant::configureHeatingInstance()
     heating.setMinTemp(45);
     heating.setMaxTemp(60);
 
-        // Set Default Values.
+    // Set Default Values.
     heating.setCurrentTemperature(10.00F);
     heating.setTargetTemperature(50.00F);
+    heating.setCurrentTargetTemperature(10.00F);
+
+
+
+    // Retain Heating Value.
+    heating.setRetain(true);
 
     // Register Temperature change Listener.
     heating.onTargetTemperatureCommand([](HANumeric temperature, HAHVAC* sender)
     {
         Guardian::println("Temp changed");
-    });
 
-    // Register Power Command change Listener.
-    heating.onPowerCommand([](bool state, HAHVAC* sender)
-    {
-        Guardian::println("Power changed");
+        sender->setTargetTemperature(temperature);
     });
 
     // Register Mode change Listener.
     heating.onModeCommand([](HAHVAC::Mode mode, HAHVAC* sender)
     {
         Guardian::println("Mode changed");
+
+        sender->setMode(mode);
     });
 }
 
