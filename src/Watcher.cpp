@@ -294,11 +294,46 @@ void Watcher::setTemperatureOut(float i)
     HomeAssistant::getHVAC().setCurrentTemperature(i, false);
 }
 
+/**
+ * @brief Reads and processes temperature data from connected sensors.
+ *
+ * This method communicates with the DallasTemperature library to fetch temperature data
+ * from sensors connected via the OneWire interface. If two sensors are detected, it identifies the
+ * colder and warmer temperature readings and assigns them as "temperatureIn" and "temperatureOut"
+ * respectively. The internal states are updated using the setTemperatureIn and setTemperatureOut methods.
+ *
+ * In scenarios where the number of connected sensors is not equal to two, it sets the temperature values
+ * to -1 and triggers an error state using the setError method. The error is also logged via the Guardian system.
+ *
+ * This function is integral to maintaining accurate environmental data within the system.
+ */
 void Watcher::readTemperature()
 {
     // Request Temperatures from Sensor.
     sensors.requestTemperatures();
 
-    setTemperatureIn(0);
-    setTemperatureOut(0);
+    if (sensors.getDeviceCount() == 2)
+    {
+        float tempOne = sensors.getTempCByIndex(0);
+        float tempTwo = sensors.getTempCByIndex(1);
+
+        if (tempOne > tempTwo)
+        {
+            setTemperatureIn(tempTwo);
+            setTemperatureOut(tempOne);
+        }
+        else
+        {
+            setTemperatureIn(tempOne);
+            setTemperatureOut(tempTwo);
+        }
+    }
+    else
+    {
+        setTemperatureIn(-1);
+        setTemperatureOut(-1);
+        setError(true);
+
+        Guardian::println("OneWire Error");
+    }
 }
