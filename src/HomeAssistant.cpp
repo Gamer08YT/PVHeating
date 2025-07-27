@@ -35,6 +35,9 @@ HASensorNumber consumption("heating_consumption", HABaseDeviceType::PrecisionP2)
 // Store Error State Instance.
 HABinarySensor fault("heating_fault");
 
+// Store Flow Rate Instance.
+HASensorNumber flow("heating_flow", HABaseDeviceType::PrecisionP2);
+
 
 unsigned long lastTempPublishAt = 0;
 float lastTemp = 45;
@@ -156,6 +159,7 @@ void HomeAssistant::begin()
     configurePowerInstance();
     configureConsumptionInstance();
     configureFaultInstances();
+    configureFlowInstance();
 
     // Print Debug Message.
     Guardian::println("HomeAssistant is ready");
@@ -194,6 +198,26 @@ void HomeAssistant::configureFaultInstances()
     fault.setName("Fehler");
     fault.setDeviceClass("problem");
     fault.setIcon("mdi:alert");
+}
+
+/**
+ * @brief Configures the flow instance with the specified parameters
+ * and initializes it with appropriate settings for monitoring flow rates.
+ *
+ * This method sets up the properties of the flow instance, including
+ * its name, device class, unit of measurement, and icon. These configurations
+ * ensure proper integration with Home Assistant and accurate representation
+ * of flow data.
+ *
+ * The flow instance represents the flow measurement in the system, and its
+ * configuration enables effective monitoring and visualization of flow rate data.
+ */
+void HomeAssistant::configureFlowInstance()
+{
+    flow.setName("Fluss");
+    flow.setDeviceClass("volume_flow_rate");
+    flow.setUnitOfMeasurement("L/min");
+    flow.setIcon("mdi:water");
 }
 
 /**
