@@ -264,3 +264,8 @@ void HomeAssistant::loop()
     // Publish changes.
     publishChanges();
 }
+
+HAHVAC HomeAssistant::getHVAC()
+{
+    return heating;
+}

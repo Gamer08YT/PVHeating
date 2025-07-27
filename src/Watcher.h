@@ -27,12 +27,16 @@ public:
     static ModeType mode;
     static bool error;
     static bool standby;
+    static float temperatureIn;
+    static float temperatureOut;
 
 private:
     static void handleStandbyLedFade(bool cond);
     static void handleErrorLedFade(bool cond);
     static void setupPins();
     static void readButtons();
+    static void setTemperatureIn(float i);
+    static void setTemperatureOut(float i);
     static void readTemperature();
 };
 

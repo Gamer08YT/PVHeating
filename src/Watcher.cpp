@@ -7,9 +7,11 @@
 #include "PinOut.h"
 #include "DallasTemperature.h"
 #include "Guardian.h"
+#include "HomeAssistant.h"
 #include "LEDFader.h"
 #include "OneButton.h"
 #include "OneWire.h"
+#include "SimpleTimer.h"
 
 // Store One Wire Instance.
 OneWire oneWire(ONE_WIRE);
@@ -25,6 +27,8 @@ OneButton modeButton(BUTTON_MODE, true);
 LEDFader faultLed(LED_FAULT);
 LEDFader modeLed(LED_MODE);
 
+// Store Timer.
+SimpleTimer sensorInterval(1000);
 
 /**
  * @brief Updates the fault and mode LEDs using their respective controllers.
@@ -44,6 +48,14 @@ void Watcher::handleButtonLeds()
 
 void Watcher::handleSensors()
 {
+    if (sensorInterval.isReady())
+    {
+        // Read Temperatures via OneWire.
+        readTemperature();
+
+        // Reset Timer (Endless Loop).
+        sensorInterval.reset();
+    }
 }
 
 /**
@@ -253,6 +265,40 @@ void Watcher::readButtons()
     modeButton.tick();
 }
 
+/**
+ * @brief Sets the internal temperature reading.
+ *
+ * This method assigns the specified temperature value to the internal
+ * temperature tracking variable, ensuring the system has the latest
+ * updated temperature data for internal operations.
+ *
+ * @param i The new temperature value to set for the internal temperature.
+ */
+void Watcher::setTemperatureIn(float i)
+{
+    temperatureIn = i;
+}
+
+/**
+ * @brief Sets the output temperature value.
+ *
+ * This method updates the temperatureOut variable with the specified value.
+ *
+ * @param i The new temperature value to set for the output.
+ */
+void Watcher::setTemperatureOut(float i)
+{
+    temperatureOut = i;
+
+    // Set Current Temperature.
+    HomeAssistant::getHVAC().setCurrentTemperature(i, false);
+}
+
 void Watcher::readTemperature()
 {
+    // Request Temperatures from Sensor.
+    sensors.requestTemperatures();
+
+    setTemperatureIn(0);
+    setTemperatureOut(0);
 }

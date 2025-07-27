@@ -4,6 +4,7 @@
 
 #ifndef HOMEASSISTANT_H
 #define HOMEASSISTANT_H
+#include "device-types/HAHVAC.h"
 
 
 class HomeAssistant
@@ -20,6 +21,7 @@ private:
 public:
     static void begin();
     static void loop();
+    static HAHVAC getHVAC();
 };
 
 

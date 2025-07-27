@@ -4,6 +4,7 @@
 #include "HomeAssistant.h"
 #include "Modbus.h"
 #include "LocalNetwork.h"
+#include "Watcher.h"
 //#include "Watcher.h"
 
 
@@ -22,7 +23,7 @@ void setup()
     Modbus::begin();
 
     // Setup Watcher.
-    //Watcher::setup();
+    Watcher::setup();
 }
 
 void loop()
@@ -37,5 +38,5 @@ void loop()
     Modbus::loop();
 
     // Loop Watcher.
-    //Watcher::loop();
+    Watcher::loop();
 }
