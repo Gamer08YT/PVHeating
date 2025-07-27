@@ -1,5 +1,6 @@
 #include <Arduino.h>
 
+#include "HomeAssistant.h"
 #include "Network.h"
 
 void setup()
@@ -9,10 +10,16 @@ void setup()
 
     // Begin with Ethernet.
     Network::begin();
+
+    // Begin with HA.
+    HomeAssistant::begin();
 }
 
 void loop()
 {
-    // write your code here
+    // Check for Timeout.
     Network::update();
+
+    // Loop HA.
+    HomeAssistant::loop();
 }

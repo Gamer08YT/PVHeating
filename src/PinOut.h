@@ -5,6 +5,8 @@
 #ifndef PINOUT_H
 #define PINOUT_H
 
+#define SOFTWARE_VERSION "1.0.0"
+
 #define ETHERNET_CS 5
 #define ETHERNET_SCK 18
 #define ETHERNET_MISO 19

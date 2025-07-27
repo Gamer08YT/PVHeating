@@ -3,9 +3,11 @@
 //
 
 #include <Arduino.h>
+#include <WiFi.h>
 #include <EthernetESP32.h>
 #include "Network.h"
 #include "PinOut.h"
+#include "Guardian.h"
 
 // Store Object of Ethernet Driver.
 ENC28J60Driver driver(ETHERNET_CS);
@@ -34,7 +36,7 @@ unsigned long lastReconnectAttempt = 0;
 void Network::begin()
 {
     // Print Debug Message.
-    Serial.println("Begin Network");
+    Guardian::println("Begin Network");
 
     // Initialize Ethernet Driver.
     Ethernet.init(driver);
@@ -49,7 +51,7 @@ void Network::begin()
         if (Ethernet.begin() == 1)
         {
             connected = true;
-            Serial.println("Network is ready");
+            Guardian::println("Network is ready");
         }
         else
         {
@@ -60,7 +62,7 @@ void Network::begin()
 
     if (!connected)
     {
-        Serial.println("Network failed - starting auto-reconnect");
+        Guardian::println("Network failed - reconnecting");
 
         // Allow direct reconnect try.
         lastReconnectAttempt = 0;
@@ -81,24 +83,41 @@ void Network::begin()
  */
 void Network::update()
 {
+    // Maintain Ethernet Connection.
+    Ethernet.maintain();
+
     // Überprüfen, ob die Verbindung noch besteht
     if (Ethernet.linkStatus() != LinkON)
     {
         // Nur alle RECONNECT_INTERVAL versuchen neu zu verbinden
         if (millis() - lastReconnectAttempt >= RECONNECT_INTERVAL)
         {
-            Serial.println("Verbindung verloren - Versuche Reconnect...");
+            Guardian::println("Connection lost, reconnecting");
 
             if (Ethernet.begin() == 1)
             {
-                Serial.println("Erfolgreich neu verbunden");
+                Guardian::println("Reconnect success");
             }
             else
             {
-                Serial.println("Reconnect fehlgeschlagen");
+                Guardian::println("Reconnect failed");
             }
 
             lastReconnectAttempt = millis();
         }
     }
+}
+
+/**
+ * @brief Retrieves the MAC address of the current network interface.
+ *
+ * This method uses the WiFi module to obtain the MAC address of the device
+ * in use. The MAC address is returned as a string in a standard format
+ * (e.g., XX:XX:XX:XX:XX:XX).
+ *
+ * @return The MAC address of the device as a string.
+ */
+String Network::getMac()
+{
+    return WiFi.macAddress();
 }
