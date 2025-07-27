@@ -23,6 +23,7 @@ float Watcher::temperatureIn = 0.0f;
 float Watcher::temperatureOut = 0.0f;
 float Watcher::maxConsume = 0.0f;
 float Watcher::currentPower = 0.0f;
+float Watcher::consumption = 0.0f;
 
 
 // Store One Wire Instance.
@@ -64,6 +65,37 @@ void Watcher::readHouseMeterPower()
 }
 
 /**
+ * @brief Sets the consumption value for the system.
+ *
+ * This method assigns the given consumption value to the class's static
+ * consumption member. It is typically used to update the system's
+ * consumption data based on external readings or calculations.
+ *
+ * @param con The new consumption value to be set.
+ */
+void Watcher::setConsumption(float con)
+{
+    consumption = con;
+}
+
+/**
+ * @brief Reads the local power consumption data and updates the system's consumption state.
+ *
+ * This method retrieves the local power consumption value from the Modbus system using the
+ * POWER_IMPORT register. The value obtained is then passed to the setConsumption method, which
+ * updates the internal consumption state of the Watcher class.
+ *
+ * Intended to be invoked periodically to ensure the system's consumption data remains accurate
+ * and aligns with real-time readings.
+ */
+void Watcher::readLocalConsumption()
+{
+    float consumption = Modbus::readLocal(POWER_IMPORT);
+
+    setConsumption(consumption);
+}
+
+/**
  * @brief Handles periodic operations on sensors using predefined intervals.
  *
  * This method utilizes two timer intervals, `fastInterval` and `slowInterval`, to manage
@@ -96,6 +128,7 @@ void Watcher::handleSensors()
         // Read HA Power to compensate.
         if (mode == ModeType::DYNAMIC)
         {
+            readLocalConsumption();
             readHouseMeterPower();
         }
 

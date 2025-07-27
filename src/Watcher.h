@@ -52,11 +52,14 @@ public:
     static float temperatureOut;
     static float maxConsume;
     static float currentPower;
+    static float consumption;
 
 private:
     static void setPower(float current_power);
     static void readLocalPower();
     static void readHouseMeterPower();
+    static void setConsumption(float consumption);
+    static void readLocalConsumption();
     static void handleStandbyLedFade(bool cond);
     static void handleErrorLedFade(bool cond);
     static void setupPins();
