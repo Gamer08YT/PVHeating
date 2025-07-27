@@ -12,4 +12,8 @@
 #define ETHERNET_MISO 19
 #define ETHERNET_MOSI 23
 
+#define MODBUS_TX 17
+#define MODBUS_RX 16
+#define MODBUS_RE 4
+
 #endif //PINOUT_H

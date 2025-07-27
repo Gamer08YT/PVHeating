@@ -13,6 +13,7 @@ private:
     static void configurePowerInstance();
     static void configureConsumptionInstance();
     static void publishChanges();
+    static void configureFaultInstances();
 
 public:
     static void begin();

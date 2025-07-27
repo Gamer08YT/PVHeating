@@ -1,6 +1,7 @@
 #include <Arduino.h>
 
 #include "HomeAssistant.h"
+#include "Modbus.h"
 #include "Network.h"
 
 void setup()
@@ -13,6 +14,9 @@ void setup()
 
     // Begin with HA.
     HomeAssistant::begin();
+
+    // Begin Modbus.
+    Modbus::begin();
 }
 
 void loop()
@@ -22,4 +26,7 @@ void loop()
 
     // Loop HA.
     HomeAssistant::loop();
+
+    // Loop Modbus.
+    Modbus::loop();
 }

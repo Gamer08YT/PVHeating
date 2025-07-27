@@ -10,6 +10,7 @@
 #include "Guardian.h"
 #include "Network.h"
 #include "PinOut.h""
+#include "device-types/HABinarySensor.h"
 #include "device-types/HAHVAC.h"
 #include "device-types/HASensorNumber.h"
 
@@ -30,6 +31,9 @@ HASensorNumber power("heating_load", HABaseDeviceType::PrecisionP2);
 
 // Store Power Consumption Instance.
 HASensorNumber consumption("heating_consumption", HABaseDeviceType::PrecisionP2);
+
+// Store Error State Instance.
+HABinarySensor fault("heating_fault");
 
 /**
  * @brief Configures the heating instance with the required parameters
@@ -137,6 +141,7 @@ void HomeAssistant::begin()
     configureHeatingInstance();
     configurePowerInstance();
     configureConsumptionInstance();
+    configureFaultInstances();
 
 
     // Print Debug Message.
@@ -145,6 +150,25 @@ void HomeAssistant::begin()
 
 void HomeAssistant::publishChanges()
 {
+}
+
+/**
+ * @brief Configures the fault instances with necessary attributes for
+ * integration with HomeAssistant.
+ *
+ * This method sets up the fault instance by assigning a name, specifying
+ * its device class, and defining an associated icon. These configurations
+ * allow the fault entity to integrate seamlessly with HomeAssistant and
+ * convey its purpose accurately.
+ *
+ * Proper fault instance setup is crucial to ensure effective monitoring
+ * and handling of system problems within the HomeAssistant environment.
+ */
+void HomeAssistant::configureFaultInstances()
+{
+    fault.setName("Fehler");
+    fault.setDeviceClass("problem");
+    fault.setIcon("mdi:alert");
 }
 
 /**

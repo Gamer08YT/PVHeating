@@ -47,7 +47,7 @@ void Network::begin()
 
     while (!connected && (millis() - startTime < INITIAL_TIMEOUT))
     {
-        // Begin with default MAC address and DHCP IP.
+        // Begin with the default MAC address and DHCP IP.
         if (Ethernet.begin() == 1)
         {
             connected = true;
