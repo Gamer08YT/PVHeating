@@ -128,7 +128,7 @@ void HomeAssistant::begin()
     Guardian::println("Begin HomeAssistant");
 
     // Connect to HomeAssistant.
-    mqtt.begin("homeassistant.local", "pvheating", "pvheating");
+    mqtt.begin(/*"homeassistant.local"*/ "192.168.1.181", "pvheating", "pvheating");
 
     // Set Device Metrics.
     device.setName("PVHeating");

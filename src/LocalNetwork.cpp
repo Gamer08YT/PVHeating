@@ -73,6 +73,7 @@ void LocalNetwork::begin()
         {
             connected = true;
             Guardian::println("Network is ready");
+            Serial.println(Ethernet.localIP());
         }
         else
         {
@@ -89,7 +90,11 @@ void LocalNetwork::begin()
         lastReconnectAttempt = 0;
     }
 
+    // Setup OTA.
     handleOTA();
+
+    // Print Debug Message.
+    Guardian::println("OTA is ready");
 }
 
 /**
@@ -129,6 +134,9 @@ void LocalNetwork::update()
             lastReconnectAttempt = millis();
         }
     }
+
+    // Handle OTA Loop.
+    ElegantOTA.loop();
 }
 
 /**
@@ -140,7 +148,8 @@ void LocalNetwork::update()
  *
  * @return The MAC address of the device as a string.
  */
-const char* LocalNetwork::getMac() {
+const char* LocalNetwork::getMac()
+{
     // MAC direkt vom WiFi-Modul holen
     WiFi.macAddress(mac);
 
@@ -150,4 +159,3 @@ const char* LocalNetwork::getMac() {
 
     return macStr;
 }
-
