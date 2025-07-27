@@ -7,6 +7,7 @@
 #include "PinOut.h"
 #include "DallasTemperature.h"
 #include "Guardian.h"
+#include "LEDFader.h"
 #include "OneButton.h"
 #include "OneWire.h"
 
@@ -20,11 +21,45 @@ DallasTemperature sensors(&oneWire);
 OneButton faultButton(BUTTON_FAULT, true);
 OneButton modeButton(BUTTON_MODE, true);
 
+// Store LED Instances.
+LEDFader faultLed(LED_FAULT);
+LEDFader modeLed(LED_MODE);
 
+
+/**
+ * @brief Updates the fault and mode LEDs using their respective controllers.
+ *
+ * This method invokes the update functionality of the LEDFader objects associated with
+ * fault and mode LEDs. It ensures the LEDs reflect any ongoing transitions or effects
+ * such as fading, occurring due to changes in their state or value.
+ *
+ * Designed for integration in the main program loop to provide periodic updates
+ * to the LED states and maintain consistency with the system's functionality.
+ */
+void Watcher::handleButtonLeds()
+{
+    faultLed.update();
+    modeLed.update();
+}
+
+void Watcher::handleSensors()
+{
+}
+
+/**
+ * @brief Manages periodic tasks and updates within the main application.
+ *
+ * This method serves as the central execution loop for the application. It handles
+ * tasks such as polling, state updates, or invoking methods necessary to ensure
+ * the system operates as expected. Designed to run continuously within the
+ * program's execution lifecycle, it facilitates the overall workflow of the application.
+ */
 void Watcher::loop()
 {
+    handleSensors();
     readTemperature();
     readButtons();
+    handleButtonLeds();
 }
 
 /**
@@ -104,6 +139,8 @@ void Watcher::setError(bool cond)
 {
     Guardian::println("S > Error");
 
+    handleErrorLedFade(cond);
+
     error = cond;
 }
 
@@ -121,6 +158,36 @@ void Watcher::setMode(ModeType cond)
     Guardian::println("S > Mode");
 
     mode = cond;
+}
+
+/**
+ * @brief Handles the fading behavior of the error LED based on the given condition.
+ *
+ * This method checks if the current state of the error LED differs from the specified
+ * condition. If the condition indicates activation, the LED begins fading in over
+ * a 1000 millisecond interval. Otherwise, the fade process is stopped, and the LED
+ * is turned off by setting its value to 0.
+ *
+ * @param cond Boolean value indicating the desired state of the error LED. If `true`,
+ *             the LED will fade in. If `false`, the fade will stop, and the LED will
+ *             be disabled.
+ */
+void Watcher::handleErrorLedFade(bool cond)
+{
+    if (error != cond)
+    {
+        if (cond)
+        {
+            // Fade in 1000-second Interval.
+            faultLed.fade(255, 1000);
+        }
+        else
+        {
+            // Stop Fade and Disable LED.
+            faultLed.stop_fade();
+            faultLed.set_value(0);
+        }
+    }
 }
 
 void Watcher::setupPins()

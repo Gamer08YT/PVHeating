@@ -9,6 +9,8 @@
 class Watcher
 {
 public:
+    static void handleButtonLeds();
+    static void handleSensors();
     static void loop();
     static void setupButtons();
     static void setup();
@@ -19,12 +21,14 @@ public:
     {
         CONSUME, DYNAMIC
     };
+
     static void setMode(ModeType mode);
     static ModeType mode;
     static bool error;
     static bool standby;
 
 private:
+    static void handleErrorLedFade(bool cond);
     static void setupPins();
     static void readButtons();
     static void readTemperature();
