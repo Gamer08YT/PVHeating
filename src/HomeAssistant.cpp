@@ -9,7 +9,8 @@
 #include "HAMqtt.h"
 #include "Guardian.h"
 #include "LocalNetwork.h"
-#include "PinOut.h""
+#include "PinOut.h"
+#include "Watcher.h"
 #include "device-types/HABinarySensor.h"
 #include "device-types/HAHVAC.h"
 #include "device-types/HASensorNumber.h"
@@ -18,10 +19,10 @@
 EthernetClient client;
 
 // Store HADevice Instance.
-HADevice device(LocalNetwork::getMac());
+HADevice device;
 
 // Store MQTT Instance.
-HAMqtt mqtt(client, device);
+HAMqtt mqtt(client, device, 16);
 
 // Store HAVAC Instance.
 HAHVAC heating("heating", HAHVAC::TargetTemperatureFeature | HAHVAC::PowerFeature | HAHVAC::ModesFeature);
@@ -35,6 +36,10 @@ HASensorNumber consumption("heating_consumption", HABaseDeviceType::PrecisionP2)
 // Store Error State Instance.
 HABinarySensor fault("heating_fault");
 
+
+unsigned long lastTempPublishAt = 0;
+float lastTemp = 0;
+
 /**
  * @brief Configures the heating instance with the required parameters
  * and initializes it for operation.
@@ -47,6 +52,9 @@ HABinarySensor fault("heating_fault");
  */
 void HomeAssistant::configureHeatingInstance()
 {
+    // Set Instance Name.
+    heating.setName("Heizung");
+
     // Set Temperature Unit.
     heating.setTemperatureUnit(HAHVAC::CelsiusUnit);
 
@@ -59,6 +67,10 @@ void HomeAssistant::configureHeatingInstance()
     // Set Temperature Limits.
     heating.setMinTemp(45);
     heating.setMaxTemp(60);
+
+        // Set Default Values.
+    heating.setCurrentTemperature(10.00F);
+    heating.setTargetTemperature(50.00F);
 
     // Register Temperature change Listener.
     heating.onTargetTemperatureCommand([](HANumeric temperature, HAHVAC* sender)
@@ -127,29 +139,40 @@ void HomeAssistant::begin()
     // Print Debug Message.
     Guardian::println("Begin HomeAssistant");
 
-    // Connect to HomeAssistant.
-    mqtt.begin(/*"homeassistant.local"*/ "192.168.1.181", "pvheating", "pvheating");
-
     // Set Device Metrics.
+    device.setUniqueId(LocalNetwork::getMac(), sizeof(LocalNetwork::getMac()));
+    device.setModel("ESP32");
     device.setName("PVHeating");
     device.setManufacturer("Jan Heil");
     device.setSoftwareVersion(SOFTWARE_VERSION);
     device.enableSharedAvailability();
     device.enableLastWill();
+    device.enableExtendedUniqueIds();
 
-
+    // Configure all Instances.
     configureHeatingInstance();
     configurePowerInstance();
     configureConsumptionInstance();
     configureFaultInstances();
 
-
     // Print Debug Message.
     Guardian::println("HomeAssistant is ready");
+
+    // Handle MQTT Events.
+    handleMQTT();
+
+    // Connect to HomeAssistant.
+    mqtt.begin("192.168.1.181", "pvheating", "pvheating");
 }
 
 void HomeAssistant::publishChanges()
 {
+    if ((millis() - lastTempPublishAt) > 3000)
+    {
+        heating.setCurrentTemperature(lastTemp);
+        lastTempPublishAt = millis();
+        lastTemp += 0.5;
+    }
 }
 
 /**
@@ -169,6 +192,29 @@ void HomeAssistant::configureFaultInstances()
     fault.setName("Fehler");
     fault.setDeviceClass("problem");
     fault.setIcon("mdi:alert");
+}
+
+/**
+ * @brief Handles MQTT connection and disconnection events for the HomeAssistant system.
+ *
+ * This method sets up the callbacks to monitor the MQTT connection status. When the
+ * MQTT connection is established or disconnected, respective debug messages will be
+ * printed to provide status updates. It allows for dynamic handling of MQTT-based
+ * events and ensures that feedback is given in the event of connectivity changes.
+ */
+void HomeAssistant::handleMQTT()
+{
+    mqtt.onDisconnected([]
+    {
+        // Print Debug Message.
+        Guardian::println("MQTT is disconnected");
+    });
+
+    mqtt.onConnected([]
+    {
+        // Print Debug Message.
+        Guardian::println("MQTT is connected");
+    });
 }
 
 /**

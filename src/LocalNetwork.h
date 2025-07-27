@@ -16,7 +16,7 @@ private:
 public:
     static void begin();
     static void update();
-    static const char* getMac();
+    static uint8_t* getMac();
 };
 
 

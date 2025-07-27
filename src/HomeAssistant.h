@@ -14,6 +14,7 @@ private:
     static void configureConsumptionInstance();
     static void publishChanges();
     static void configureFaultInstances();
+    static void handleMQTT();
 
 public:
     static void begin();

@@ -56,6 +56,9 @@ void LocalNetwork::handleOTA()
  */
 void LocalNetwork::begin()
 {
+    // MAC direkt vom WiFi-Modul holen
+    Network.macAddress(mac);
+
     // Print Debug Message.
     Guardian::println("Begin Network");
 
@@ -135,6 +138,9 @@ void LocalNetwork::update()
         }
     }
 
+    // Handle WebServer Client.
+    server.handleClient();
+
     // Handle OTA Loop.
     ElegantOTA.loop();
 }
@@ -148,14 +154,7 @@ void LocalNetwork::update()
  *
  * @return The MAC address of the device as a string.
  */
-const char* LocalNetwork::getMac()
+uint8_t* LocalNetwork::getMac()
 {
-    // MAC direkt vom WiFi-Modul holen
-    WiFi.macAddress(mac);
-
-    // MAC-Bytes in lesbaren String umwandeln
-    snprintf(macStr, sizeof(macStr), "%02X:%02X:%02X:%02X:%02X:%02X",
-             mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
-
-    return macStr;
+    return mac;
 }
