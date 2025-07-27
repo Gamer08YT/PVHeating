@@ -304,3 +304,8 @@ HASensorNumber HomeAssistant::getCurrentPower()
 {
     return power;
 }
+
+HASensorNumber HomeAssistant::getConsumption()
+{
+    return consumption;
+}

@@ -65,17 +65,19 @@ void Watcher::readHouseMeterPower()
 }
 
 /**
- * @brief Sets the consumption value for the system.
+ * @brief Updates the system's power consumption value.
  *
- * This method assigns the given consumption value to the class's static
- * consumption member. It is typically used to update the system's
- * consumption data based on external readings or calculations.
+ * This method sets the internal consumption value for the Watcher class and then
+ * communicates the updated consumption to the Home Assistant system by updating the
+ * corresponding sensor's current value.
  *
- * @param con The new consumption value to be set.
+ * @param con The updated consumption value to be stored and propagated.
  */
 void Watcher::setConsumption(float con)
 {
     consumption = con;
+
+    HomeAssistant::getConsumption().setCurrentValue(consumption);
 }
 
 /**

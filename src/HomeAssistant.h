@@ -40,6 +40,7 @@ public:
     static void loop();
     static HAHVAC getHVAC();
     static HASensorNumber getCurrentPower();
+    static HASensorNumber getConsumption();
 };
 
 
