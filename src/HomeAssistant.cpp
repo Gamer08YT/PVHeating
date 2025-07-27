@@ -243,6 +243,10 @@ void HomeAssistant::configureConsumptionInstance()
     });
 
     consumeStart.setName("Start");
+    consumeStart.onCommand([](HAButton* sender)
+    {
+       Watcher::startConsume();
+    });
 }
 
 /**

@@ -32,6 +32,7 @@ public:
     static void setSCR(bool sender);
     static void setSCRViaHA(bool state);
     static void setPumpViaHA(bool state);
+    static void startConsume();
 
     /**
      * @enum ModeType

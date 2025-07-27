@@ -329,6 +329,10 @@ void Watcher::setPumpViaHA(bool state)
     digitalWrite(PUMP_ENABLE, state);
 }
 
+void Watcher::startConsume()
+{
+}
+
 /**
  * @brief Sets the operational mode of the system.
  *
