@@ -6,6 +6,7 @@
 #define HOMEASSISTANT_H
 #include "device-types/HAHVAC.h"
 #include "device-types/HASensorNumber.h"
+#include "device-types/HASwitch.h"
 
 
 /**
@@ -27,6 +28,9 @@
 class HomeAssistant
 {
 private:
+    static void configurePumpInstance();
+    static void configureModeInstance();
+    static void configureSCRInstance();
     static void configureHeatingInstance();
     static void configurePowerInstance();
     static void configureConsumptionInstance();
@@ -41,6 +45,8 @@ public:
     static HAHVAC getHVAC();
     static HASensorNumber getCurrentPower();
     static HASensorNumber getConsumption();
+    static HASwitch getPump();
+    static HASwitch getSCR();
 };
 
 

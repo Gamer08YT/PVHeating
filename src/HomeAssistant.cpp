@@ -15,7 +15,9 @@
 #include "device-types/HAButton.h"
 #include "device-types/HAHVAC.h"
 #include "device-types/HANumber.h"
+#include "device-types/HASelect.h"
 #include "device-types/HASensorNumber.h"
+#include "device-types/HASwitch.h"
 
 // Store Instance of Ethernet Client.
 EthernetClient client;
@@ -47,9 +49,95 @@ HAButton consumeStart("heating_consume_start");
 // Store Consume Input Value Instance.
 HANumber consumeMax("heating_consume_max");
 
+// Store SCR Switch Instance.
+HASwitch scrSwitch("scr_switch");
+
+// Store Pump Switch Instance.
+HASwitch pumpSwitch("pump_switch");
+
+// Store Mode Select Instance.
+HASelect modeSelect("mode_select");
+
 
 unsigned long lastTempPublishAt = 0;
 float lastTemp = 45;
+
+/**
+ * @brief Configures the pump switch instance by defining its name, icon, and behavior.
+ *
+ * This method initializes the pump switch instance representation with a display name
+ * and icon. It also sets up a command handler to respond to state changes triggered by
+ * user interaction. The handler updates the pump's operational state in the system and
+ * syncs the state back to the instance to reflect the change.
+ */
+void HomeAssistant::configurePumpInstance()
+{
+    pumpSwitch.setName("Pumpe");
+    pumpSwitch.setIcon("mdi:pump");
+
+    pumpSwitch.onCommand([](bool state, HASwitch* sender)
+    {
+        Watcher::setPumpViaHA(state);
+
+        sender->setState(state);
+    });
+}
+
+/**
+ * @brief Configures the mode selection instance by setting its properties and
+ * defining behavior for user commands.
+ *
+ * This method initializes the mode selection instance with its name, icon, and
+ * available options. It also defines a command handler to handle user input
+ * and update the system's operation mode based on the selected option.
+ *
+ * The mode options allow switching between specific operational modes, such as
+ * "Consume" and "Dynamic," by invoking the appropriate system handler methods.
+ */
+void HomeAssistant::configureModeInstance()
+{
+    modeSelect.setName("Modus");
+    modeSelect.setIcon("mdi:thermostat");
+    modeSelect.setOptions("Consume;Dynamic");
+
+    modeSelect.onCommand([](int8_t index, HASelect* sender)
+    {
+        switch (index)
+        {
+        case 0:
+            Watcher::setMode(Watcher::CONSUME);
+
+            break;
+        case 1:
+            Watcher::setMode(Watcher::DYNAMIC);
+
+            break;
+        }
+
+        sender->setState(index);
+    });
+}
+
+/**
+ * @brief Configures the SCR (Silicon Controlled Rectifier) instance by defining its name, icon,
+ * and behavior for received commands.
+ *
+ * This method sets the display name and icon for the SCR instance within the Home Assistant system.
+ * Additionally, it assigns a command handler that updates the state of the instance when commands
+ * are received, allowing for remote control and monitoring of the SCR functionality.
+ */
+void HomeAssistant::configureSCRInstance()
+{
+    scrSwitch.setName("SCR");
+    scrSwitch.setIcon("mdi:heating-coil");
+
+    scrSwitch.onCommand([](bool state, HASwitch* sender)
+    {
+        Watcher::setSCRViaHA(state);
+
+        sender->setState(state);
+    });
+}
 
 /**
  * @brief Configures the heating instance with the required parameters
@@ -190,6 +278,9 @@ void HomeAssistant::begin()
     configureConsumptionInstance();
     configureFaultInstances();
     configureFlowInstance();
+    configureSCRInstance();
+    configureModeInstance();
+    configurePumpInstance();
 
     // Print Debug Message.
     Guardian::println("HomeAssistant is ready");
@@ -308,4 +399,14 @@ HASensorNumber HomeAssistant::getCurrentPower()
 HASensorNumber HomeAssistant::getConsumption()
 {
     return consumption;
+}
+
+HASwitch HomeAssistant::getPump()
+{
+    return pumpSwitch;
+}
+
+HASwitch HomeAssistant::getSCR()
+{
+    return scrSwitch;
 }

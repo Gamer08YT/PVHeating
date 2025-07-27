@@ -4,6 +4,7 @@
 
 #ifndef WATCHER_H
 #define WATCHER_H
+#include "device-types/HASwitch.h"
 #include "utils/HANumeric.h"
 
 
@@ -27,6 +28,10 @@ public:
     static void setStandby(bool cond);
     static void setError(bool cond);
     static void setMaxConsume(float to_float);
+    static void setPump(bool sender);
+    static void setSCR(bool sender);
+    static void setSCRViaHA(bool state);
+    static void setPumpViaHA(bool state);
 
     /**
      * @enum ModeType

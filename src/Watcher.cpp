@@ -264,6 +264,72 @@ void Watcher::setMaxConsume(float to_float)
 }
 
 /**
+ * @brief Sets the pump state and updates it via HomeAssistant.
+ *
+ * This method updates the state of the pump by invoking the associated HomeAssistant
+ * control interface and propagating the state change through the home automation
+ * system using helper methods.
+ *
+ * @param sender The desired state of the pump. True for enabling, false for disabling the pump.
+ */
+void Watcher::setPump(bool sender)
+{
+    HomeAssistant::getPump().setState(sender);
+
+    setPumpViaHA(sender);
+}
+
+/**
+ * @brief Sets the State Control Relay (SCR) using the provided HASwitch object.
+ *
+ * This method is intended to configure or control an instance of the SCR by
+ * utilizing the functionality of the HASwitch passed as the parameter.
+ * It is typically invoked within the context of setting up or adjusting
+ * the state of the associated system component.
+ *
+ * @param sender A pointer to the HASwitch object used to configure the SCR.
+ */
+void Watcher::setSCR(bool sender)
+{
+    HomeAssistant::getSCR().setState(sender);
+
+    setSCRViaHA(sender);
+}
+
+/**
+ * @brief Controls the SCR state via an external Home Automation command.
+ *
+ * This method sets the state of the SCR (Silicon Controlled Rectifier)
+ * by writing the specified value to the associated controller pin. The
+ * state of the SCR is determined by the input parameter.
+ *
+ * It is designed to interface with external automation systems that
+ * manage SCR control functionality.
+ *
+ * @param state The desired state of the SCR. A value of `true` enables
+ * the SCR, while `false` disables it.
+ */
+void Watcher::setSCRViaHA(bool state)
+{
+    digitalWrite(SCR_ENABLE, state);
+}
+
+/**
+ * @brief Controls the pump state through Home Automation (HA) commands.
+ *
+ * This method sets the pump state based on instructions received from the
+ * Home Automation system. It ensures that the pump operates in accordance
+ * with the desired state communicated by HA, maintaining proper synchronization
+ * between the system and the external control.
+ *
+ * @param state A boolean value where `true` turns the pump on and `false` turns it off.
+ */
+void Watcher::setPumpViaHA(bool state)
+{
+    digitalWrite(PUMP_ENABLE, state);
+}
+
+/**
  * @brief Sets the operational mode of the system.
  *
  * This method updates the system's mode to the specified value. It is used
