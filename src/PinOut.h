@@ -16,6 +16,6 @@
 #define MODBUS_RX 16
 #define MODBUS_RE 4
 
-#define ONE_WIRE 6
+#define ONE_WIRE 2
 
 #endif //PINOUT_H

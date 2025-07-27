@@ -10,7 +10,6 @@
 #include "Guardian.h"
 #include "LocalNetwork.h"
 #include "PinOut.h"
-#include "Watcher.h"
 #include "device-types/HABinarySensor.h"
 #include "device-types/HAHVAC.h"
 #include "device-types/HASensorNumber.h"
@@ -72,7 +71,6 @@ void HomeAssistant::configureHeatingInstance()
     heating.setCurrentTemperature(10.00F);
     heating.setTargetTemperature(50.00F);
     heating.setCurrentTargetTemperature(10.00F);
-
 
 
     // Retain Heating Value.
