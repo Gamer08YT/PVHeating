@@ -59,8 +59,9 @@ void Watcher::handleSensors()
 {
     if (sensorInterval.isReady())
     {
+        Guardian::println("S > Sensors");
         // Read Temperatures via OneWire.
-        readTemperature();
+        //readTemperature();
 
         // Reset Timer (Endless Loop).
         sensorInterval.reset();
@@ -78,7 +79,6 @@ void Watcher::handleSensors()
 void Watcher::loop()
 {
     handleSensors();
-    readTemperature();
     readButtons();
     handleButtonLeds();
 }
