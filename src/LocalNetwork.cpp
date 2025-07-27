@@ -5,17 +5,38 @@
 #include <Arduino.h>
 #include <WiFi.h>
 #include <EthernetESP32.h>
-#include "Network.h"
+#include "LocalNetwork.h"
+
+#include <WebServer.h>
+
+#include "ElegantOTA.h"
 #include "PinOut.h"
 #include "Guardian.h"
 
 // Store Object of Ethernet Driver.
 ENC28J60Driver driver(ETHERNET_CS);
 
+// Store Instance of Webserver.
+WebServer server(80);
+
 // Definitions for Reconnect Interval.
 const unsigned long INITIAL_TIMEOUT = 5000; // 5 Seconds
 const unsigned long RECONNECT_INTERVAL = 10000; // 10 Seconds
 unsigned long lastReconnectAttempt = 0;
+
+// Store MAC Address.
+uint8_t LocalNetwork::mac[6];
+char LocalNetwork::macStr[18];
+
+
+void LocalNetwork::handleOTA()
+{
+    // Begin Webserver.
+    server.begin();
+
+    // Begin OTA Server.
+    ElegantOTA.begin(&server);
+}
 
 /**
  * @brief Initializes the network connection and attempts to establish a connection with DHCP.
@@ -33,7 +54,7 @@ unsigned long lastReconnectAttempt = 0;
  * A small delay is included between reconnection attempts to avoid continuous retries in quick
  * succession during the initial connection phase.
  */
-void Network::begin()
+void LocalNetwork::begin()
 {
     // Print Debug Message.
     Guardian::println("Begin Network");
@@ -67,6 +88,8 @@ void Network::begin()
         // Allow direct reconnect try.
         lastReconnectAttempt = 0;
     }
+
+    handleOTA();
 }
 
 /**
@@ -81,7 +104,7 @@ void Network::begin()
  * Otherwise, an error message is printed. The variable lastReconnectAttempt keeps track
  * of the last time a reconnection was attempted.
  */
-void Network::update()
+void LocalNetwork::update()
 {
     // Maintain Ethernet Connection.
     Ethernet.maintain();
@@ -117,7 +140,14 @@ void Network::update()
  *
  * @return The MAC address of the device as a string.
  */
-String Network::getMac()
-{
-    return WiFi.macAddress();
+const char* LocalNetwork::getMac() {
+    // MAC direkt vom WiFi-Modul holen
+    WiFi.macAddress(mac);
+
+    // MAC-Bytes in lesbaren String umwandeln
+    snprintf(macStr, sizeof(macStr), "%02X:%02X:%02X:%02X:%02X:%02X",
+             mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+
+    return macStr;
 }
+

@@ -8,7 +8,7 @@
 #include "HADevice.h"
 #include "HAMqtt.h"
 #include "Guardian.h"
-#include "Network.h"
+#include "LocalNetwork.h"
 #include "PinOut.h""
 #include "device-types/HABinarySensor.h"
 #include "device-types/HAHVAC.h"
@@ -18,7 +18,7 @@
 EthernetClient client;
 
 // Store HADevice Instance.
-HADevice device(Network::getMac());
+HADevice device(LocalNetwork::getMac());
 
 // Store MQTT Instance.
 HAMqtt mqtt(client, device);
@@ -61,7 +61,7 @@ void HomeAssistant::configureHeatingInstance()
     heating.setMaxTemp(60);
 
     // Register Temperature change Listener.
-    heating.onTemperatureChange([](float temperature)
+    heating.onTargetTemperatureCommand([](HANumeric temperature, HAHVAC* sender)
     {
         Guardian::println("Temp changed");
     });
@@ -73,7 +73,7 @@ void HomeAssistant::configureHeatingInstance()
     });
 
     // Register Mode change Listener.
-    heating.onModeChange([](HAHVAC::Mode mode, HAHVAC* sender)
+    heating.onModeCommand([](HAHVAC::Mode mode, HAHVAC* sender)
     {
         Guardian::println("Mode changed");
     });

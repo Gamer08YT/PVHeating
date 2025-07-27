@@ -1,8 +1,10 @@
 #include <Arduino.h>
 
+#include "ElegantOTA.h"
 #include "HomeAssistant.h"
 #include "Modbus.h"
-#include "Network.h"
+#include "LocalNetwork.h"
+
 
 void setup()
 {
@@ -10,7 +12,7 @@ void setup()
     Serial.begin(9600);
 
     // Begin with Ethernet.
-    Network::begin();
+    LocalNetwork::begin();
 
     // Begin with HA.
     HomeAssistant::begin();
@@ -22,7 +24,7 @@ void setup()
 void loop()
 {
     // Check for Timeout.
-    Network::update();
+    LocalNetwork::update();
 
     // Loop HA.
     HomeAssistant::loop();

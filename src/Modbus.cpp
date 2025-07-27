@@ -3,11 +3,10 @@
 //
 #include "Modbus.h"
 
-#include <ArduinoRS485.h>
-#include <ArduinoModbus.h>
+#include <HardwareSerial.h>
 
-#include "Guardian.h"
-#include "PinOut.h"
+// Begin HW Serial 2 (TX=17, RX=16).
+HardwareSerial serial(2);
 
 
 /**
@@ -24,16 +23,6 @@
  **/
 void Modbus::begin()
 {
-    // Begin RS485 on Second UART Channel.
-    RS485.begin(9600, SERIAL_8N1, MODBUS_RX, MODBUS_TX);
-
-    // Init Modbus RTU Master
-    if (!ModbusRTUClient.begin(RS485))
-    {
-        Guardian::println("Failed to start Modbus RTU Client.");
-    }
-
-    Guardian::println("Modbus initialized");
 }
 
 void Modbus::loop()
