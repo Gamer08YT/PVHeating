@@ -9,9 +9,11 @@
 #include "Guardian.h"
 #include "HomeAssistant.h"
 #include "LEDFader.h"
+#include "Modbus.h"
 #include "OneButton.h"
 #include "OneWire.h"
 #include "SimpleTimer.h"
+#include "MeterRegisters.h"
 
 // Definitions from Header.
 Watcher::ModeType Watcher::mode = Watcher::CONSUME;
@@ -20,6 +22,7 @@ bool Watcher::standby = false;
 float Watcher::temperatureIn = 0.0f;
 float Watcher::temperatureOut = 0.0f;
 float Watcher::maxConsume = 0.0f;
+float Watcher::currentPower = 0.0f;
 
 
 // Store One Wire Instance.
@@ -230,8 +233,38 @@ void Watcher::setMode(ModeType cond)
     mode = cond;
 }
 
+/**
+ * @brief Sets the current power consumption value for the system.
+ *
+ * This method updates the `currentPower` variable with the provided power value.
+ * It is used to store the power consumption reading, which can be leveraged
+ * in other parts of the system for monitoring or decision-making processes.
+ *
+ * @param current_power The power consumption value to be set, represented as a float.
+ */
+void Watcher::setPower(float current_power)
+{
+    currentPower = current_power;
+
+    HomeAssistant::getCurrentPower().setCurrentValue(currentPower);
+}
+
+/**
+ * @brief Reads the local power usage and updates the current power state.
+ *
+ * This method accesses the local power usage data through the Modbus interface by
+ * reading the value associated with the POWER_USAGE register. The retrieved power
+ * value is then passed to the setPower() method to update the internal state and
+ * ensure that the current power is synchronized with the latest reading.
+ *
+ * Designed to be invoked periodically as part of sensor handling routines, this method
+ * ensures that the local power data is accurately reflected in the system's state.
+ */
 void Watcher::readLocalPower()
 {
+    float currentPower = Modbus::readLocal(POWER_USAGE);
+
+    setPower(currentPower);
 }
 
 /**

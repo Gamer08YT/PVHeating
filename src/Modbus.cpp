@@ -8,6 +8,7 @@
 #include "DFRobot_RTU.h"
 #include "Guardian.h"
 #include "PinOut.h"
+#include "MeterRegisters.h"
 
 // Begin HW Serial 2 (TX=17, RX=16).
 HardwareSerial serial(2);
@@ -39,4 +40,39 @@ void Modbus::begin()
 
 void Modbus::loop()
 {
+}
+
+/**
+ * @brief Reads a 32-bit floating-point value from a local Modbus input register.
+ *
+ * This method reads data from a specific Modbus input register address. It retrieves
+ * two 16-bit registers, combining them into a 32-bit value, and converts it to a
+ * floating-point representation. The Big-Endian format is used for byte ordering.
+ *
+ * @param address The Modbus register address to read from.
+ *
+ * @return The 32-bit floating-point value read from the specified Modbus register.
+ *         If the read operation fails, the return value is undefined.
+ */
+float Modbus::readLocal(int address)
+{
+    // Simple Data Buffer Array.
+    uint16_t data[REGISTER_LENGTH];
+
+    // Read into Buffer.
+    uint8_t result = modbus.readInputRegister(1, address, data, REGISTER_LENGTH);
+
+    if (result == 0) {  // Erfolgreiche Lesung
+        // Convert the two 16-bit Register to 32-bit Float
+        union {
+            uint32_t i;
+            float f;
+        } converter;
+
+        // Big-Endian converting.
+        converter.i = ((uint32_t)data[0] << 16) | data[1];
+
+        return converter.f;
+    }
+
 }

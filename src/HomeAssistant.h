@@ -5,6 +5,7 @@
 #ifndef HOMEASSISTANT_H
 #define HOMEASSISTANT_H
 #include "device-types/HAHVAC.h"
+#include "device-types/HASensorNumber.h"
 
 
 /**
@@ -38,6 +39,7 @@ public:
     static void begin();
     static void loop();
     static HAHVAC getHVAC();
+    static HASensorNumber getCurrentPower();
 };
 
 

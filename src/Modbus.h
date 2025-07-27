@@ -19,6 +19,7 @@ class Modbus {
 public:
     static void begin();
     static void loop();
+    static float readLocal(int i);
 };
 
 

@@ -299,3 +299,8 @@ HAHVAC HomeAssistant::getHVAC()
 {
     return heating;
 }
+
+HASensorNumber HomeAssistant::getCurrentPower()
+{
+    return power;
+}
