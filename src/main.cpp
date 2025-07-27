@@ -10,7 +10,7 @@
 void setup()
 {
     // Begin Serial for Debugging.
-    Serial.begin(115200);
+    Serial.begin(9600);
 
     // Begin with Ethernet.
     LocalNetwork::begin();
