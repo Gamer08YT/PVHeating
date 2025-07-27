@@ -10,8 +10,11 @@
 #include "Guardian.h"
 #include "LocalNetwork.h"
 #include "PinOut.h"
+#include "Watcher.h"
 #include "device-types/HABinarySensor.h"
+#include "device-types/HAButton.h"
 #include "device-types/HAHVAC.h"
+#include "device-types/HANumber.h"
 #include "device-types/HASensorNumber.h"
 
 // Store Instance of Ethernet Client.
@@ -37,6 +40,12 @@ HABinarySensor fault("heating_fault");
 
 // Store Flow Rate Instance.
 HASensorNumber flow("heating_flow", HABaseDeviceType::PrecisionP2);
+
+// Store Consume Start Action Instance.
+HAButton consumeStart("heating_consume_start");
+
+// Store Consume Input Value Instance.
+HANumber consumeMax("heating_consume_max");
 
 
 unsigned long lastTempPublishAt = 0;
@@ -125,6 +134,27 @@ void HomeAssistant::configureConsumptionInstance()
     consumption.setDeviceClass("energy");
     consumption.setUnitOfMeasurement("kWh");
     consumption.setIcon("mdi:lightbulb");
+
+    consumeMax.setName("Verbrauch Limit");
+    consumeMax.setDeviceClass("energy");
+    consumeMax.setUnitOfMeasurement("kWh");
+    consumeMax.setIcon("mdi:lightbulb");
+    consumeMax.setMin(1);
+    consumeMax.setMax(10);
+    consumeMax.onCommand([](HANumeric number, HANumber* sender)
+    {
+        Guardian::println("Max changed");
+
+        // Check if no Reset CMD by HA.
+        if (number.isSet())
+        {
+            Watcher::setMaxConsume(number.toFloat());
+        }
+
+        sender->setState(number);
+    });
+
+    consumeStart.setName("Start");
 }
 
 /**

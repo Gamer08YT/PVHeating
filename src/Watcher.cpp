@@ -159,6 +159,20 @@ void Watcher::setError(bool cond)
 }
 
 /**
+ * @brief Sets the maximum consumption limit for the watcher.
+ *
+ * This method updates the maximum consumption value used by the Watcher.
+ * It allows dynamic adjustment of the consumption limit during runtime, ensuring
+ * the system adheres to newly specified constraints.
+ *
+ * @param to_float The new maximum consumption value to set for the watcher.
+ */
+void Watcher::setMaxConsume(float to_float)
+{
+    maxConsume = to_float;
+}
+
+/**
  * @brief Sets the operational mode of the system.
  *
  * This method updates the system's mode to the specified value. It is used
