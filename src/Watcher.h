@@ -19,7 +19,7 @@ public:
     static void setError(bool cond);
     static void setMaxConsume(float to_float);
 
-    static enum ModeType
+    enum ModeType
     {
         CONSUME, DYNAMIC
     };
