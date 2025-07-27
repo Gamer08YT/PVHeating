@@ -94,6 +94,7 @@ graph TD
     - OneButton
     - LEDFader
     - SimpleTimer
+    - FlowMeter
 
 4. Projekt compilieren und hochladen
 
