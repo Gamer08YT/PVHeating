@@ -10,7 +10,19 @@ class Watcher
 {
 public:
     static void loop();
+    static void setupButtons();
     static void setup();
+    static void setStandby(bool cond);
+    static void setError(bool cond);
+
+    static enum ModeType
+    {
+        CONSUME, DYNAMIC
+    };
+    static void setMode(ModeType mode);
+    static ModeType mode;
+    static bool error;
+    static bool standby;
 
 private:
     static void setupPins();
