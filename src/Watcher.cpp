@@ -122,6 +122,8 @@ void Watcher::setStandby(bool cond)
 {
     Guardian::println("S > Standby");
 
+    handleStandbyLedFade(cond);
+
     standby = cond;
 }
 
@@ -158,6 +160,35 @@ void Watcher::setMode(ModeType cond)
     Guardian::println("S > Mode");
 
     mode = cond;
+}
+
+/**
+ * @brief Manages the fade effect of the standby LED based on a condition.
+ *
+ * This method adjusts the state of the `modeLed` to reflect whether the system
+ * is in standby mode. If the provided condition differs from the current standby
+ * state, it either initiates a fade-in effect over a specified duration or stops
+ * any active fade and disables the LED.
+ *
+ * @param cond A boolean indicating the desired standby state. True to activate
+ *        fade-in and light the LED, false to stop any fade and turn off the LED.
+ */
+void Watcher::handleStandbyLedFade(bool cond)
+{
+    if (standby != cond)
+    {
+        if (cond)
+        {
+            // Fade in 1000 Seconds Interval.
+            modeLed.fade(255, 1000);
+        }
+        else
+        {
+            // Stop Fade and Disable LED.
+            faultLed.stop_fade();
+            modeLed.set_value(0);
+        }
+    }
 }
 
 /**

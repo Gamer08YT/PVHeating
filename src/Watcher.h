@@ -22,12 +22,14 @@ public:
         CONSUME, DYNAMIC
     };
 
+
     static void setMode(ModeType mode);
     static ModeType mode;
     static bool error;
     static bool standby;
 
 private:
+    static void handleStandbyLedFade(bool cond);
     static void handleErrorLedFade(bool cond);
     static void setupPins();
     static void readButtons();
