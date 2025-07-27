@@ -56,7 +56,7 @@ HASwitch scrSwitch("scr_switch");
 HASwitch pumpSwitch("pump_switch");
 
 // Store Mode Select Instance.
-HASelect modeSelect("mode_select");
+// HASelect modeSelect("mode_select");
 
 
 unsigned long lastTempPublishAt = 0;
@@ -94,29 +94,29 @@ void HomeAssistant::configurePumpInstance()
  * The mode options allow switching between specific operational modes, such as
  * "Consume" and "Dynamic," by invoking the appropriate system handler methods.
  */
-void HomeAssistant::configureModeInstance()
-{
-    modeSelect.setName("Modus");
-    modeSelect.setIcon("mdi:thermostat");
-    modeSelect.setOptions("Consume;Dynamic");
-
-    modeSelect.onCommand([](int8_t index, HASelect* sender)
-    {
-        switch (index)
-        {
-        case 0:
-            Watcher::setMode(Watcher::CONSUME);
-
-            break;
-        case 1:
-            Watcher::setMode(Watcher::DYNAMIC);
-
-            break;
-        }
-
-        sender->setState(index);
-    });
-}
+// void HomeAssistant::configureModeInstance()
+// {
+//     modeSelect.setName("Modus");
+//     modeSelect.setIcon("mdi:thermostat");
+//     modeSelect.setOptions("Consume;Dynamic");
+//
+//     modeSelect.onCommand([](int8_t index, HASelect* sender)
+//     {
+//         switch (index)
+//         {
+//         case 0:
+//             Watcher::setMode(Watcher::CONSUME);
+//
+//             break;
+//         case 1:
+//             Watcher::setMode(Watcher::DYNAMIC);
+//
+//             break;
+//         }
+//
+//         sender->setState(index);
+//     });
+// }
 
 /**
  * @brief Configures the SCR (Silicon Controlled Rectifier) instance by defining its name, icon,
@@ -189,6 +189,19 @@ void HomeAssistant::configureHeatingInstance()
     {
         Guardian::println("Mode changed");
 
+        switch (mode)
+        {
+        case HAHVAC::HeatMode:
+            Watcher::setMode(Watcher::CONSUME);
+            break;
+        case HAHVAC::AutoMode:
+            Watcher::setMode(Watcher::DYNAMIC);
+            break;
+        case HAHVAC::OffMode:
+            Watcher::setStandby(true);
+            break;
+        }
+
         sender->setMode(mode);
     });
 }
@@ -245,7 +258,7 @@ void HomeAssistant::configureConsumptionInstance()
     consumeStart.setName("Start");
     consumeStart.onCommand([](HAButton* sender)
     {
-       Watcher::startConsume();
+        Watcher::startConsume();
     });
 }
 
@@ -283,7 +296,7 @@ void HomeAssistant::begin()
     configureFaultInstances();
     configureFlowInstance();
     configureSCRInstance();
-    configureModeInstance();
+    //configureModeInstance();
     configurePumpInstance();
 
     // Print Debug Message.
