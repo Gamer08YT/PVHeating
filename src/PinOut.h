@@ -2,20 +2,46 @@
 // Created by JanHe on 27.07.2025.
 //
 
+/**
+ * Usable Pins:
+ * 4, 13, 14, 16, 17, 18, 19, 21, 22, 23, 25, 26, 27, 32, 33
+ *
+ * Input Only:
+ * 34, 35, 36, 39
+ **/
+
 #ifndef PINOUT_H
 #define PINOUT_H
 
 #define SOFTWARE_VERSION "1.0.0"
 
+// Ethernet Stuff.
 #define ETHERNET_CS 5
 #define ETHERNET_SCK 18
 #define ETHERNET_MISO 19
 #define ETHERNET_MOSI 23
 
+// Modbus Stuff.
 #define MODBUS_TX 17
 #define MODBUS_RX 16
 #define MODBUS_RE 4
 
 #define ONE_WIRE 2
+
+// Hardware Control IO.
+#define BUTTON_FAULT 34
+#define LED_FAULT 32
+#define BUTTON_MODE 35
+#define LED_MODE 33
+
+
+// Pump and Flow Meter.
+#define FLOW_PULSE 39
+#define PUMP_ENABLE 13
+
+// SCR Stuff.
+#define SCR_FAULT 36
+#define SCR_ENABLE 4
+#define SCR_PWM 26
 
 #endif //PINOUT_H
