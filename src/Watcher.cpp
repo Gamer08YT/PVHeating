@@ -13,6 +13,15 @@
 #include "OneWire.h"
 #include "SimpleTimer.h"
 
+// Definitions from Header.
+Watcher::ModeType Watcher::mode = Watcher::CONSUME;
+bool Watcher::error = false;
+bool Watcher::standby = false;
+float Watcher::temperatureIn = 0.0f;
+float Watcher::temperatureOut = 0.0f;
+float Watcher::maxConsume = 0.0f;
+
+
 // Store One Wire Instance.
 OneWire oneWire(ONE_WIRE);
 
