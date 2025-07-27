@@ -1,0 +1,13 @@
+//
+// Created by JanHe on 27.07.2025.
+//
+
+#ifndef PINOUT_H
+#define PINOUT_H
+
+#define ETHERNET_CS 5
+#define ETHERNET_SCK 18
+#define ETHERNET_MISO 19
+#define ETHERNET_MOSI 23
+
+#endif //PINOUT_H
