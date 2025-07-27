@@ -19,6 +19,7 @@ DallasTemperature sensors(&oneWire);
 void Watcher::loop()
 {
     readTemperature();
+    readButtons();
 }
 
 void Watcher::setup()
@@ -26,8 +27,31 @@ void Watcher::setup()
     // Begin One Wire Sensors.
     sensors.begin();
 
+    // Setup Pins.
+    setupPins();
+
     // Print Debug Message.
     Guardian::println("Watcher ready");
+}
+
+void Watcher::setupPins()
+{
+    // Set Input Pins.
+    pinMode(BUTTON_FAULT, INPUT);
+    pinMode(BUTTON_MODE, INPUT);
+    pinMode(FLOW_PULSE, INPUT);
+    pinMode(SCR_FAULT, INPUT);
+
+    // Set Output Pins.
+    pinMode(LED_MODE, OUTPUT);
+    pinMode(LED_FAULT, OUTPUT);
+    pinMode(PUMP_ENABLE, OUTPUT);
+    pinMode(SCR_ENABLE, OUTPUT);
+    pinMode(SCR_PWM, OUTPUT);
+}
+
+void Watcher::readButtons()
+{
 }
 
 void Watcher::readTemperature()

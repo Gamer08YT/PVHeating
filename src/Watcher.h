@@ -13,6 +13,8 @@ public:
     static void setup();
 
 private:
+    static void setupPins();
+    static void readButtons();
     static void readTemperature();
 };
 
