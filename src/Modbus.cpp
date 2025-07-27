@@ -62,9 +62,12 @@ float Modbus::readLocal(int address)
     // Read into Buffer.
     uint8_t result = modbus.readInputRegister(1, address, data, REGISTER_LENGTH);
 
-    if (result == 0) {  // Erfolgreiche Lesung
+    if (result == 0)
+    {
+        // Erfolgreiche Lesung
         // Convert the two 16-bit Register to 32-bit Float
-        union {
+        union
+        {
             uint32_t i;
             float f;
         } converter;
@@ -75,4 +78,5 @@ float Modbus::readLocal(int address)
         return converter.f;
     }
 
+    return -1;
 }

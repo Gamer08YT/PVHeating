@@ -26,6 +26,53 @@ Die Nutzung dieser Software und der zugehörigen Hardware-Implementierung erfolg
 - LED-Statusanzeige
 - Mehrere Betriebsmodi über Taster wählbar
 
+```mermaid
+graph TD
+    subgraph ESP32["ESP32 Controller"]
+        ETH[ENC28J60 Ethernet]
+        OTA[OTA Updates]
+        HASS[Home Assistant]
+        TEMP[Temperatursensoren]
+        PUMP[Pumpensteuerung]
+        SCR[SCR Controller]
+        FLOW[Durchflussmesser]
+        MOD[Modbus RTU]
+        LED[Status LEDs]
+        BTN[Bedientaster]
+    end
+
+    NET[Netzwerk] <--> ETH
+    ETH --> OTA
+    ETH <--> HASS
+
+    TEMP -->|Temperaturwerte| ESP32
+    FLOW -->|Durchflussdaten| ESP32
+    
+    ESP32 -->|Steuerung| PUMP
+    ESP32 -->|PWM| SCR
+    
+    subgraph Bedienung
+        BTN -->|Moduswechsel| ESP32
+        LED -->|Status Anzeige| USER[Benutzer]
+    end
+    
+    subgraph Sensoren
+        DS["Dallas OneWire\nTemperatursensoren"] --> TEMP
+        FM[Durchflusssensor] --> FLOW
+    end
+    
+    subgraph Aktoren
+        PUMP -->|Steuerung| P[Pumpe]
+        SCR -->|Leistungsregelung| H[Heizung]
+    end
+    
+    style ESP32 fill:#f9f,stroke:#333,stroke-width:4px
+    style NET fill:#bbf,stroke:#333
+    style Bedienung fill:#dfd,stroke:#333
+    style Sensoren fill:#fdd,stroke:#333
+    style Aktoren fill:#ddf,stroke:#333
+```
+
 ## Voraussetzungen
 - PlatformIO IDE
 - VS Code oder CLion
