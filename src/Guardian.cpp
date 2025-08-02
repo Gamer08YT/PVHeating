@@ -11,6 +11,16 @@
 // Store OLED Instance.
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 
+/**
+ * @brief Outputs a provided message to Serial and an OLED display.
+ *
+ * This function performs the following tasks:
+ * - Prints the provided string to the Serial monitor for debugging.
+ * - Clears the OLED display to remove any previous message.
+ * - Displays the provided string on a new line in the OLED display.
+ *
+ * @param str The string message to be displayed and logged via Serial.
+ */
 void Guardian::println(const char* str)
 {
     Serial.println(str);
@@ -18,8 +28,14 @@ void Guardian::println(const char* str)
     // Clear last Message.
     display.clearDisplay();
 
-    // Write new Line.
+    // Start on 0/0.
+    display.setCursor(0, 0);
+
+    // Write a new Line.
     display.println(str);
+
+    // Update Display Buffer.
+    display.display();
 }
 
 /**

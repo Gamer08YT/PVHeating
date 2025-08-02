@@ -28,6 +28,9 @@ void setup()
     // Setup Display.
     Guardian::setup();
 
+    // Show Boot Message.
+    Guardian::println("Booting...");
+
     // Begin with Ethernet.
     LocalNetwork::begin();
 
