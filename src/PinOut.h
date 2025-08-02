@@ -7,7 +7,7 @@
  * 4, 13, 14, 16, 17, 18, 19, 21, 22, 23, 25, 26, 27, 32, 33
  *
  * Free PINS:
- * 14, 21, 25, 26, 27
+ * 21, 25, 26, 27, 33, 32
  *
  * Input Only:
  * 34, 35, 36, 39
@@ -36,13 +36,13 @@
 
 // Hardware Control IO.
 #define BUTTON_FAULT 34
-#define LED_FAULT 32
+#define LED_FAULT 14
 #define BUTTON_MODE 35
-#define LED_MODE 33
+#define LED_MODE 13
 
 // Pump and Flow Meter.
 #define FLOW_PULSE 39
-#define PUMP_ENABLE 13
+#define PUMP_ENABLE 10
 
 // SCR Stuff.
 #define SCR_FAULT 36
