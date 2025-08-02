@@ -7,9 +7,14 @@
 #include <Adafruit_SSD1306.h>
 
 #include "PinOut.h"
+#include "Watcher.h"
 
 // Store OLED Instance.
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+
+// Override Header Vars.
+const char* Guardian::errorTitle = "";
+int Guardian::errorCode = -1;
 
 /**
  * @brief Outputs a provided message to Serial and an OLED display.
@@ -23,6 +28,7 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
  */
 void Guardian::println(const char* str)
 {
+    // First Print to Serial.
     Serial.println(str);
 
     // Clear last Message.
@@ -36,6 +42,89 @@ void Guardian::println(const char* str)
 
     // Update Display Buffer.
     display.display();
+}
+
+/**
+ * @brief Sets the title of the error for display or logging purposes.
+ *
+ * This function assigns the provided string to the internal error title property.
+ * It can be used to define a human-readable message describing the nature of an error.
+ *
+ * @param str The string representing the error title or message.
+ */
+void Guardian::error_title(const char* str)
+{
+    errorTitle = str;
+
+    // Update Display and HA States.
+    updateFault();
+}
+
+/**
+ * @brief Sets the error level for the guardian system.
+ *
+ * This function updates the error severity level, which is used to indicate the type
+ * of fault or issue occurring in the system. The error level can typically represent
+ * different severity levels such as WARNING or CRITICAL.
+ *
+ * @param mode The error severity level, represented by the ErrorType enumeration.
+ */
+void Guardian::error_level(ErrorType mode)
+{
+    errorLevel = mode;
+}
+
+void Guardian::updateFault()
+{
+}
+
+/**
+ * @brief Sets an error state with a specific code, message, and severity level.
+ *
+ * This method updates the error code, title, and error level to represent the current
+ * fault condition. It ensures that the provided information is logged and displayed
+ * as necessary.
+ *
+ * @param i The error code indicating the specific fault.
+ * @param str A descriptive string providing information about the error.
+ * @param level The severity level of the error, defined by the ErrorType enum.
+ */
+void Guardian::setError(int i, const char* str, ErrorType level)
+{
+    error_code(i);
+    error_title(str);
+    error_level(level);
+}
+
+/**
+ * @brief Sets an error with a specified code and message as a warning.
+ *
+ * This function invokes the overloaded version of setError to set an error
+ * with a specific code and message, defaulting the error type to WARNING.
+ *
+ * @param i The error code to be set.
+ * @param str The error message to be displayed or logged.
+ */
+void Guardian::setError(int i, const char* str)
+{
+    setError(i, str, ErrorType::WARNING);
+}
+
+
+/**
+ * @brief Sets the error code for the Guardian system.
+ *
+ * This method assigns the specified integer value to the `errorCode` property,
+ * which indicates a specific error state or code in the Guardian system.
+ *
+ * @param i The integer code representing an error condition.
+ */
+void Guardian::error_code(int i)
+{
+    errorCode = i;
+
+    // Update Display and HA States.
+    updateFault();
 }
 
 /**
@@ -59,14 +148,41 @@ void Guardian::setup()
     // Display Setup.
     if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C))
     {
-        Serial.println(F("SSD1306 allocation failed"));
+        // Set Warning.
+        setError(10, "Display Initialization Failed.");
     }
     else
     {
         // Set Default Size and disable Wrap.
-        display.setTextSize(1.5);
+        display.setTextSize(1);
         display.setTextColor(WHITE);
-        display.ssd1306_command(SSD1306_SETPRECHARGE);
-        display.ssd1306_command(17);
+        // display.ssd1306_command(SSD1306_SETPRECHARGE);
+        // display.ssd1306_command(17);
     }
+}
+
+/**
+ * @brief Checks if an error condition is present.
+ *
+ * This function determines whether the system is currently in an error state
+ * by evaluating if the error code has been set to a value other than -1.
+ *
+ * @return true if an error exists (errorCode is not -1); false otherwise.
+ */
+bool Guardian::hasError()
+{
+    return errorCode != -1;
+}
+
+/**
+ * @brief Retrieves the current error title of the Guardian class.
+ *
+ * This method returns the value of the static errorTitle member,
+ * which represents a descriptive title of the current error, if any.
+ *
+ * @return The error title as a constant character pointer.
+ */
+const char* Guardian::getErrorTitle()
+{
+    return errorTitle;
 }

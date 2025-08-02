@@ -129,6 +129,8 @@ void Watcher::handleSensors()
 
     if (slowInterval.isReady())
     {
+        Guardian::println("Sensor");
+
         if (ledState == false)
         {
             ledState = true;

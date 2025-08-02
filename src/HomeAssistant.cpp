@@ -55,6 +55,9 @@ HASwitch scrSwitch("scr_switch");
 // Store Pump Switch Instance.
 HASwitch pumpSwitch("pump_switch");
 
+// Store Heating Error Log.
+HASensor error_log("heating_error");
+
 // Store Mode Select Instance.
 // HASelect modeSelect("mode_select");
 
@@ -378,6 +381,12 @@ void HomeAssistant::handleMQTT()
     {
         // Print Debug Message.
         Guardian::println("MQTT is connected");
+
+        // Check for Errors before MQTT was initialized.
+        if (Guardian::hasError())
+        {
+            error_log.setValue(Guardian::getErrorTitle());
+        }
     });
 }
 
