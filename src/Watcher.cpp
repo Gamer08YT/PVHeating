@@ -21,12 +21,13 @@
 // Definitions from Header.
 Watcher::ModeType Watcher::mode = Watcher::CONSUME;
 bool Watcher::error = false;
-bool Watcher::standby = false;
+bool Watcher::standby = true;
 float Watcher::temperatureIn = 0.0f;
 float Watcher::temperatureOut = 0.0f;
 float Watcher::maxConsume = 0.0f;
 float Watcher::currentPower = 0.0f;
 float Watcher::consumption = 0.0f;
+bool ledState = false;
 
 // Store One Wire Instance.
 OneWire oneWire(ONE_WIRE);
@@ -128,6 +129,17 @@ void Watcher::handleSensors()
 
     if (slowInterval.isReady())
     {
+        if (ledState == false)
+        {
+            ledState = true;
+            digitalWrite(LED_MODE, HIGH);
+        }
+        else if (ledState == true)
+        {
+            ledState = false;
+            digitalWrite(LED_MODE, LOW);
+        }
+
         Guardian::println("S > Sensors");
         // Read Temperatures via OneWire.
         //readTemperature();
@@ -331,6 +343,7 @@ void Watcher::setPumpViaHA(bool state)
 
 void Watcher::startConsume()
 {
+    //digitalWrite(LED_MODE, HIGH);
 }
 
 /**

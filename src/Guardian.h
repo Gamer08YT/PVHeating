@@ -10,6 +10,7 @@ class Guardian
 {
 public:
     static void println(const char* str);
+    static void setup();
 };
 
 

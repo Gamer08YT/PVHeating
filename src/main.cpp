@@ -1,6 +1,7 @@
 #include <Arduino.h>
 
 #include "ElegantOTA.h"
+#include "Guardian.h"
 #include "HomeAssistant.h"
 #include "Modbus.h"
 #include "LocalNetwork.h"
@@ -23,6 +24,9 @@ void setup()
 {
     // Begin Serial for Debugging.
     Serial.begin(9600);
+
+    // Setup Display.
+    Guardian::setup();
 
     // Begin with Ethernet.
     LocalNetwork::begin();
