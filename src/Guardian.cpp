@@ -40,7 +40,7 @@ void Guardian::println(const char* str)
     display.setCursor(0, 0);
 
     // Write a new Line.
-    display.println(str);
+    display.println(F(str));
 
     // Update Display Buffer.
     display.display();
