@@ -6,8 +6,14 @@
  * Usable Pins:
  * 4, 13, 14, 16, 17, 18, 19, 21, 22, 23, 25, 26, 27, 32, 33
  *
+ * Free PINS:
+ * 14, 21, 25, 26, 27
+ *
  * Input Only:
  * 34, 35, 36, 39
+ *
+ * Free PINS:
+ * X
  **/
 
 #ifndef PINOUT_H
@@ -26,14 +32,13 @@
 #define MODBUS_RX 16
 #define MODBUS_RE 4
 
-#define ONE_WIRE 2
+#define ONE_WIRE 22
 
 // Hardware Control IO.
 #define BUTTON_FAULT 34
 #define LED_FAULT 32
 #define BUTTON_MODE 35
 #define LED_MODE 33
-
 
 // Pump and Flow Meter.
 #define FLOW_PULSE 39
@@ -42,6 +47,6 @@
 // SCR Stuff.
 #define SCR_FAULT 36
 #define SCR_ENABLE 4
-#define SCR_PWM 26
+#define SCR_PWM 15
 
 #endif //PINOUT_H
