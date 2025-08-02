@@ -301,6 +301,7 @@ void HomeAssistant::begin()
     configureSCRInstance();
     //configureModeInstance();
     configurePumpInstance();
+    configureErrorInstances();
 
     // Print Debug Message.
     Guardian::println("HomeAssistant is ready");
@@ -362,6 +363,19 @@ void HomeAssistant::configureFlowInstance()
 }
 
 /**
+ * @brief Configures the error log instance by defining its name and icon.
+ *
+ * This method initializes the error log instance for the HomeAssistant system.
+ * It assigns a display name and an icon for visualization in the user interface.
+ * The error log instance is meant to represent the heating error logs.
+ */
+void HomeAssistant::configureErrorInstances()
+{
+    error_log.setName("Log");
+    error_log.setIcon("mdi:alert");
+}
+
+/**
  * @brief Handles MQTT connection and disconnection events for the HomeAssistant system.
  *
  * This method sets up the callbacks to monitor the MQTT connection status. When the
@@ -371,12 +385,14 @@ void HomeAssistant::configureFlowInstance()
  */
 void HomeAssistant::handleMQTT()
 {
+    // On MQTT Disconnect.
     mqtt.onDisconnected([]
     {
         // Print Debug Message.
         Guardian::println("MQTT is disconnected");
     });
 
+    // On MQTT Connect.
     mqtt.onConnected([]
     {
         // Print Debug Message.

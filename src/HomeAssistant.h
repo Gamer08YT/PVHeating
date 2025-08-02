@@ -37,6 +37,7 @@ private:
     static void publishChanges();
     static void configureFaultInstances();
     static void configureFlowInstance();
+    static void configureErrorInstances();
     static void handleMQTT();
 
 public:

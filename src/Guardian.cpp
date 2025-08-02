@@ -15,6 +15,8 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 // Override Header Vars.
 const char* Guardian::errorTitle = "";
 int Guardian::errorCode = -1;
+Guardian::ErrorType Guardian::errorLevel = WARNING;
+
 
 /**
  * @brief Outputs a provided message to Serial and an OLED display.
@@ -91,6 +93,11 @@ void Guardian::updateFault()
  */
 void Guardian::setError(int i, const char* str, ErrorType level)
 {
+    Serial.print("Error: ");
+    Serial.print(i);
+    Serial.print(" - ");
+    Serial.println(str);
+
     error_code(i);
     error_title(str);
     error_level(level);
@@ -107,7 +114,7 @@ void Guardian::setError(int i, const char* str, ErrorType level)
  */
 void Guardian::setError(int i, const char* str)
 {
-    setError(i, str, ErrorType::WARNING);
+    setError(i, str, WARNING);
 }
 
 
@@ -153,6 +160,8 @@ void Guardian::setup()
     }
     else
     {
+        Serial.println("Display ready.");
+
         // Set Default Size and disable Wrap.
         display.setTextSize(1);
         display.setTextColor(WHITE);
