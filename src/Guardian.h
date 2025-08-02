@@ -19,6 +19,7 @@ public:
     static void updateFault();
     static void setError(int i, const char* str, ErrorType level);
     static void setError(int i, const char* str);
+    static void testScan();
     static void setup();
     static bool hasError();
     static const char* getErrorTitle();

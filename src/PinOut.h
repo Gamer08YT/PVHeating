@@ -19,7 +19,7 @@
 #ifndef PINOUT_H
 #define PINOUT_H
 
-#define SOFTWARE_VERSION "1.0.1"
+#define SOFTWARE_VERSION "1.0.2"
 
 // Ethernet Stuff.
 #define ETHERNET_CS 5

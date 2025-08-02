@@ -117,6 +117,51 @@ void Guardian::setError(int i, const char* str)
     setError(i, str, WARNING);
 }
 
+/**
+ * @brief Scans for I2C devices on the bus and logs their addresses.
+ *
+ * This function iterates over all possible I2C addresses (1 to 126) and checks
+ * for connected devices. For each detected device, it prints the address
+ * in hexadecimal format to the Serial monitor. If an address reports an
+ * unknown transmission error, it logs the address with an error message.
+ *
+ * This function uses the Wire library to communicate on the I2C bus and
+ * provides useful feedback for locating and debugging connected devices.
+ */
+void Guardian::testScan()
+{
+    byte error, address;
+    int nDevices = 0;
+
+    for (address = 1; address < 127; address++)
+    {
+        Wire.beginTransmission(address);
+        error = Wire.endTransmission();
+
+        if (error == 0)
+        {
+            Serial.print("I2C device found at address 0x");
+            if (address < 16)
+                Serial.print("0");
+            Serial.println(address, HEX);
+            nDevices++;
+        }
+        else if (error == 4)
+        {
+            Serial.print("Unknown error at address 0x");
+            if (address < 16)
+                Serial.print("0");
+            Serial.println(address, HEX);
+        }
+    }
+
+
+    if (nDevices == 0)
+        Serial.println("No I2C devices found\n");
+    else
+        Serial.println("Scan complete\n");
+}
+
 
 /**
  * @brief Sets the error code for the Guardian system.
@@ -149,8 +194,17 @@ void Guardian::error_code(int i)
  */
 void Guardian::setup()
 {
+    // Print Debug Message.
+    Serial.println("Begin I2C");
+
     // Set up IC2 Bus.
     Wire.begin(DISPLAY_I2C_SDA, DISPLAY_I2C_SCL);
+
+    // Test Scan for Devices.
+    testScan();
+
+    // Print Debug Message.
+    Serial.println("I2C ready");
 
     // Display Setup.
     if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C))
