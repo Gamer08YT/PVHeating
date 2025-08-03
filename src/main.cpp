@@ -3,7 +3,7 @@
 
 #include "Guardian.h"
 #include "HomeAssistant.h"
-#include "Modbus.h"
+#include "LocalModbus.h"
 #include "LocalNetwork.h"
 #include "Watcher.h"
 
@@ -38,7 +38,7 @@ void setup()
     HomeAssistant::begin();
 
     // Begin Modbus.
-    Modbus::begin();
+    LocalModbus::begin();
 
     // Setup Watcher.
     Watcher::setup();
@@ -65,7 +65,7 @@ void loop()
     HomeAssistant::loop();
 
     // Loop Modbus.
-    Modbus::loop();
+    LocalModbus::loop();
 
     // Loop Watcher.
     Watcher::loop();

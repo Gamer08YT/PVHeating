@@ -66,6 +66,7 @@ private:
     static void setupFlowMeter();
     static void setPower(float current_power);
     static void readLocalPower();
+    static void setHousePower(float house_power);
     static void readHouseMeterPower();
     static void setConsumption(float consumption);
     static void readLocalConsumption();

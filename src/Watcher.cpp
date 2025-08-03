@@ -9,7 +9,7 @@
 #include "Guardian.h"
 #include "HomeAssistant.h"
 #include "LEDFader.h"
-#include "Modbus.h"
+#include "LocalModbus.h"
 #include "OneButton.h"
 #include "OneWire.h"
 #include "SimpleTimer.h"
@@ -172,8 +172,22 @@ void Watcher::setFlow(float get_current_flowrate)
     HomeAssistant::setFlow(get_current_flowrate);
 }
 
+/**
+ * @brief Reads the active power imported by the house meter and updates the house power.
+ *
+ * This method retrieves the current power reading from the house meter using the
+ * LocalModbus communication interface, specifically at the POWER_IMPORT register.
+ * The retrieved power value is then passed to the `setHousePower` function to update
+ * the state of the system with the latest house power measurement.
+ *
+ * Used during the dynamic operational mode to compensate for external power data
+ * in system calculations and ensure accurate power monitoring.
+ */
 void Watcher::readHouseMeterPower()
 {
+    float houseMeterPower = LocalModbus::readRemote(POWER_IMPORT);
+
+    setHousePower(housePower);
 }
 
 /**
@@ -204,7 +218,7 @@ void Watcher::setConsumption(float con)
  */
 void Watcher::readLocalConsumption()
 {
-    float consumption = Modbus::readLocal(POWER_IMPORT);
+    float consumption = LocalModbus::readLocal(POWER_IMPORT);
 
     setConsumption(consumption);
 }
@@ -260,6 +274,9 @@ void Watcher::handleSensors()
             // Read House Meter Active Power.
             readHouseMeterPower();
         }
+
+        // For Debug.
+        readHouseMeterPower();
 
         // Update OLED.
         updateDisplay();
@@ -567,9 +584,14 @@ void Watcher::setPower(float current_power)
  */
 void Watcher::readLocalPower()
 {
-    float currentPower = Modbus::readLocal(POWER_USAGE);
+    float currentPower = LocalModbus::readLocal(POWER_USAGE);
 
     setPower(currentPower);
+}
+
+void Watcher::setHousePower(float house_power)
+{
+    housePower = house_power;
 }
 
 /**

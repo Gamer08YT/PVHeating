@@ -7,7 +7,7 @@
 
 
 /**
- * @class Modbus
+ * @class LocalModbus
  *
  * @brief Provides functionality for initializing and managing the Modbus communication.
  *
@@ -15,10 +15,11 @@
  * It contains methods to initialize the communication and execute the
  * main loop for processing messages or tasks related to Modbus.
  */
-class Modbus {
+class LocalModbus {
 public:
     static void begin();
     static void loop();
+    static float readRemote(int address);
     static float readLocal(int i);
 };
 
