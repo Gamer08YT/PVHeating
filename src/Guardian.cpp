@@ -392,5 +392,4 @@ void Guardian::boot(int percentage, const char* str)
 void Guardian::clear()
 {
     display.clearDisplay();
-    update();
 }

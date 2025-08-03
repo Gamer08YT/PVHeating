@@ -45,6 +45,7 @@ void setup()
 
     // Clear Display after Boot Screen.
     Guardian::clear();
+    Guardian::update();
 }
 
 /**
