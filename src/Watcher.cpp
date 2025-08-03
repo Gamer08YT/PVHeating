@@ -122,7 +122,7 @@ void Watcher::handlePWM()
 void Watcher::updateDisplay()
 {
     Guardian::setTitle("Dashboard");
-    Guardian::setValue(1, "PWM", duty);
+    Guardian::setValue(1, "PWM", String(duty, 2).c_str());
 }
 
 void Watcher::readHouseMeterPower()
