@@ -81,6 +81,7 @@ private:
     static bool checkLocalPowerLimit();
     static void handleConsumeBasedDuty();
     static void handlePWM();
+    static void updateDisplay();
     static void handleSensors();
     static void setupButtons();
 };

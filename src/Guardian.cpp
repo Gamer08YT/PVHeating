@@ -304,3 +304,41 @@ void Guardian::setProgress(int i, unsigned int progress)
     // Update display.
     display.display();
 }
+
+
+/**
+ * @brief Sets a title on the OLED display with a horizontal line underneath.
+ *
+ * This function configures the display by positioning the cursor to the top-left,
+ * setting the font size, and printing the provided string as the title.
+ * It then draws a horizontal line below the title for visual separation.
+ *
+ * @param str The string to be displayed as the title at the top of the OLED display.
+ */
+void Guardian::setTitle(const char* str)
+{
+    display.setCursor(0, 0);
+    display.setTextSize(1.5);
+    display.print(str);
+    display.drawLine(0, 10, 128, 10, 1);
+}
+
+/**
+ * @brief Updates the OLED display with a label and its corresponding value.
+ *
+ * This function writes a key-value pair to the OLED display to provide
+ * dynamic information updates. The key is displayed followed by a colon,
+ * and then the value, all starting at a predefined position on the display.
+ *
+ * @param line Reserved for specifying the line number for future implementations or enhancements. Currently unused.
+ * @param key The label or identifier to display on the screen.
+ * @param value The corresponding value associated with the key to show on the screen.
+ */
+void Guardian::setValue(int line, const char* key, const char* value)
+{
+    display.setTextSize(1);
+    display.setCursor(0, 13 * line);
+    display.print(key);
+    display.print(": ");
+    display.print(value);
+}

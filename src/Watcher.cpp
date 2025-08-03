@@ -119,6 +119,12 @@ void Watcher::handlePWM()
     analogWrite(SCR_PWM, duty);
 }
 
+void Watcher::updateDisplay()
+{
+    Guardian::setTitle("Dashboard");
+    Guardian::setValue(1, "PWM", duty);
+}
+
 void Watcher::readHouseMeterPower()
 {
 }
@@ -204,6 +210,9 @@ void Watcher::handleSensors()
             // Read House Meter Active Power.
             readHouseMeterPower();
         }
+
+        // Update OLED.
+        updateDisplay();
 
         // Reset Timer (Endless Loop).
         slowInterval.reset();

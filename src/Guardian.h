@@ -24,6 +24,8 @@ public:
     static bool hasError();
     static const char* getErrorTitle();
     static void setProgress(int i, unsigned int progress);
+    static void setTitle(const char* str);
+    void setValue(int line, const char* key, const char* value);
 
 private:
     static void error_code(int i);
