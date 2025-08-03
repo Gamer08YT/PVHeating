@@ -21,9 +21,8 @@ class Watcher
 {
 public:
     static void handleButtonLeds();
-    static void handleSensors();
+
     static void loop();
-    static void setupButtons();
     static void setup();
     static void setStandby(bool cond);
     static void setError(bool cond);
@@ -74,6 +73,9 @@ private:
     static void setTemperatureIn(float i);
     static void setTemperatureOut(float i);
     static void readTemperature();
+    static void handlePWM();
+    static void handleSensors();
+    static void setupButtons();
 };
 
 

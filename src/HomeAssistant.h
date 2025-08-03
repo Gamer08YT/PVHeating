@@ -38,6 +38,7 @@ private:
     static void configureFaultInstances();
     static void configureFlowInstance();
     static void configureErrorInstances();
+    static void configureMaxPowerInstance();
     static void handleMQTT();
 
 public:

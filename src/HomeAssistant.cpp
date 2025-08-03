@@ -49,6 +49,9 @@ HAButton consumeStart("heating_consume_start");
 // Store Consume Input Value Instance.
 HANumber consumeMax("heating_consume_max");
 
+// Store Max Power.
+HANumber maxPower("heating_max_power");
+
 // Store SCR Switch Instance.
 HASwitch scrSwitch("scr_switch");
 
@@ -296,6 +299,7 @@ void HomeAssistant::begin()
     configureHeatingInstance();
     configurePowerInstance();
     configureConsumptionInstance();
+    configureMaxPowerInstance();
     configureFaultInstances();
     configureFlowInstance();
     configureSCRInstance();
@@ -373,6 +377,23 @@ void HomeAssistant::configureErrorInstances()
 {
     error_log.setName("Log");
     error_log.setIcon("mdi:alert");
+}
+
+/**
+ * @brief Configures the "Max Power" instance with its properties and representation.
+ *
+ * This method sets up the "Max Power" instance by defining its display name, device class,
+ * unit of measurement, and custom icon. These configurations ensure proper integration
+ * and representation in HomeAssistant or similar systems.
+ */
+void HomeAssistant::configureMaxPowerInstance()
+{
+    maxPower.setName("Max Leistung");
+    maxPower.setDeviceClass("power");
+    maxPower.setUnitOfMeasurement("kW");
+    maxPower.setMin(2);
+    maxPower.setMax(6);
+    maxPower.setIcon("mdi:flash");
 }
 
 /**

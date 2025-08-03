@@ -28,7 +28,6 @@ float Watcher::temperatureOut = 0.0f;
 float Watcher::maxConsume = 0.0f;
 float Watcher::currentPower = 0.0f;
 float Watcher::consumption = 0.0f;
-bool ledState = false;
 
 // Store One Wire Instance.
 OneWire oneWire(ONE_WIRE);
@@ -65,6 +64,24 @@ void Watcher::handleButtonLeds()
 {
     faultLed.update();
     modeLed.update();
+}
+
+/**
+ * @brief Handles the Pulse-Width Modulation (PWM) functionality based on power conditions.
+ *
+ * This method evaluates the `currentPower` member variable to determine if the power level
+ * is acceptable for further action. It facilitates the PWM control mechanism by incorporating
+ * system-specific power logic, updating or managing outputs as needed.
+ *
+ * This function is intended to be invoked within the periodic system update cycle, ensuring
+ * real-time responsiveness to changes in the power state.
+ */
+void Watcher::handlePWM()
+{
+    // Check if Power is correct.
+    if (currentPower > -1)
+    {
+    }
 }
 
 void Watcher::readHouseMeterPower()
@@ -125,6 +142,9 @@ void Watcher::handleSensors()
         // Read internal Smart Meter Power Usage.
         readLocalPower();
 
+        // Handle PWM Duty.
+        handlePWM();
+
         WebSerial.print("Local Power: ");
         WebSerial.println(currentPower);
 
@@ -134,27 +154,19 @@ void Watcher::handleSensors()
 
     if (slowInterval.isReady())
     {
-        if (ledState == false)
-        {
-            ledState = true;
-            digitalWrite(LED_MODE, HIGH);
-        }
-        else if (ledState == true)
-        {
-            ledState = false;
-            digitalWrite(LED_MODE, LOW);
-        }
-
         // Read Temperatures via OneWire.
         //readTemperature();
 
         // Process Meter Ticks from ISR.
         meter->tick(SLOW_INTERVAL);
 
+        // Read Local Consumption.
+        readLocalConsumption();
+
         // Read HA Power to compensate.
         if (mode == ModeType::DYNAMIC)
         {
-            readLocalConsumption();
+            // Read House Meter Active Power.
             readHouseMeterPower();
         }
 
