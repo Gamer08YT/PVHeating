@@ -235,6 +235,9 @@ void Watcher::handleSensors()
         // Read Temperatures via OneWire.
         //readTemperature();
 
+        // Calculate Flow.
+        meter.read();
+
         // Set Flow Rate.
         setFlow(meter.getFlowRate_m());
 
