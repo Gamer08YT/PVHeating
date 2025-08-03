@@ -28,8 +28,6 @@ void setup()
     // Setup Display.
     Guardian::setup();
 
-    Guardian::setError(11, "TEST");
-
     // Show Boot Message.
     Guardian::println("Booting...");
 
@@ -44,6 +42,9 @@ void setup()
 
     // Setup Watcher.
     Watcher::setup();
+
+    // Clear Display after Boot Screen.
+    Guardian::clear();
 }
 
 /**

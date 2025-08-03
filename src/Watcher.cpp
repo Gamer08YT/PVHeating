@@ -119,13 +119,25 @@ void Watcher::handlePWM()
     analogWrite(SCR_PWM, duty);
 }
 
+/**
+ * @brief Updates the display with current system metrics and information.
+ *
+ * This method updates the title and key-value pairs displayed on the user interface.
+ * It reflects the current state of critical parameters such as duty cycle, power,
+ * temperature, and consumption. After setting these values, the display is refreshed
+ * to ensure the information presented is up-to-date.
+ *
+ * Designed for periodic invocation to maintain consistency between the system's
+ * internal state and its visual representation on the dashboard.
+ */
 void Watcher::updateDisplay()
 {
     Guardian::setTitle("Dashboard");
     Guardian::setValue(1, "PWM", String(duty, 2).c_str());
-    Guardian::setValue(1, "Power", String(currentPower, 2).c_str());
-    Guardian::setValue(1, "Temperature", String(temperatureOut, 2).c_str());
-    Guardian::setValue(1, "Consumption", String(consumption, 2).c_str());
+    Guardian::setValue(2, "Power", String(currentPower, 2).c_str());
+    Guardian::setValue(3, "Temperature", String(temperatureOut, 2).c_str());
+    Guardian::setValue(4, "Consumption", String(consumption, 2).c_str());
+    Guardian::update();
 }
 
 void Watcher::readHouseMeterPower()
@@ -270,6 +282,9 @@ void Watcher::setupButtons()
 
 void Watcher::setup()
 {
+    // Print Debug Message.
+    Guardian::boot(90, "Watcher");
+
     // Begin One Wire Sensors.
     sensors.begin();
 

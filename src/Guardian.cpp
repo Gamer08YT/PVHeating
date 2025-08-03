@@ -37,17 +37,17 @@ void Guardian::println(const char* str)
     // Print to WebSerial.
     WebSerial.println(str);
 
-    // Clear last Message.
-    display.clearDisplay();
-
-    // Start on 0/0.
-    display.setCursor(0, 0);
-
-    // Write a new Line.
-    display.println(F(str));
-
-    // Update Display Buffer.
-    display.display();
+    // // Clear last Message.
+    // display.clearDisplay();
+    //
+    // // Start on 0/0.
+    // display.setCursor(0, 0);
+    //
+    // // Write a new Line.
+    // display.println(F(str));
+    //
+    // // Update Display Buffer.
+    // display.display();
 }
 
 /**
@@ -301,8 +301,8 @@ void Guardian::setProgress(int i, unsigned int progress)
     int fillWidth = (progress * (width - 2)) / 100;
     display.fillRect(x + 1, y + 1, fillWidth, height - 2, BLACK);
 
-    // Update display.
-    display.display();
+    // Update Display.
+    update();
 }
 
 
@@ -341,4 +341,49 @@ void Guardian::setValue(int line, const char* key, const char* value)
     display.print(key);
     display.print(": ");
     display.print(value);
+}
+
+/**
+ * @brief Updates the display by rendering its current buffer contents.
+ *
+ * This method triggers the Adafruit_SSD1306 display to render the content
+ * that has been written to its internal buffer. It ensures that any new
+ * content prepared for display is shown on the screen.
+ */
+void Guardian::update()
+{
+    display.display();
+}
+
+/**
+ * @brief Initializes the booting process with a progress indicator and message.
+ *
+ * This function performs the following tasks:
+ * - Sets the title of the display to "Booting".
+ * - Displays a key-value pair on the display, indicating the beginning of the process.
+ * - Updates a progress bar with the specified percentage.
+ * - Refreshes the display with the latest changes.
+ *
+ * @param percentage An integer representing the boot progress value. Should be a number between 0 and 100.
+ * @param str A descriptive message indicating the booting state.
+ */
+void Guardian::boot(int percentage, const char* str)
+{
+    display.clearDisplay();
+    setTitle("Booting");
+    setValue(2, "Begin", str);
+    setProgress(40, percentage);
+    update();
+}
+
+/**
+ * @brief Clears the OLED display content.
+ *
+ * This function erases all content currently displayed on the OLED screen
+ * by invoking the display's built-in clear functionality.
+ */
+void Guardian::clear()
+{
+    display.clearDisplay();
+    update();
 }

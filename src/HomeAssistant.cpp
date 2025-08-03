@@ -283,7 +283,7 @@ void HomeAssistant::configureConsumptionInstance()
 void HomeAssistant::begin()
 {
     // Print Debug Message.
-    Guardian::println("Begin HomeAssistant");
+    Guardian::boot(20, "HomeAssistant");
 
     // Set Device Metrics.
     device.setUniqueId(LocalNetwork::getMac(), sizeof(LocalNetwork::getMac()));
@@ -312,6 +312,9 @@ void HomeAssistant::begin()
 
     // Handle MQTT Events.
     handleMQTT();
+
+    // Print Debug Message.
+    Guardian::boot(40, "MQTT");
 
     // Connect to HomeAssistant.
     mqtt.begin("192.168.1.181", "pvheating", "pvheating");

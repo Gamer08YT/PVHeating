@@ -31,6 +31,9 @@ DFRobot_RTU modbus(&serial, MODBUS_RE);
  **/
 void Modbus::begin()
 {
+    // Print Debug Message.
+    Guardian::boot(50, "Modbus");
+
     // Begin Second Serial Channel.
     serial.begin(9600, SERIAL_8N1, MODBUS_RX, MODBUS_TX);
 

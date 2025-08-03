@@ -101,7 +101,7 @@ void LocalNetwork::begin()
     Network.macAddress(mac);
 
     // Print Debug Message.
-    Guardian::println("Begin Network");
+    Guardian::boot(10, "Network");
 
     // Initialize Ethernet Driver.
     Ethernet.init(driver);
