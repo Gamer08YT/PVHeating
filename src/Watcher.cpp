@@ -392,8 +392,15 @@ void Watcher::setPumpViaHA(bool state)
     digitalWrite(PUMP_ENABLE, state);
 }
 
+/**
+ * @brief Initiates the consumption process by exiting standby mode.
+ *
+ * This method alters the system's operational state by disabling standby mode
+ * through the invocation of the setStandby method with an input of `false`.
+ * It is designed to signal the system to*/
 void Watcher::startConsume()
 {
+    setStandby(false);
     //digitalWrite(LED_MODE, HIGH);
 }
 
