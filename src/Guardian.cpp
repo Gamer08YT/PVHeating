@@ -379,7 +379,7 @@ void Guardian::boot(int percentage, const char* str)
     display.clearDisplay();
     setTitle("Booting");
     setValue(2, "Begin", str);
-    setProgress(40, percentage);
+    setProgress(50, percentage);
     update();
 }
 
