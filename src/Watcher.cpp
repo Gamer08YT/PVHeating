@@ -123,6 +123,9 @@ void Watcher::updateDisplay()
 {
     Guardian::setTitle("Dashboard");
     Guardian::setValue(1, "PWM", String(duty, 2).c_str());
+    Guardian::setValue(1, "Power", String(currentPower, 2).c_str());
+    Guardian::setValue(1, "Temperature", String(temperatureOut, 2).c_str());
+    Guardian::setValue(1, "Consumption", String(consumption, 2).c_str());
 }
 
 void Watcher::readHouseMeterPower()
