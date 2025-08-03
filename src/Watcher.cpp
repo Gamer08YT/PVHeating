@@ -15,6 +15,7 @@
 #include "SimpleTimer.h"
 #include "MeterRegisters.h"
 #include "FlowSensor.h"
+#include "LocalNetwork.h"
 #include "WebSerial.h"
 
 #define SLOW_INTERVAL 2000
@@ -135,19 +136,19 @@ void Watcher::handlePWM()
  */
 void Watcher::updateDisplay()
 {
-    if (!error)
+    if (!error && LocalNetwork::isUploading)
     {
         Guardian::clear();
         Guardian::setTitle("Dashboard");
         Guardian::setValue(1, "PWM", String(duty, 2).c_str());
-        Guardian::setValue(2, "Pin", String(currentPower, 2).c_str());
-        Guardian::setValue(3, "Tout", String(temperatureOut, 2).c_str());
+        Guardian::setValue(2, "Pin", String(currentPower, 2).c_str(), "W");
+        Guardian::setValue(3, "Tout", String(temperatureOut, 2).c_str(), "°C");
 
         // Show Flow or Work.
         if (displayFlow)
-            Guardian::setValue(4, "Flow", String(flowRate, 2).c_str());
+            Guardian::setValue(4, "Flow", String(flowRate, 2).c_str(), "l/min");
         else
-            Guardian::setValue(4, "Wheat", String(consumption, 2).c_str());
+            Guardian::setValue(4, "Wheat", String(consumption, 2).c_str(), "kWh");
 
         displayFlow = !displayFlow;
 

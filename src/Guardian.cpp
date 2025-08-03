@@ -343,11 +343,35 @@ void Guardian::setTitle(const char* str)
  */
 void Guardian::setValue(int line, const char* key, const char* value)
 {
+    setValue(line, key, value, nullptr);
+}
+
+/**
+ * @brief Displays a formatted key-value pair with an optional suffix on the OLED display.
+ *
+ * This method allows for the presentation of a key, value, and optional suffix in a specific
+ * position on the OLED display. The text size and cursor position are set internally to adjust
+ * the display line dynamically based on the line parameter.
+ *
+ * @param line The line number (starting from 0) where the text should be displayed on the OLED.
+ * @param key The label or key that precedes the value on the display.
+ * @param value The actual value to be displayed next to the key.
+ * @param suffix An optional suffix to further describe the value (e.g., units like "°C" or "W").
+ *               Pass nullptr if no suffix is required.
+ */
+void Guardian::setValue(int line, const char* key, const char* value, const char* suffix)
+{
     display.setTextSize(1);
     display.setCursor(0, 13 * line);
     display.print(key);
     display.print(": ");
     display.print(value);
+
+    if (suffix != nullptr)
+    {
+        display.print(" ");
+        display.print(suffix);
+    }
 }
 
 /**

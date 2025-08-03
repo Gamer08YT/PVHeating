@@ -26,6 +26,7 @@ public:
     static void setProgress(int i, unsigned int progress);
     static void setTitle(const char* str);
     static void setValue(int line, const char* key, const char* value);
+    static void setValue(int line, const char* key, const char* value, const char* suffix);
     static void update();
     static void boot(int percentage, const char* str);
     static void clear();

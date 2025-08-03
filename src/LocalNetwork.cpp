@@ -26,6 +26,8 @@ const unsigned long INITIAL_TIMEOUT = 5000; // 5 Seconds
 const unsigned long RECONNECT_INTERVAL = 10000; // 10 Seconds
 unsigned long lastReconnectAttempt = 0;
 
+bool isOTAUploading = false;
+
 // Store MAC Address.
 uint8_t LocalNetwork::mac[6];
 char LocalNetwork::macStr[18];
@@ -46,6 +48,8 @@ void LocalNetwork::handleOTA()
     {
         // Disable Heater.
         Watcher::setStandby(true);
+
+        isOTAUploading = true;
     });
 
     // Add OTA End Listener.
@@ -142,6 +146,19 @@ void LocalNetwork::begin()
 
     // Print Debug Message.
     Guardian::println("OTA is ready");
+}
+
+/**
+ * @brief Checks if an OTA upload process is currently in progress.
+ *
+ * This method determines whether the device is actively engaged
+ * in receiving a firmware update via OTA mechanisms.
+ *
+ * @return true if an OTA upload is ongoing, otherwise false.
+ */
+bool LocalNetwork::isUploading()
+{
+    return isOTAUploading;
 }
 
 /**
