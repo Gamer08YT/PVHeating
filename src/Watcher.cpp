@@ -14,7 +14,7 @@
 #include "OneWire.h"
 #include "SimpleTimer.h"
 #include "MeterRegisters.h"
-#include "FlowMeter.h"
+#include "FlowSensor.h"
 #include "WebSerial.h"
 
 #define SLOW_INTERVAL 2000
@@ -53,7 +53,7 @@ SimpleTimer fastInterval(500);
 SimpleTimer slowInterval(SLOW_INTERVAL);
 
 // Store Flow Meter Instance (I know it's easy, but i have Time rush).
-FlowMeter* meter;
+FlowSensor meter(YFB5, FLOW_PULSE);
 
 /**
  * @brief Updates the fault and mode LEDs using their respective controllers.
@@ -157,7 +157,7 @@ void Watcher::updateDisplay()
  */
 void Watcher::setFlow(float get_current_flowrate)
 {
-    float flow = get_current_flowrate;
+    flowRate = get_current_flowrate;
 
     HomeAssistant::setFlow(get_current_flowrate);
 }
@@ -235,11 +235,8 @@ void Watcher::handleSensors()
         // Read Temperatures via OneWire.
         //readTemperature();
 
-        // Process Meter Ticks from ISR.
-        meter->tick(SLOW_INTERVAL);
-
         // Set Flow Rate.
-        setFlow(meter->getCurrentFlowrate());
+        setFlow(meter.getFlowRate_m());
 
         // Read Local Consumption.
         readLocalConsumption();
@@ -510,7 +507,7 @@ void Watcher::setMode(ModeType cond)
  */
 void MeterISR()
 {
-    meter->count();
+    meter.count();
 }
 
 /**
@@ -525,7 +522,7 @@ void MeterISR()
  */
 void Watcher::setupFlowMeter()
 {
-    meter = new FlowMeter(digitalPinToInterrupt(FLOW_PULSE), UncalibratedSensor, MeterISR, RISING);
+    meter.begin(MeterISR);
 }
 
 /**
