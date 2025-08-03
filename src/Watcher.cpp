@@ -15,6 +15,7 @@
 #include "SimpleTimer.h"
 #include "MeterRegisters.h"
 #include "FlowMeter.h"
+#include "WebSerial.h"
 
 #define SLOW_INTERVAL 2000
 
@@ -121,7 +122,11 @@ void Watcher::handleSensors()
 {
     if (fastInterval.isReady())
     {
+        // Read internal Smart Meter Power Usage.
         readLocalPower();
+
+        WebSerial.print("Local Power: ");
+        WebSerial.println(currentPower);
 
         // Reset Timer (Endless Loop);
         fastInterval.reset();
@@ -129,8 +134,6 @@ void Watcher::handleSensors()
 
     if (slowInterval.isReady())
     {
-        Guardian::println("Sensor");
-
         if (ledState == false)
         {
             ledState = true;
@@ -142,7 +145,6 @@ void Watcher::handleSensors()
             digitalWrite(LED_MODE, LOW);
         }
 
-        Guardian::println("S > Sensors");
         // Read Temperatures via OneWire.
         //readTemperature();
 

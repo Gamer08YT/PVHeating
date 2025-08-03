@@ -23,6 +23,7 @@ public:
     static void setup();
     static bool hasError();
     static const char* getErrorTitle();
+    static void setProgress(int i, unsigned int progress);
 
 private:
     static void error_code(int i);

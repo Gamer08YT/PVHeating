@@ -262,3 +262,32 @@ const char* Guardian::getErrorTitle()
 {
     return errorTitle;
 }
+
+/**
+ * @brief Displays a progress bar on the OLED screen based on the given progress.
+ *
+ * This function draws a progress bar*/
+void Guardian::setProgress(int i, unsigned int progress)
+{
+    // Limit Progress from 0-100;
+    if (progress > 100) progress = 100;
+
+    // Position and Size of Bar.
+    const int x = 10;
+    const int y = 30;
+    const int width = 100;
+    const int height = 10;
+
+    // Optional: delete before show progress.
+    // display.fillRect(x, y, width, height, BLACK);
+
+    // Draw Border.
+    display.drawRect(x, y, width, height, WHITE);
+
+    // Fill Border.
+    int fillWidth = (progress * (width - 2)) / 100;
+    display.fillRect(x + 1, y + 1, fillWidth, height - 2, WHITE);
+
+    // Update display.
+    display.display();
+}

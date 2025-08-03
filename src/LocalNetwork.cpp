@@ -12,6 +12,7 @@
 #include "ElegantOTA.h"
 #include "PinOut.h"
 #include "Guardian.h"
+#include "Watcher.h"
 #include "WebSerial.h"
 
 // Store Object of Ethernet Driver.
@@ -30,15 +31,45 @@ uint8_t LocalNetwork::mac[6];
 char LocalNetwork::macStr[18];
 
 
+/**
+ * @brief Configures and initializes the OTA update service.
+ *
+ * This method sets up the OTA (Over-The-Air) update mechanism, enabling the device to receive
+ * firmware updates remotely. It integrates with the provided asynchronous web server to handle*/
 void LocalNetwork::handleOTA()
 {
     // Begin Webserver.
     server.begin();
 
+    // Add OTA Start Listener.
+    ElegantOTA.onStart([]()
+    {
+        // Disable Heater.
+        Watcher::setStandby(true);
+    });
+
+    // Add OTA End Listener.
+    ElegantOTA.onProgress([](unsigned int progress, unsigned int total)
+    {
+        // Display Progress on Display.
+        Guardian::setProgress(2, progress);
+    });
+
     // Begin OTA Server.
     ElegantOTA.begin(&server);
 }
 
+/**
+ * @brief Configures and starts the WebSerial service.
+ *
+ * This method initializes the WebSerial service with a specified initial buffer size
+ * to optimize performance and configures it to use the provided asynchronous web server instance.
+ * By invoking this function, WebSerial is enabled and ready to handle incoming serial messages
+ * via a web interface.
+ *
+ * The initial buffer size is set to ensure efficient memory usage when handling log messages
+ * or serial communication.
+ */
 void LocalNetwork::handleSerial()
 {
     // Allow initial Buffer Size of 40.
