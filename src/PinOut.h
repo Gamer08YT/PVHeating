@@ -7,7 +7,7 @@
  * 4, 13, 14, 16, 17, 18, 19, 21, 22, 23, 25, 26, 27, 32, 33
  *
  * Free PINS:
- * 21, 27, 33, 32
+ * 21, 33, 32
  *
  * Input Only:
  * 34, 35, 36, 39
@@ -47,7 +47,7 @@
 #define PUMP_ENABLE 26
 
 // SCR Stuff.
-#define SCR_FAULT 36
+#define SCR_FAULT 27
 #define SCR_ENABLE 25
 #define SCR_PWM 15
 
