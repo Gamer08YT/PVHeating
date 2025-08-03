@@ -4,9 +4,6 @@
 
 #ifndef WATCHER_H
 #define WATCHER_H
-#include "FlowMeter.h"
-#include "device-types/HASwitch.h"
-#include "utils/HANumeric.h"
 
 
 /**

@@ -106,7 +106,7 @@ void LocalNetwork::begin()
     // Initialize Ethernet Driver.
     Ethernet.init(driver);
 
-    // Try first connection with timeout.
+    // Try the first connection with timeout.
     unsigned long startTime = millis();
     bool connected = false;
 

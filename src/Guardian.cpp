@@ -121,7 +121,7 @@ void Guardian::setError(int i, const char* str, ErrorType level)
     // Show Error Message on Display.
     clear();
     setTitle("Error");
-    setValue(1, "Code", i);
+    setValue(1, "Code", String(i).c_str());
     setValue(2, "Message", str);
     update();
 }

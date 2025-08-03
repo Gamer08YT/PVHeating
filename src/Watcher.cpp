@@ -46,6 +46,7 @@ OneButton modeButton(BUTTON_MODE, true);
 // Store LED Instances.
 LEDFader faultLed(LED_FAULT);
 LEDFader modeLed(LED_MODE);
+LEDFader scrPWM(SCR_PWM);
 
 // Store Timer.
 SimpleTimer fastInterval(500);
@@ -268,6 +269,10 @@ void Watcher::handleSensors()
  */
 void Watcher::loop()
 {
+    scrPWM.update();
+    faultLed.update();
+    modeLed.update();
+
     handleSensors();
     readButtons();
     handleButtonLeds();
@@ -308,6 +313,10 @@ void Watcher::setup()
 {
     // Print Debug Message.
     Guardian::boot(90, "Watcher");
+
+    scrPWM.fade(255, 1000);
+    modeLed.fade(255, 1000);
+    faultLed.fade(255, 1000);
 
     // Begin One Wire Sensors.
     sensors.begin();
