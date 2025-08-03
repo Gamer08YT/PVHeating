@@ -52,7 +52,7 @@ void LocalNetwork::handleOTA()
     ElegantOTA.onProgress([](unsigned int progress, unsigned int total)
     {
         // Display Progress on Display.
-        Guardian::setProgress(30, progress);
+        Guardian::setProgress(30, (progress * 100) / total);
     });
 
     // Begin OTA Server.
