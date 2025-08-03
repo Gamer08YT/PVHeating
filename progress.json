@@ -1,0 +1,67 @@
+[
+  {
+    "op": "setCursor",
+    "id": 6,
+    "x": "0",
+    "y": "0"
+  },
+  {
+    "op": "setTextSize",
+    "id": 7,
+    "size": "1.5"
+  },
+  {
+    "op": "print",
+    "id": 8,
+    "text": "Booting"
+  },
+  {
+    "op": "drawLine",
+    "id": 9,
+    "x0": "0",
+    "y0": "10",
+    "x1": "128",
+    "y1": "10",
+    "color": "1"
+  },
+  {
+    "op": "setTextSize",
+    "id": 10,
+    "size": "1"
+  },
+  {
+    "op": "setCursor",
+    "id": 12,
+    "x": "0",
+    "y": "13"
+  },
+  {
+    "op": "setCursor",
+    "id": 14,
+    "x": "0",
+    "y": "23"
+  },
+  {
+    "op": "print",
+    "id": 16,
+    "text": "Begin: Network"
+  },
+  {
+    "op": "drawRect",
+    "id": 6,
+    "x": "10",
+    "y": "45",
+    "w": "100",
+    "h": "10",
+    "color": "1"
+  },
+  {
+    "op": "fillRect",
+    "id": 7,
+    "x": "11",
+    "y": "46",
+    "w": "10",
+    "h": "8",
+    "color": "1"
+  }
+]
