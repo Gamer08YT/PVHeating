@@ -132,12 +132,16 @@ void Watcher::handlePWM()
  */
 void Watcher::updateDisplay()
 {
-    Guardian::setTitle("Dashboard");
-    Guardian::setValue(1, "PWM", String(duty, 2).c_str());
-    Guardian::setValue(2, "Power", String(currentPower, 2).c_str());
-    Guardian::setValue(3, "Temperature", String(temperatureOut, 2).c_str());
-    Guardian::setValue(4, "Consumption", String(consumption, 2).c_str());
-    Guardian::update();
+    if (!error)
+    {
+        Guardian::clear();
+        Guardian::setTitle("Dashboard");
+        Guardian::setValue(1, "PWM", String(duty, 2).c_str());
+        Guardian::setValue(2, "Pin", String(currentPower, 2).c_str());
+        Guardian::setValue(3, "Tout", String(temperatureOut, 2).c_str());
+        Guardian::setValue(4, "Wheat", String(consumption, 2).c_str());
+        Guardian::update();
+    }
 }
 
 void Watcher::readHouseMeterPower()

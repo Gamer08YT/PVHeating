@@ -117,6 +117,13 @@ void Guardian::setError(int i, const char* str, ErrorType level)
     error_code(i);
     error_title(str);
     error_level(level);
+
+    // Show Error Message on Display.
+    clear();
+    setTitle("Error");
+    setValue(1, "Code", i);
+    setValue(2, "Message", str);
+    update();
 }
 
 /**
