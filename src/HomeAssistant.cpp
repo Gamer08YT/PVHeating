@@ -482,3 +482,17 @@ HASwitch HomeAssistant::getSCR()
 {
     return scrSwitch;
 }
+
+/**
+ * @brief Updates the flow sensor value with the current flow rate.
+ *
+ * This method sets the flow sensor's value to match the provided flow rate.
+ * The updated value is used to reflect changes in current flow data, and
+ * synchronizes the updated state with the Home Assistant system.
+ *
+ * @param get_current_flowrate The current flow rate to be recorded by the flow sensor.
+ */
+void HomeAssistant::setFlow(float get_current_flowrate)
+{
+    flow.setValue(get_current_flowrate);
+}

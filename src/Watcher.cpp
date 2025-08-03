@@ -31,6 +31,7 @@ float Watcher::maxPower = 6000.0f;
 float Watcher::housePower = 0.0f;
 float Watcher::consumption = 0.0f;
 int Watcher::duty = 0;
+float Watcher::flowRate = 0.0f;
 
 // Store One Wire Instance.
 OneWire oneWire(ONE_WIRE);
@@ -144,6 +145,22 @@ void Watcher::updateDisplay()
     }
 }
 
+/**
+ * @brief Updates the current flow rate and propagates it to the HomeAssistant system.
+ *
+ * This method captures the current flow rate from the flow meter or sensor,
+ * assigns it to a local variable, and synchronizes the value with the HomeAssistant
+ * platform to ensure the system has the updated flow data for further processing or display.
+ *
+ * @param get_current_flowrate The current flow rate measured by the flow meter.
+ */
+void Watcher::setFlow(float get_current_flowrate)
+{
+    float flow = get_current_flowrate;
+
+    HomeAssistant::setFlow(get_current_flowrate);
+}
+
 void Watcher::readHouseMeterPower()
 {
 }
@@ -219,6 +236,9 @@ void Watcher::handleSensors()
 
         // Process Meter Ticks from ISR.
         meter->tick(SLOW_INTERVAL);
+
+        // Set Flow Rate.
+        setFlow(meter->getCurrentFlowrate());
 
         // Read Local Consumption.
         readLocalConsumption();

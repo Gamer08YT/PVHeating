@@ -49,6 +49,7 @@ public:
     static HASensorNumber getConsumption();
     static HASwitch getPump();
     static HASwitch getSCR();
+    static void setFlow(float get_current_flowrate);
 };
 
 

@@ -4,6 +4,7 @@
 
 #ifndef WATCHER_H
 #define WATCHER_H
+#include "FlowMeter.h"
 #include "device-types/HASwitch.h"
 #include "utils/HANumeric.h"
 
@@ -61,6 +62,7 @@ public:
     static float currentPower;
     static float housePower;
     static float consumption;
+    static float flowRate;
 
 private:
     static int duty;
@@ -82,6 +84,7 @@ private:
     static void handleConsumeBasedDuty();
     static void handlePWM();
     static void updateDisplay();
+    static void setFlow(float get_current_flowrate);
     static void handleSensors();
     static void setupButtons();
 };
