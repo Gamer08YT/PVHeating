@@ -78,6 +78,13 @@ void Guardian::error_title(const char* str)
 void Guardian::error_level(ErrorType mode)
 {
     errorLevel = mode;
+
+    if (errorLevel == CRITICAL)
+    {
+        // Set Error and Disable everything.
+        Watcher::setError(true);
+        Watcher::setStandby(true);
+    }
 }
 
 void Guardian::updateFault()

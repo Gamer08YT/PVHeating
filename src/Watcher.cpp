@@ -81,7 +81,7 @@ void Watcher::handleButtonLeds()
  */
 void Watcher::handlePWM()
 {
-    if (standby)
+    if (standby || error)
     {
         duty = 0;
 
@@ -101,6 +101,7 @@ void Watcher::handlePWM()
         }
         else
         {
+            // Handle Modes serpate.
             if (mode == ModeType::DYNAMIC)
             {
                 // Handle Dynamic Mode.
@@ -113,6 +114,9 @@ void Watcher::handlePWM()
             }
         }
     }
+
+    // Write SCR PWM Duty via calculated Duty.
+    analogWrite(SCR_PWM, duty);
 }
 
 void Watcher::readHouseMeterPower()
@@ -708,5 +712,15 @@ bool Watcher::checkLocalPowerLimit()
  */
 void Watcher::handleConsumeBasedDuty()
 {
-    duty++;
+    if (consumption < maxConsume)
+    {
+        // Increment Duty.
+        if (duty < 254)
+            duty++;
+    }
+    else
+    {
+        // Reset Duty.
+        duty = 0;
+    }
 }
