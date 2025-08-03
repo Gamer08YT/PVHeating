@@ -200,6 +200,7 @@ void Guardian::setup()
     // Set up IC2 Bus.
     Wire.begin(DISPLAY_I2C_SDA, DISPLAY_I2C_SCL);
 
+
     // Test Scan for Devices.
     testScan();
 
@@ -207,7 +208,7 @@ void Guardian::setup()
     Serial.println("I2C ready");
 
     // Display Setup.
-    if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C))
+    if (!display.begin(SSD1306_SWITCHCAPVCC, DISPLAY_ADDRESS))
     {
         // Set Warning.
         setError(10, "Display Initialization Failed.");
@@ -216,11 +217,14 @@ void Guardian::setup()
     {
         Serial.println("Display ready.");
 
-        // Set Default Size and disable Wrap.
+        display.clearDisplay();
         display.setTextSize(1);
-        display.setTextColor(WHITE);
-        // display.ssd1306_command(SSD1306_SETPRECHARGE);
-        // display.ssd1306_command(17);
+        display.setTextColor(SSD1306_WHITE);
+        display.ssd1306_command(SSD1306_SETCONTRAST);
+        display.ssd1306_command(0xFF); // Max. Kontrast
+        display.setCursor(0, 0);
+        display.println("Hallo vom ESP32!");
+        display.display();
     }
 }
 

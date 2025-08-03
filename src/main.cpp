@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <Wire.h>
 
 #include "ElegantOTA.h"
 #include "Guardian.h"

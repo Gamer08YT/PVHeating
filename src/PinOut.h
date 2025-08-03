@@ -50,9 +50,10 @@
 #define SCR_PWM 15
 
 // Display and I2C Stuff.
-#define DISPLAY_I2C_SCL 33
 #define DISPLAY_I2C_SDA 32
+#define DISPLAY_I2C_SCL 33
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
+#define DISPLAY_ADDRESS 0x3C
 
 #endif //PINOUT_H
