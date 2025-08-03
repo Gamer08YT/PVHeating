@@ -394,6 +394,12 @@ void HomeAssistant::configureMaxPowerInstance()
     maxPower.setMin(2);
     maxPower.setMax(6);
     maxPower.setIcon("mdi:flash");
+    maxPower.onCommand([](HANumeric number, HANumber* sender)
+    {
+        Watcher::setMaxPower(number.toFloat());
+
+        sender->setState(number);
+    });
 }
 
 /**

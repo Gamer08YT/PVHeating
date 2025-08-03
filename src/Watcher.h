@@ -32,6 +32,7 @@ public:
     static void setSCRViaHA(bool state);
     static void setPumpViaHA(bool state);
     static void startConsume();
+    static void setMaxPower(float to_float);
 
     /**
      * @enum ModeType
@@ -53,13 +54,16 @@ public:
     static ModeType mode;
     static bool error;
     static bool standby;
+    static float maxPower;
     static float temperatureIn;
     static float temperatureOut;
     static float maxConsume;
     static float currentPower;
+    static float housePower;
     static float consumption;
 
 private:
+    static int duty;
     static void setupFlowMeter();
     static void setPower(float current_power);
     static void readLocalPower();
@@ -73,6 +77,9 @@ private:
     static void setTemperatureIn(float i);
     static void setTemperatureOut(float i);
     static void readTemperature();
+    static void handlePowerBasedDuty();
+    static bool checkLocalPowerLimit();
+    static void handleConsumeBasedDuty();
     static void handlePWM();
     static void handleSensors();
     static void setupButtons();

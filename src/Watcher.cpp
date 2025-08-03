@@ -27,7 +27,10 @@ float Watcher::temperatureIn = 0.0f;
 float Watcher::temperatureOut = 0.0f;
 float Watcher::maxConsume = 0.0f;
 float Watcher::currentPower = 0.0f;
+float Watcher::maxPower = 6000.0f;
+float Watcher::housePower = 0.0f;
 float Watcher::consumption = 0.0f;
+int Watcher::duty = 0;
 
 // Store One Wire Instance.
 OneWire oneWire(ONE_WIRE);
@@ -78,9 +81,37 @@ void Watcher::handleButtonLeds()
  */
 void Watcher::handlePWM()
 {
-    // Check if Power is correct.
-    if (currentPower > -1)
+    if (standby)
     {
+        duty = 0;
+
+        // Disable SCR and Pump.
+        setSCR(false);
+        setPump(false);
+    }
+    else
+    {
+        // Handle Max Power Limit.
+        if (checkLocalPowerLimit())
+        {
+            if (duty > 0)
+            {
+                duty--;
+            }
+        }
+        else
+        {
+            if (mode == ModeType::DYNAMIC)
+            {
+                // Handle Dynamic Mode.
+                handlePowerBasedDuty();
+            }
+            else
+            {
+                // Handle Consume Mode.
+                handleConsumeBasedDuty();
+            }
+        }
     }
 }
 
@@ -363,6 +394,20 @@ void Watcher::startConsume()
 }
 
 /**
+ * @brief Sets the maximum power level for the system.
+ *
+ * This method assigns a new value to the `maxPower` variable, which represents
+ * the maximum allowable power level for the system. It is used to adjust the
+ * system's operational limits as needed, ensuring control over power usage.
+ *
+ * @param to_float The new maximum power level to be set.
+ */
+void Watcher::setMaxPower(float to_float)
+{
+    maxPower = to_float;
+}
+
+/**
  * @brief Sets the operational mode of the system.
  *
  * This method updates the system's mode to the specified value. It is used
@@ -605,4 +650,63 @@ void Watcher::readTemperature()
 
         Guardian::println("OneWire Error");
     }
+}
+
+/**
+ * @brief Adjusts the duty cycle based on the power being imported or exported by the house meter.
+ *
+ * This method monitors the power flow indicated by `housePower` to determine
+ * whether the system is consuming (positive power) or producing/exporting (negative power).
+ * It incrementally increases the duty cycle if the system is exporting power and
+ * decreases it if the system is consuming power, ensuring the duty remains within
+ * the range of 0 to 254.
+ *
+ * Designed for dynamic control in power balancing systems by adapting the duty
+ * cycle to reflect the current power state.
+ */
+void Watcher::handlePowerBasedDuty()
+{
+    // Check if House Meter is Importing or Exporting.
+    if (housePower < 0)
+    {
+        // If Power is producing/exporting like -1000W
+        if (duty < 254)
+            duty++;
+    }
+    else
+    {
+        // If Power is consuming/importing like 800W.
+        if (duty > 0)
+            duty--;
+    }
+}
+
+/**
+ * @brief Checks if the current power exceeds the maximum allowable power limit.
+ *
+ * This function compares the current power consumption against the defined
+ * maximum power threshold. It helps enforce power constraints and ensures
+ * operations adhere to the predefined limits.
+ *
+ * @return true if the current power exceeds the maximum power limit, false otherwise.
+ */
+bool Watcher::checkLocalPowerLimit()
+{
+    return (currentPower > maxPower);
+}
+
+/**
+ * @brief Increments the duty cycle to regulate power consumption in consume mode.
+ *
+ * When the system operates in consume mode, this function is invoked to
+ * increase the duty cycle, which adjusts the power regulation or device
+ * behavior accordingly. This gradual adjustment ensures a controlled
+ * increase in power consumption levels based on the system's operation.
+ *
+ * Designed to function as part of the system's power management strategy
+ * specifically in consume mode behavior.
+ */
+void Watcher::handleConsumeBasedDuty()
+{
+    duty++;
 }
