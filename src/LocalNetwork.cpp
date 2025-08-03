@@ -12,12 +12,13 @@
 #include "ElegantOTA.h"
 #include "PinOut.h"
 #include "Guardian.h"
+#include "WebSerial.h"
 
 // Store Object of Ethernet Driver.
 ENC28J60Driver driver(ETHERNET_CS);
 
 // Store Instance of Webserver.
-WebServer server(80);
+AsyncWebServer server(80);
 
 // Definitions for Reconnect Interval.
 const unsigned long INITIAL_TIMEOUT = 5000; // 5 Seconds
@@ -36,6 +37,11 @@ void LocalNetwork::handleOTA()
 
     // Begin OTA Server.
     ElegantOTA.begin(&server);
+}
+
+void LocalNetwork::handleSerial()
+{
+    WebSerial.begin(&server);
 }
 
 /**
@@ -96,6 +102,9 @@ void LocalNetwork::begin()
     // Setup OTA.
     handleOTA();
 
+    // Setup WebSerial.
+    handleSerial();
+
     // Print Debug Message.
     Guardian::println("OTA is ready");
 }
@@ -138,11 +147,11 @@ void LocalNetwork::update()
         }
     }
 
-    // Handle WebServer Client.
-    server.handleClient();
-
     // Handle OTA Loop.
     ElegantOTA.loop();
+
+    // Handle WebSerial Loop.
+    WebSerial.loop();
 }
 
 /**

@@ -8,6 +8,7 @@
 
 #include "PinOut.h"
 #include "Watcher.h"
+#include "WebSerial.h"
 
 // Store OLED Instance.
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
@@ -32,6 +33,9 @@ void Guardian::println(const char* str)
 {
     // First Print to Serial.
     Serial.println(str);
+
+    // Print to WebSerial.
+    WebSerial.println(str);
 
     // Clear last Message.
     display.clearDisplay();
@@ -97,6 +101,11 @@ void Guardian::setError(int i, const char* str, ErrorType level)
     Serial.print(i);
     Serial.print(" - ");
     Serial.println(str);
+
+    WebSerial.print("Error: ");
+    WebSerial.print(i);
+    WebSerial.print(" - ");
+    WebSerial.println(str);
 
     error_code(i);
     error_title(str);

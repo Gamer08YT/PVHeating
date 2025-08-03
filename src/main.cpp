@@ -1,7 +1,6 @@
 #include <Arduino.h>
 #include <Wire.h>
 
-#include "ElegantOTA.h"
 #include "Guardian.h"
 #include "HomeAssistant.h"
 #include "Modbus.h"
