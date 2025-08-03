@@ -293,7 +293,7 @@ void Guardian::setProgress(int i, unsigned int progress)
     if (progress > 100) progress = 100;
 
     // Position and Size of Bar.
-    const int x = 10;
+    const int x = 14;
     const int y = i;
     const int width = 100;
     const int height = 10;
