@@ -503,15 +503,16 @@ void Watcher::readLocalPower()
 }
 
 /**
- * @brief Manages the fade effect of the standby LED based on a condition.
+ * @brief Manages the fading behavior of the mode and fault LEDs based on a given condition.
  *
- * This method adjusts the state of the `modeLed` to reflect whether the system
- * is in standby mode. If the provided condition differs from the current standby
- * state, it either initiates a fade-in effect over a specified duration or stops
- * any active fade and disables the LED.
+ * If the condition is true, this method initiates a fade-in effect on the mode LED over
+ * a 1000-millisecond interval. If the condition is false, it halts any ongoing fade
+ * effect on the fault LED, prevents further transitions, and sets the mode LED to
+ * its minimum brightness level stored in the duty variable.
  *
- * @param cond A boolean indicating the desired standby state. True to activate
- *        fade-in and light the LED, false to stop any fade and turn off the LED.
+ * @param cond A boolean value indicating whether to enable or disable the fade effect.
+ *             - true: Initiates the fade-in effect for the mode LED.
+ *             - false: Stops the fade effect for the fault LED and adjusts the mode LED brightness.
  */
 void Watcher::handleStandbyLedFade(bool cond)
 {
@@ -522,9 +523,9 @@ void Watcher::handleStandbyLedFade(bool cond)
     }
     else
     {
-        // Stop Fade and Disable LED.
+        // Stop Fade set LED Brightness of Duty Cycle.
         faultLed.stop_fade();
-        modeLed.set_value(0);
+        modeLed.set_value(duty);
     }
 }
 
