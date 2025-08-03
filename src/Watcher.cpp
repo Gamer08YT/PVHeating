@@ -397,7 +397,9 @@ void Watcher::setPumpViaHA(bool state)
  *
  * This method alters the system's operational state by disabling standby mode
  * through the invocation of the setStandby method with an input of `false`.
- * It is designed to signal the system to*/
+ * It is designed to signal the system to prepare for or transition into
+ * an active consumption state.
+ */
 void Watcher::startConsume()
 {
     setStandby(false);
