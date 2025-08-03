@@ -32,6 +32,7 @@ float Watcher::housePower = 0.0f;
 float Watcher::consumption = 0.0f;
 int Watcher::duty = 0;
 float Watcher::flowRate = 0.0f;
+bool displayFlow = false;
 
 // Store One Wire Instance.
 OneWire oneWire(ONE_WIRE);
@@ -141,7 +142,15 @@ void Watcher::updateDisplay()
         Guardian::setValue(1, "PWM", String(duty, 2).c_str());
         Guardian::setValue(2, "Pin", String(currentPower, 2).c_str());
         Guardian::setValue(3, "Tout", String(temperatureOut, 2).c_str());
-        Guardian::setValue(4, "Wheat", String(consumption, 2).c_str());
+
+        // Show Flow or Work.
+        if (displayFlow)
+            Guardian::setValue(4, "Flow", String(flowRate, 2).c_str());
+        else
+            Guardian::setValue(4, "Wheat", String(consumption, 2).c_str());
+
+        displayFlow = !displayFlow;
+
         Guardian::update();
     }
 }
