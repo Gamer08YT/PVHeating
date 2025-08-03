@@ -299,7 +299,7 @@ void Guardian::setProgress(int i, unsigned int progress)
 
     // Fill Border.
     int fillWidth = (progress * (width - 2)) / 100;
-    display.fillRect(x + 1, y + 1, fillWidth, height - 2, WHITE);
+    display.fillRect(x + 1, y + 1, fillWidth, height - 2, BLACK);
 
     // Update display.
     display.display();
