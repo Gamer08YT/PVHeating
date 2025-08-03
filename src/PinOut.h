@@ -7,7 +7,7 @@
  * 4, 13, 14, 16, 17, 18, 19, 21, 22, 23, 25, 26, 27, 32, 33
  *
  * Free PINS:
- * 21, 25, 26, 27, 33, 32
+ * 21, 27, 33, 32
  *
  * Input Only:
  * 34, 35, 36, 39
@@ -44,11 +44,11 @@
 
 // Pump and Flow Meter.
 #define FLOW_PULSE 36
-#define PUMP_ENABLE 10
+#define PUMP_ENABLE 26
 
 // SCR Stuff.
 #define SCR_FAULT 36
-#define SCR_ENABLE 4
+#define SCR_ENABLE 25
 #define SCR_PWM 15
 
 // Display and I2C Stuff.
