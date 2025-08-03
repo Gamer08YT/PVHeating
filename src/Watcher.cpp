@@ -288,6 +288,7 @@ void Watcher::setStandby(bool cond)
 {
     Guardian::println("S > Standby");
 
+    // Switch LED Fade vs Blink State.
     handleStandbyLedFade(cond);
 
     standby = cond;
@@ -514,19 +515,16 @@ void Watcher::readLocalPower()
  */
 void Watcher::handleStandbyLedFade(bool cond)
 {
-    if (standby != cond)
+    if (cond)
     {
-        if (cond)
-        {
-            // Fade in 1000 Seconds Interval.
-            modeLed.fade(255, 1000);
-        }
-        else
-        {
-            // Stop Fade and Disable LED.
-            faultLed.stop_fade();
-            modeLed.set_value(0);
-        }
+        // Fade in 1000 Seconds Interval.
+        modeLed.fade(255, 1000);
+    }
+    else
+    {
+        // Stop Fade and Disable LED.
+        faultLed.stop_fade();
+        modeLed.set_value(0);
     }
 }
 
@@ -544,19 +542,16 @@ void Watcher::handleStandbyLedFade(bool cond)
  */
 void Watcher::handleErrorLedFade(bool cond)
 {
-    if (error != cond)
+    if (cond)
     {
-        if (cond)
-        {
-            // Fade in 1000-second Interval.
-            faultLed.fade(255, 1000);
-        }
-        else
-        {
-            // Stop Fade and Disable LED.
-            faultLed.stop_fade();
-            faultLed.set_value(0);
-        }
+        // Fade in 1000-second Interval.
+        faultLed.fade(255, 1000);
+    }
+    else
+    {
+        // Stop Fade and Disable LED.
+        faultLed.stop_fade();
+        faultLed.set_value(0);
     }
 }
 
