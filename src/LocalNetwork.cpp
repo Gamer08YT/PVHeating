@@ -41,6 +41,10 @@ void LocalNetwork::handleOTA()
 
 void LocalNetwork::handleSerial()
 {
+    // Allow initial Buffer Size of 40.
+    WebSerial.setBuffer(40);
+
+    // Begin WebSerial.
     WebSerial.begin(&server);
 }
 
