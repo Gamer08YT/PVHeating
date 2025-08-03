@@ -266,7 +266,13 @@ const char* Guardian::getErrorTitle()
 /**
  * @brief Displays a progress bar on the OLED screen based on the given progress.
  *
- * This function draws a progress bar*/
+ * This function draws a progress bar at a fixed position on the OLED display.
+ * The progress bar's width reflects the percentage of completion specified
+ * by the `progress` parameter. The progress value is clamped between 0 and 100.
+ *
+ * @param i A placeholder integer parameter. Currently not used in the method.
+ * @param progress The percentage of progress (0 to 100) to display in the progress bar.
+ */
 void Guardian::setProgress(int i, unsigned int progress)
 {
     // Limit Progress from 0-100;
@@ -274,7 +280,7 @@ void Guardian::setProgress(int i, unsigned int progress)
 
     // Position and Size of Bar.
     const int x = 10;
-    const int y = 30;
+    const int y = i;
     const int width = 100;
     const int height = 10;
 
