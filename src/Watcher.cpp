@@ -41,6 +41,12 @@ OneWire oneWire(ONE_WIRE);
 // Store Temperature Sensor Instance.
 DallasTemperature sensors(&oneWire);
 
+// Store Found Addresses.
+DeviceAddress address;
+
+// Store count of Devices.
+int foundDevices = 0;
+
 // Store Button Instances.
 OneButton faultButton(BUTTON_FAULT, true);
 OneButton modeButton(BUTTON_MODE, true);
@@ -185,9 +191,7 @@ void Watcher::setFlow(float get_current_flowrate)
  */
 void Watcher::readHouseMeterPower()
 {
-    float houseMeterPower = LocalModbus::readRemote(POWER_IMPORT);
-
-    setHousePower(housePower);
+    LocalModbus::readRemote(POWER_IMPORT);
 }
 
 /**
@@ -257,7 +261,7 @@ void Watcher::handleSensors()
     if (slowInterval.isReady())
     {
         // Read Temperatures via OneWire.
-        //readTemperature();
+        readTemperature();
 
         // Calculate Flow.
         meter.read();
@@ -345,8 +349,8 @@ void Watcher::setup()
     modeLed.fade(255, 1000);
     faultLed.fade(255, 1000);
 
-    // Begin One Wire Sensors.
-    sensors.begin();
+    // Begin 1Wire and Scan for Devices.
+    begin1Wire();
 
     // Setup Pins.
     setupPins();
@@ -540,6 +544,57 @@ void MeterISR()
     meter.count();
 }
 
+void Watcher::begin1Wire()
+{
+    // Begin One Wire Sensors.
+    sensors.begin();
+
+    // Grab a count of devices on the wire.
+    foundDevices = sensors.getDeviceCount();
+
+    // Loop through each device, print out address
+    for (int i = 0; i < foundDevices; i++)
+    {
+        // Search the wire for address
+        if (sensors.getAddress(address, i))
+        {
+            Serial.print("Found device ");
+            Serial.print(i, DEC);
+            Serial.print(" with address: ");
+            printAddress(address);
+            Serial.println();
+        }
+        else
+        {
+            Serial.print("Found ghost device at ");
+            Serial.print(i, DEC);
+            Serial.print(" but could not detect address. Check power and cabling");
+        }
+    }
+}
+
+
+/**
+ * @brief Prints the hexadecimal address of a given device.
+ *
+ * This method iterates through the bytes of the provided DeviceAddress and
+ * prints each byte in hexadecimal format to the serial monitor. A leading zero
+ * is added for single-digit hexadecimal values to ensure a consistent two-character
+ * format per byte.
+ *
+ * @param deviceAddress A DeviceAddress object representing the address of the device
+ * to be printed. The address is an array of 8 bytes.
+ */
+void Watcher::printAddress(DeviceAddress deviceAddress)
+{
+    for (uint8_t i = 0; i < 8; i++)
+    {
+        if (deviceAddress[i] < 16)
+            Serial.print("0");
+        Serial.print(deviceAddress[i], HEX);
+    }
+}
+
 /**
  * @brief Configures and initializes the flow meter object.
  *
@@ -586,9 +641,20 @@ void Watcher::readLocalPower()
 {
     float currentPower = LocalModbus::readLocal(POWER_USAGE);
 
+    Guardian::println(String(currentPower, 2).c_str());
+
     setPower(currentPower);
 }
 
+/**
+ * @brief Sets the house power value in the Watcher class.
+ *
+ * This method updates the static housePower variable with the given value. It is used
+ * to modify the power data associated with the house, enabling the system to reflect
+ * the latest power reading or state.
+ *
+ * @param house_power The power value to set for the house, provided as a float.
+ */
 void Watcher::setHousePower(float house_power)
 {
     housePower = house_power;
@@ -710,46 +776,56 @@ void Watcher::setTemperatureOut(float i)
 }
 
 /**
- * @brief Reads and processes temperature data from connected sensors.
+ * @brief Reads temperature data from connected sensors and updates internal temperature variables.
  *
- * This method communicates with the DallasTemperature library to fetch temperature data
- * from sensors connected via the OneWire interface. If two sensors are detected, it identifies the
- * colder and warmer temperature readings and assigns them as "temperatureIn" and "temperatureOut"
- * respectively. The internal states are updated using the setTemperatureIn and setTemperatureOut methods.
+ * This method communicates with temperature sensors to retrieve temperature values
+ * for all detected devices. For each sensor, it checks its address, retrieves the
+ * temperature in Celsius, and determines the relationship between the current readings.
+ * The colder value is set to `temperatureIn`, while the warmer value is set to `temperatureOut`.
  *
- * In scenarios where the number of connected sensors is not equal to two, it sets the temperature values
- * to -1 and triggers an error state using the setError method. The error is also logged via the Guardian system.
+ * The function also handles initialization of an intermediate temperature
+ * variable to ensure proper comparison of sensor outputs.
  *
- * This function is integral to maintaining accurate environmental data within the system.
+ * Designed to be part of the periodic sensor handling process for managing temperature data.
  */
 void Watcher::readTemperature()
 {
     // Request Temperatures from Sensor.
     sensors.requestTemperatures();
+    float tempTemperature = -1;
 
-    if (sensors.getDeviceCount() == 2)
+    // Loop through each device, print out temperature data
+    for (int i = 0; i < foundDevices; i++)
     {
-        float tempOne = sensors.getTempCByIndex(0);
-        float tempTwo = sensors.getTempCByIndex(1);
-
-        if (tempOne > tempTwo)
+        // Search the wire for address
+        if (sensors.getAddress(address, i))
         {
-            setTemperatureIn(tempTwo);
-            setTemperatureOut(tempOne);
-        }
-        else
-        {
-            setTemperatureIn(tempOne);
-            setTemperatureOut(tempTwo);
-        }
-    }
-    else
-    {
-        setTemperatureIn(-1);
-        setTemperatureOut(-1);
-        setError(true);
+            // Output the device ID
+            Serial.print("Temperature for device: ");
+            Serial.println(i,DEC);
 
-        Guardian::println("OneWire Error");
+            // Print the data
+            float tempC = sensors.getTempC(address);
+
+            // Check if temp Temperature is Set.
+            if (tempTemperature == -1)
+            {
+                tempTemperature = tempC;
+            }
+            else
+            {
+                if (tempC > tempTemperature)
+                {
+                    temperatureIn = tempTemperature;
+                    temperatureOut = tempC;
+                }
+                else
+                {
+                    temperatureIn = tempC;
+                    temperatureOut = tempTemperature;
+                }
+            }
+        }
     }
 }
 

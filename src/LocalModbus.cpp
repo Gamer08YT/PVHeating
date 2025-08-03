@@ -10,20 +10,18 @@
 #include "PinOut.h"
 #include "MeterRegisters.h"
 #include "Ethernet.h"
-#include "ModbusTCPClient.h"
+// #include "ModbusClientTCP.h"
 
 
 // Begin HW Serial 2 (TX=17, RX=16).
 HardwareSerial serial(2);
 
-// Store Instance of Ethernet Client.
-EthernetClient client;
+// Store Instanceo of TCP Instance.
+// ModbusClientTCP modbusTCP(client);
 
 // Store Modbus Instance.
 DFRobot_RTU modbusRTU(&serial, MODBUS_RE);
 
-// Store Instance of TCP Client.
-ModbusTCPClient modbusTCP(client);
 
 /**
  * @brief Initializes the Modbus communication system.
@@ -45,8 +43,10 @@ void LocalModbus::begin()
     // Begin Second Serial Channel.
     serial.begin(9600, SERIAL_8N1, MODBUS_RX, MODBUS_TX);
 
+    // Begin Modbus RTU Client.
+
     // Begin Modbus TCP Client.
-    modbusTCP.begin(MODBUS_HOUSE, 502);
+    beginTCP();
 
     // Print Debug Message.
     Guardian::println("Modbus ready");
@@ -54,7 +54,6 @@ void LocalModbus::begin()
 
 void LocalModbus::loop()
 {
-
 }
 
 /**
@@ -76,23 +75,7 @@ float LocalModbus::readRemote(int address)
     uint16_t data[REGISTER_LENGTH];
 
     // Read into Buffer.
-    uint8_t result = modbusTCP.inputRegisterRead(1, address);
-
-    if (result == 0)
-    {
-        // Erfolgreiche Lesung
-        // Convert the two 16-bit Register to 32-bit Float
-        union
-        {
-            uint32_t i;
-            float f;
-        } converter;
-
-        // Big-Endian converting.
-        converter.i = ((uint32_t)data[0] << 16) | data[1];
-
-        return converter.f;
-    }
+    // modbusTCP.addRequest(1, address, data, REGISTER_LENGTH);
 
     return -1;
 }
@@ -134,4 +117,13 @@ float LocalModbus::readLocal(int address)
     }
 
     return -1;
+}
+
+void LocalModbus::beginTCP()
+{
+    // // Set Target of TCP Connection.
+    // modbusTCP.setTarget(IPAddress(MODBUS_HOUSE), 502);
+    //
+    // // Begin Modbus TCP Client.
+    // modbusTCP.begin(1);
 }

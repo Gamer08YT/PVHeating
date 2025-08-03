@@ -4,6 +4,7 @@
 
 #ifndef WATCHER_H
 #define WATCHER_H
+#include "DallasTemperature.h"
 
 
 /**
@@ -63,6 +64,7 @@ public:
 
 private:
     static int duty;
+    static void begin1Wire();
     static void setupFlowMeter();
     static void setPower(float current_power);
     static void readLocalPower();
@@ -85,6 +87,7 @@ private:
     static void setFlow(float get_current_flowrate);
     static void handleSensors();
     static void setupButtons();
+    static void printAddress(DeviceAddress deviceAddress);
 };
 
 
