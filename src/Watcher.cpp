@@ -148,7 +148,7 @@ void Watcher::updateDisplay()
         Guardian::setTitle("Dashboard");
         Guardian::setValue(1, "PWM", String(duty, 2).c_str());
         Guardian::setValue(2, "Pin", String(currentPower, 2).c_str(), "W");
-        Guardian::setValue(3, "Tout", String(temperatureOut, 2).c_str(), "°C");
+        Guardian::setValue(3, "Tout", String(temperatureOut, 2).c_str(), "C");
 
         // Show Flow or Work.
         if (displayFlow)
@@ -261,7 +261,7 @@ void Watcher::handleSensors()
     if (slowInterval.isReady())
     {
         // Read Temperatures via OneWire.
-        readTemperature();
+        //readTemperature();
 
         // Calculate Flow.
         meter.read();

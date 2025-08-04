@@ -4,12 +4,14 @@
 #include "LocalModbus.h"
 
 #include <HardwareSerial.h>
+#include <WebServer.h>
 
 #include "DFRobot_RTU.h"
 #include "Guardian.h"
 #include "PinOut.h"
 #include "MeterRegisters.h"
 #include "Ethernet.h"
+#include "ModbusRTU.h"
 // #include "ModbusClientTCP.h"
 
 
@@ -20,7 +22,7 @@ HardwareSerial serial(2);
 // ModbusClientTCP modbusTCP(client);
 
 // Store Modbus Instance.
-DFRobot_RTU modbusRTU(&serial, MODBUS_RE);
+ModbusRTU modbusRTU;
 
 
 /**
@@ -44,6 +46,13 @@ void LocalModbus::begin()
     serial.begin(9600, SERIAL_8N1, MODBUS_RX, MODBUS_TX);
 
     // Begin Modbus RTU Client.
+    modbusRTU.begin(&serial, MODBUS_RE, true);
+
+    // Set Baud of MAX485.
+    modbusRTU.setBaudrate(9600);
+
+    // Set Server Mode (Old. Master)
+    modbusRTU.server();
 
     // Begin Modbus TCP Client.
     beginTCP();
@@ -94,30 +103,18 @@ float LocalModbus::readRemote(int address)
  */
 float LocalModbus::readLocal(int address)
 {
-    // Simple Data Buffer Array.
-    uint16_t data[REGISTER_LENGTH];
-
-    // Read into Buffer.
-    uint8_t result = modbusRTU.readInputRegister(1, address, data, REGISTER_LENGTH);
-
-    if (result == 0)
+    // Check if transaction is active.
+    if (!modbusRTU.server())
     {
-        // Erfolgreiche Lesung
-        // Convert the two 16-bit Register to 32-bit Float
-        union
-        {
-            uint32_t i;
-            float f;
-        } converter;
-
-        // Big-Endian converting.
-        converter.i = ((uint32_t)data[0] << 16) | data[1];
-
-        return converter.f;
+        modbusRTU.readIreg()
     }
+    else
+        Guardian::println("Modbus RTU is not active");
 
-    return -1;
+    // Add Request to Task and Request.
+    modbusRTU.task();
 }
+
 
 void LocalModbus::beginTCP()
 {
@@ -126,4 +123,65 @@ void LocalModbus::beginTCP()
     //
     // // Begin Modbus TCP Client.
     // modbusTCP.begin(1);
+}
+
+
+/**
+ * @brief Validates the checksum of the received data packet.
+ *
+ * This function checks the integrity of a data packet by calculating and comparing the checksum.
+ * It ensures that the received data is not corrupted during transmission.
+ *
+ * @return true if the calculated checksum matches the expected checksum, false otherwise.
+ *
+ * @note The input data format and its checksum must adhere to the expected protocol standards.
+ *
+ * @warning Invalid checksums indicate a failure in data integrity and may require retransmission.
+ *
+ * @link https://github.com/reaper7/SDM_Energy_Meter/blob/5d1653a0550fab7de13fbe596a1b09d1fae103ad/SDM.cpp#L647
+ **/
+bool LocalModbus::validChecksum(const uint8_t *data, size_t messageLength) const
+{
+    const uint16_t temp = calculateCRC(data, messageLength - 2); // calculate out crc only from first 6 bytes
+
+    return data[messageLength - 2] == lowByte(temp) &&
+           data[messageLength - 1] == highByte(temp);
+}
+
+
+/**
+ * @brief Computes the CRC-16 checksum for a given data array.
+ *
+ * This function implements the CRC-16 (Modbus RTU standard) checksum algorithm
+ * to calculate the cyclical redundancy check value for error detection.
+ * It processes each byte of the input array, performing bit-wise operations
+ * to generate the checksum.
+ *
+ * @param array Pointer to the byte array for which the CRC is to be calculated.
+ * @param len The number of bytes in the array.
+ * @return The computed 16-bit CRC value.
+ *
+ * @note The CRC-16 algorithm uses a polynomial value of 0xA001.
+ *
+ * @attention It is the caller's responsibility to ensure the validity and size
+ * of the input array to avoid buffer overflows or memory issues.
+ *
+ * @link https://github.com/reaper7/SDM_Energy_Meter/blob/5d1653a0550fab7de13fbe596a1b09d1fae103ad/SDM.cpp#L604
+ **/
+uint16_t LocalModbus::calculateCRC(const uint8_t *array, uint8_t len)
+{
+    uint16_t _crc, _flag;
+    _crc = 0xFFFF;
+    for (uint8_t i = 0; i < len; i++)
+    {
+        _crc ^= (uint16_t)array[i];
+        for (uint8_t j = 8; j; j--)
+        {
+            _flag = _crc & 0x0001;
+            _crc >>= 1;
+            if (_flag)
+                _crc ^= 0xA001;
+        }
+    }
+    return _crc;
 }

@@ -4,6 +4,7 @@
 
 #ifndef MODBUS_H
 #define MODBUS_H
+#include <sys/_stdint.h>
 
 
 /**
@@ -25,6 +26,8 @@ public:
 
 private:
     static void beginTCP();
+    static bool validChecksum(const uint8_t* data, size_t messageLength) const;
+    static uint16_t calculateCRC(const uint8_t* array, uint8_t len);
 };
 
 
