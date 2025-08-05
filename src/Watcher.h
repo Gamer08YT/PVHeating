@@ -22,6 +22,7 @@ public:
     static void handleButtonLeds();
 
     static void loop();
+    static void setDefaults();
     static void setup();
     static void setStandby(bool cond);
     static void setError(bool cond);

@@ -310,6 +310,21 @@ void Watcher::loop()
 }
 
 /**
+ * @brief Resets the system settings and components to their default states.
+ *
+ * This method ensures the system is initialized with default configurations
+ * by disabling the pump and SCR components. It calls respective methods for
+ * these components to ensure consistent behavior across dependent systems.
+ *
+ * Typically used during setup or when resetting the system to a known state.
+ */
+void Watcher::setDefaults()
+{
+    setPump(false);
+    setSCR(false);
+}
+
+/**
  * @brief Configures button interactions for fault and mode functionalities.
  *
  * This method initializes button event listeners for handling specific actions:
@@ -342,6 +357,9 @@ void Watcher::setupButtons()
 
 void Watcher::setup()
 {
+    // Set Default States.
+    setDefaults();
+
     // Print Debug Message.
     Guardian::boot(90, "Watcher");
 
