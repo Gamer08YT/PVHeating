@@ -466,7 +466,7 @@ void Watcher::setSCR(bool sender)
  */
 void Watcher::setSCRViaHA(bool state)
 {
-    digitalWrite(SCR_ENABLE, state);
+    digitalWrite(SCR_ENABLE, !state);
 }
 
 /**
@@ -481,7 +481,7 @@ void Watcher::setSCRViaHA(bool state)
  */
 void Watcher::setPumpViaHA(bool state)
 {
-    digitalWrite(PUMP_ENABLE, state);
+    digitalWrite(PUMP_ENABLE, !state);
 }
 
 /**
