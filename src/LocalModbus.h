@@ -4,7 +4,8 @@
 
 #ifndef MODBUS_H
 #define MODBUS_H
-#include <sys/_stdint.h>
+
+#include <Arduino.h>
 
 /**
  * @class LocalModbus
