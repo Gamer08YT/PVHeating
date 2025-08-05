@@ -7,6 +7,8 @@
 
 #include <Arduino.h>
 
+#include "ModbusMessage.h"
+
 /**
  * @class LocalModbus
  *
@@ -25,7 +27,9 @@ public:
     static bool readLocal(int address);
 
 private:
+    static void handleError(Error error);
     static void beginRTU();
+    static void handleData(ModbusMessage msg, uint32_t token);
     static void beginTCP();
     static bool validChecksum(const uint8_t* data, size_t messageLength);
     static uint16_t calculateCRC(const uint8_t* array, uint8_t len);

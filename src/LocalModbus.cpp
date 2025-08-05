@@ -99,11 +99,48 @@ float LocalModbus::readRemote(int address)
  */
 bool LocalModbus::readLocal(int address)
 {
+    Guardian::print("Local: ");
+    Guardian::println(String(address).c_str());
+
     Error error = modbusRTU->addRequest(address, 0, READ_INPUT_REGISTER, 10, 1);
+
+    handleError(error);
 
     return (error == SUCCESS);
 }
 
+/**
+ * @brief Handles errors that occur during Modbus requests.
+ *
+ * This method processes a given Modbus error by creating a ModbusError instance
+ * and logging the corresponding error message through WebSerial. It provides
+ * formatted output for debugging, including the error code and description.
+ *
+ * @param error The error code returned by a Modbus operation, representing the failure reason.
+ */
+void LocalModbus::handleError(Error error)
+{
+    ModbusError e(error);
+
+    WebSerial.printf("Error creating request: %02X - %s\n", error, (const char*)e);
+}
+
+/**
+ * @brief Initializes the Modbus RTU communication system.
+ *
+ * This function sets up the hardware serial interface for Modbus RTU communication,
+ * including specifying baud rate, serial parameters, and the RX/TX pins. It creates
+ * an instance of the ModbusClientRTU, assigns an error handler for managing Modbus errors,
+ * and configures the timeout for communication. Lastly, it starts the Modbus RTU client
+ * on the specified serial interface.
+ *
+ * @note This function assumes that the RX (MODBUS_RX), TX (MODBUS_TX), and RE (MODBUS_RE) pins,
+ * as well as other communication parameters like the baud rate (MODBUS_BAUD) and timeout (MODBUS_TIMEOUT),
+ * are predefined.
+ *
+ * @attention Ensure the hardware is properly configured, and the RS485 driver is correctly
+ * connected to the respective pins before invoking this function.
+ */
 void LocalModbus::beginRTU()
 {
     // Prepare Hardware Serial.
@@ -122,14 +159,30 @@ void LocalModbus::beginRTU()
         Guardian::println(String(error).c_str());
     });
 
+    // Add Message Handler.
+    modbusRTU->onDataHandler(handleData);
+
     // Set Timeout.
     modbusRTU->setTimeout(MODBUS_TIMEOUT);
 
     // Begin Modbus RTU Client.
     modbusRTU->begin(serial, MODBUS_CORE);
+
+    // Print Debug Message.
+    Guardian::boot(55, "RTU");
 }
 
-void handleData(ModbusMessage msg, uint32_t token)
+/**
+ * @brief Handles and processes the received Modbus message data.
+ *
+ * This method extracts and displays information from the provided ModbusMessage, such as the server ID,
+ * function code, data length, and the full message content in hexadecimal format. The information is
+ * logged using the WebSerial interface for debugging or monitoring purposes.
+ *
+ * @param msg The ModbusMessage object containing the message data to be processed.
+ * @param token A unique identifier associated with the request or transaction being processed.
+ */
+void LocalModbus::handleData(ModbusMessage msg, uint32_t token)
 {
     WebSerial.printf("Response: serverID=%d, FC=%d, Token=%08X, length=%d:\n", msg.getServerID(), msg.getFunctionCode(),
                      token, msg.size());
@@ -148,6 +201,9 @@ void LocalModbus::beginTCP()
     //
     // // Begin Modbus TCP Client.
     // modbusTCP.begin(1);
+
+    // Print Debug Message.
+    Guardian::boot(60, "TCP");
 }
 
 
