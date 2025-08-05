@@ -106,7 +106,7 @@ bool LocalModbus::readLocal(int address)
     Guardian::println(String(address).c_str());
 
     // Clear Queue if to full.
-    if (localQueue > 100)
+    if (localQueue > 10)
     {
         modbusRTU->clearQueue();
         localQueue = 0;
@@ -116,7 +116,7 @@ bool LocalModbus::readLocal(int address)
     // uint32_t token, uint8_t serverID, uint8_t functionCode, uint16_t p1, uint16_t p2
     Error error = modbusRTU->addRequest(0x12345678, MODBUS_CORE, READ_INPUT_REGISTER, address, REGISTER_LENGTH);
 
-    handleError(error);
+    handleRequestError(error);
 
     return (error == SUCCESS);
 }
@@ -130,13 +130,34 @@ bool LocalModbus::readLocal(int address)
  *
  * @param error The error code returned by a Modbus operation, representing the failure reason.
  */
-void LocalModbus::handleError(Error error)
+void LocalModbus::handleRequestError(Error error)
 {
     if (error != SUCCESS)
     {
         ModbusError e(error);
 
         WebSerial.printf("Error creating request: %02X - %s\n", error, (const char*)e);
+    }
+}
+
+/**
+ * @brief Handles response errors encountered during Modbus communication.
+ *
+ * This method processes errors returned in response to Modbus requests.
+ * If the error is not a successful status, it converts the error into a
+ * ModbusError object and logs a detailed error message using WebSerial.
+ *
+ * @param error The error code associated with the Modbus response.
+ *              This parameter represents a status code indicating the nature
+ *              of the error, with `SUCCESS` indicating no error.
+ */
+void LocalModbus::handleResponseError(Error error, uint32_t token)
+{
+    if (error != SUCCESS)
+    {
+        ModbusError e(error);
+
+        WebSerial.printf("Error response: %02X - %s\n", error, (const char*)e);
     }
 }
 
@@ -168,11 +189,7 @@ void LocalModbus::beginRTU()
     modbusRTU = new ModbusClientRTU(MODBUS_RE);
 
     // Add Error Handler.
-    modbusRTU->onErrorHandler([](Error error, unsigned long i)
-    {
-        Guardian::print("Modbus Error");
-        Guardian::println(String(error).c_str());
-    });
+    modbusRTU->onErrorHandler(handleResponseError);
 
     // Add Message Handler.
     modbusRTU->onDataHandler(handleData);

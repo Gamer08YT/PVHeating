@@ -27,7 +27,8 @@ public:
     static bool readLocal(int address);
 
 private:
-    static void handleError(Error error);
+    static void handleRequestError(Error error);
+    static void handleResponseError(Error error, uint32_t token);
     static void beginRTU();
     static void handleData(ModbusMessage msg, uint32_t token);
     static void beginTCP();

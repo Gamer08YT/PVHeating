@@ -251,9 +251,6 @@ void Watcher::handleSensors()
         // Handle PWM Duty.
         handlePWM();
 
-        WebSerial.print("Local Power: ");
-        WebSerial.println(currentPower);
-
         // Reset Timer (Endless Loop);
         fastInterval.reset();
     }
