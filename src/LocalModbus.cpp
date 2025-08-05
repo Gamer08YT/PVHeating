@@ -134,7 +134,7 @@ void LocalModbus::beginRTU()
 void handleData(ModbusMessage msg, uint32_t token)
 {
     WebSerial.printf("Response: serverID=%d, FC=%d, Token=%08X, length=%d:\n", msg.getServerID(), msg.getFunctionCode(),
-                  token, msg.size());
+                     token, msg.size());
     for (auto& byte : msg)
     {
         WebSerial.printf("%02X ", byte);
@@ -167,7 +167,7 @@ void LocalModbus::beginTCP()
  *
  * @link https://github.com/reaper7/SDM_Energy_Meter/blob/5d1653a0550fab7de13fbe596a1b09d1fae103ad/SDM.cpp#L647
  **/
-bool LocalModbus::validChecksum(const uint8_t* data, size_t messageLength) const
+bool LocalModbus::validChecksum(const uint8_t* data, size_t messageLength)
 {
     const uint16_t temp = calculateCRC(data, messageLength - 2); // calculate out crc only from first 6 bytes
 
