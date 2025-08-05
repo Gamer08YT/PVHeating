@@ -22,6 +22,9 @@ HardwareSerial serial(2);
 // Store Modbus Instance.
 ModbusClientRTU* modbusRTU;
 
+// Store local Queue.
+int localQueue = 0;
+
 
 /**
  * @brief Initializes the Modbus communication system.
@@ -102,7 +105,16 @@ bool LocalModbus::readLocal(int address)
     Guardian::print("Local: ");
     Guardian::println(String(address).c_str());
 
-    Error error = modbusRTU->addRequest(address, 0, READ_INPUT_REGISTER, 10, 1);
+    // Clear Queue if to full.
+    if (localQueue > 100)
+    {
+        modbusRTU->clearQueue();
+        localQueue = 0;
+    }
+
+    // https://github.com/eModbus/eModbus/blob/648a14b2f49de0c3ffcd9821e6b7a1180fd3f3f4/examples/RTU16example/main.cpp#L64
+    // uint32_t token, uint8_t serverID, uint8_t functionCode, uint16_t p1, uint16_t p2
+    Error error = modbusRTU->addRequest(0x12345678, MODBUS_CORE, READ_INPUT_REGISTER, address, REGISTER_LENGTH);
 
     handleError(error);
 
@@ -120,9 +132,12 @@ bool LocalModbus::readLocal(int address)
  */
 void LocalModbus::handleError(Error error)
 {
-    ModbusError e(error);
+    if (error != SUCCESS)
+    {
+        ModbusError e(error);
 
-    WebSerial.printf("Error creating request: %02X - %s\n", error, (const char*)e);
+        WebSerial.printf("Error creating request: %02X - %s\n", error, (const char*)e);
+    }
 }
 
 /**

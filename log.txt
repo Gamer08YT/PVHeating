@@ -1,0 +1,1225 @@
+Upgrade to Pro
+
+
+
+
+
+Logs begin from here | 5.8.2025 - 19:53:09
+Local: 52
+
+Error creating request: 00 - Success
+
+1.00
+
+Local Power: 1.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+72
+
+Error creating request: E8 - Request queue full
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Modbus Error
+
+224
+
+Local:
+
+52
+
+Error creating request: 00 - Success
+
+1.00
+
+Local Power: 1.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+72
+
+Error creating request: E8 - Request queue full
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.
+
+00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Modbus Error
+
+224
+
+Local:
+
+52
+
+Error creating request: 00 - Success
+
+1.00
+
+Local Power: 1.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+72
+
+Error creating request: E8 - Request queue full
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Modbus Error
+
+224
+
+Local:
+
+52
+
+Error creating request: 00 - Success
+
+1.00
+
+Local Power: 1.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+72
+
+Error creating request: E8 - Request queue full
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power:
+
+0.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Modbus Error
+
+224
+
+Local:
+
+52
+
+Error creating request: 00 - Success
+
+1.00
+
+Local Power: 1.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+72
+
+Error creating request: E8 - Request queue full
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Modbus Error
+
+224
+
+Local:
+
+52
+
+Error creating request: 00 - Success
+
+1.00
+
+Local Power: 1.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+72
+
+Error creating request: E8 - Request queue full
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Modbus Error
+
+224
+
+Local:
+
+52
+
+Error creating request: 00 - Success
+
+1.00
+
+Local Power: 1.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+72
+
+Error creating request: E8 - Request queue full
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power:
+
+0.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Modbus Error
+
+224
+
+Local:
+
+52
+
+Error creating request: 00 - Success
+
+1.00
+
+Local Power: 1.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+72
+
+Error creating request: E8 - Request queue full
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Modbus Error
+
+224
+
+Local:
+
+52
+
+Error creating request: 00 - Success
+
+1.00
+
+Local Power: 1.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+72
+
+Error creating request: E8 - Request queue full
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Modbus Error
+
+224
+
+Local:
+
+52
+
+Error creating request: 00 - Success
+
+1.00
+
+Local Power: 1.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+72
+
+Error creating request: E8 - Request queue full
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Modbus Error224
+
+Local:
+
+52
+
+Error creating request: 00 - Success
+
+1.00
+
+Local Power: 1.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+72
+
+Error creating request: E8 - Request queue full
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Modbus Error224
+
+Local:
+
+52
+
+Error creating request: 00 - Success
+
+1.00
+
+Local Power: 1.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+72
+
+Error creating request: E8 - Request queue full
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.
+
+00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Modbus Error224
+
+Local:
+
+52
+
+Error creating request: 00 - Success
+
+1.00
+
+Local Power: 1.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+72
+
+Error creating request: E8 - Request queue full
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Modbus Error
+
+224
+
+Local:
+
+52
+
+Error creating request: 00 - Success
+
+1.00
+
+Local Power: 1.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+72
+
+Error creating request: E8 - Request queue full
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Modbus Error224
+
+Local: 52
+
+Error creating request: 00 - Success
+
+1.00
+
+Local Power: 1.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+72
+
+Error creating request: E8 - Request queue full
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Modbus Error
+
+224
+
+Local:
+
+52
+
+Error creating request: 00 - Success
+
+1.00
+
+Local Power: 1.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+72
+
+Error creating request: E8 - Request queue full
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Modbus Error
+
+224
+
+Local:
+
+52
+
+Error creating request: 00 - Success
+
+1.00
+
+Local Power: 1.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+72
+
+Error creating request: E8 - Request queue full
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Modbus Error
+
+224
+
+Local:
+
+52
+
+Error creating request: 00 - Success
+
+1.00
+
+Local Power: 1.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+72
+
+Error creating request: E8 - Request queue full
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Modbus Error
+
+224
+
+Local:
+
+52
+
+Error creating request: 00 - Success
+
+1.00
+
+Local Power: 1.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+72
+
+Error creating request: E8 - Request queue full
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Modbus Error
+
+224
+
+Local:
+
+52
+
+Error creating request: 00 - Success
+
+1.00
+
+Local Power: 1.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+72
+
+Error creating request: E8 - Request queue full
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Modbus Error
+
+224
+
+Local:
+
+52
+
+Error creating request: 00 - Success
+
+1.00
+
+Local Power: 1.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+72
+
+Error creating request: E8 - Request queue full
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Modbus Error
+
+224
+
+Local:
+
+52
+
+Error creating request: 00 - Success
+
+1.00
+
+Local Power: 1.00
+
+Local: 52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+72
+
+Error creating request: E8 - Request queue full
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Modbus Error
+
+224
+
+Local:
+
+52
+
+Error creating request: 00 - Success
+
+1.00
+
+Local Power: 1.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+72
+
+Error creating request: E8 - Request queue full
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Modbus Error
+
+224
+
+Local:
+
+52
+
+Error creating request: 00 - Success
+
+1.00
+
+Local Power: 1.00
+
+Local: 52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+72
+
+Error creating request: E8 - Request queue full
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Modbus Error
+
+224
+
+Local:
+
+52
+
+Error creating request: 00 - Success
+
+1.00
+
+Local Power: 1.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Local:
+
+52
+
+Error creating request: E8 - Request queue full
+
+0.00
+
+Local Power: 0.00
+
+Enter command here
+
+606 Packets
+WebSerial Lite
+|
+Connected

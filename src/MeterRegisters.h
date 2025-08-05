@@ -5,6 +5,7 @@
 #ifndef METERREGISTERS_H
 #define METERREGISTERS_H
 
+// 1 Register equals 16 bit => 2x16 bit => 32bit => float32.
 #define REGISTER_LENGTH 2
 #define POWER_USAGE 0x0034 // => 52
 #define POWER_IMPORT 0x0048 // => 72

@@ -246,7 +246,7 @@ void Watcher::handleSensors()
     if (fastInterval.isReady())
     {
         // Read internal Smart Meter Power Usage.
-        readLocalPower();
+        //readLocalPower();
 
         // Handle PWM Duty.
         handlePWM();
