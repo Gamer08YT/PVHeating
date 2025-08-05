@@ -6,7 +6,7 @@
 #define METERREGISTERS_H
 
 #define REGISTER_LENGTH 2
-#define POWER_USAGE 52
-#define POWER_IMPORT 72
+#define POWER_USAGE 0x0034 // => 52
+#define POWER_IMPORT 0x0048 // => 72
 
 #endif //METERREGISTERS_H

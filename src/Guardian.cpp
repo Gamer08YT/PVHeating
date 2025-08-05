@@ -417,3 +417,20 @@ void Guardian::clear()
 {
     display.clearDisplay();
 }
+
+/**
+ * @brief Logs a provided message to both the Serial monitor and WebSerial.
+ *
+ * This function sends the given string to the Serial monitor for standard logging
+ * and concurrently logs the same message to the WebSerial utility.
+ *
+ * @param str The string message to be logged in both the Serial monitor and WebSerial.
+ */
+void Guardian::print(const char* str)
+{
+    // First Print to Serial.
+    Serial.print(str);
+
+    // Print to WebSerial.
+    WebSerial.print(str);
+}

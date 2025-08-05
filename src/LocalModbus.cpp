@@ -10,8 +10,8 @@
 #include "Guardian.h"
 #include "PinOut.h"
 #include "MeterRegisters.h"
-#include "Ethernet.h"
-#include "ModbusRTU.h"
+#include "ModbusClientRTU.h"
+#include "WebSerial.h"
 // #include "ModbusClientTCP.h"
 
 
@@ -22,7 +22,7 @@ HardwareSerial serial(2);
 // ModbusClientTCP modbusTCP(client);
 
 // Store Modbus Instance.
-ModbusRTU modbusRTU;
+ModbusClientRTU* modbusRTU;
 
 
 /**
@@ -42,17 +42,8 @@ void LocalModbus::begin()
     // Print Debug Message.
     Guardian::boot(50, "Modbus");
 
-    // Begin Second Serial Channel.
-    serial.begin(9600, SERIAL_8N1, MODBUS_RX, MODBUS_TX);
-
     // Begin Modbus RTU Client.
-    modbusRTU.begin(&serial, MODBUS_RE, true);
-
-    // Set Baud of MAX485.
-    modbusRTU.setBaudrate(9600);
-
-    // Set Server Mode (Old. Master)
-    modbusRTU.server();
+    beginRTU();
 
     // Begin Modbus TCP Client.
     beginTCP();
@@ -90,29 +81,65 @@ float LocalModbus::readRemote(int address)
 }
 
 /**
- * @brief Reads a 32-bit floating-point value from a local Modbus input register.
+ * @brief Reads local input registers using Modbus RTU.
  *
- * This method reads data from a specific Modbus input register address. It retrieves
- * two 16-bit registers, combining them into a 32-bit value, and converts it to a
- * floating-point representation. The Big-Endian format is used for byte ordering.
+ * This function attempts to read input registers from a specified address using the Modbus RTU protocol.
+ * If the Modbus RTU server is inactive, a read request is initiated for the given address and callback.
+ * The function then processes the Modbus task queue to execute the request.
  *
- * @param address The Modbus register address to read from.
+ * @param address The starting address of the input registers to read.
+ * @param callback A callback of type cbTransaction to handle the result or errors from the read operation.
  *
- * @return The 32-bit floating-point value read from the specified Modbus register.
- *         If the read operation fails, the return value is undefined.
+ * @note Uses a fixed register length defined as REGISTER_LENGTH. Ensure this value matches
+ *       the expected number of registers for the given address.
+ *
+ * @attention If the Modbus RTU server is not active, a warning message is logged via the Guardian system.
+ *            Ensure that Modbus communication is properly initialized and active before calling this function.
+ *
+ * @see ModbusRTU::readIreg
+ * @see ModbusRTU::task
  */
-float LocalModbus::readLocal(int address)
+bool LocalModbus::readLocal(int address)
 {
-    // Check if transaction is active.
-    if (!modbusRTU.server())
-    {
-        modbusRTU.readIreg()
-    }
-    else
-        Guardian::println("Modbus RTU is not active");
+    Error error = modbusRTU->addRequest(address, 0, READ_INPUT_REGISTER, 10, 1);
 
-    // Add Request to Task and Request.
-    modbusRTU.task();
+    return (error == SUCCESS);
+}
+
+void LocalModbus::beginRTU()
+{
+    // Prepare Hardware Serial.
+    RTUutils::prepareHardwareSerial(serial);
+
+    // Begin Second Serial Channel.
+    serial.begin(MODBUS_BAUD, SERIAL_8N1, MODBUS_RX, MODBUS_TX);
+
+    // Initialize RTU Instance.
+    modbusRTU = new ModbusClientRTU(MODBUS_RE);
+
+    // Add Error Handler.
+    modbusRTU->onErrorHandler([](Error error, unsigned long i)
+    {
+        Guardian::print("Modbus Error");
+        Guardian::println(String(error).c_str());
+    });
+
+    // Set Timeout.
+    modbusRTU->setTimeout(MODBUS_TIMEOUT);
+
+    // Begin Modbus RTU Client.
+    modbusRTU->begin(serial, MODBUS_CORE);
+}
+
+void handleData(ModbusMessage msg, uint32_t token)
+{
+    WebSerial.printf("Response: serverID=%d, FC=%d, Token=%08X, length=%d:\n", msg.getServerID(), msg.getFunctionCode(),
+                  token, msg.size());
+    for (auto& byte : msg)
+    {
+        WebSerial.printf("%02X ", byte);
+    }
+    WebSerial.println("");
 }
 
 
@@ -140,12 +167,12 @@ void LocalModbus::beginTCP()
  *
  * @link https://github.com/reaper7/SDM_Energy_Meter/blob/5d1653a0550fab7de13fbe596a1b09d1fae103ad/SDM.cpp#L647
  **/
-bool LocalModbus::validChecksum(const uint8_t *data, size_t messageLength) const
+bool LocalModbus::validChecksum(const uint8_t* data, size_t messageLength) const
 {
     const uint16_t temp = calculateCRC(data, messageLength - 2); // calculate out crc only from first 6 bytes
 
     return data[messageLength - 2] == lowByte(temp) &&
-           data[messageLength - 1] == highByte(temp);
+        data[messageLength - 1] == highByte(temp);
 }
 
 
@@ -168,7 +195,7 @@ bool LocalModbus::validChecksum(const uint8_t *data, size_t messageLength) const
  *
  * @link https://github.com/reaper7/SDM_Energy_Meter/blob/5d1653a0550fab7de13fbe596a1b09d1fae103ad/SDM.cpp#L604
  **/
-uint16_t LocalModbus::calculateCRC(const uint8_t *array, uint8_t len)
+uint16_t LocalModbus::calculateCRC(const uint8_t* array, uint8_t len)
 {
     uint16_t _crc, _flag;
     _crc = 0xFFFF;

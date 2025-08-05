@@ -30,6 +30,7 @@ public:
     static void update();
     static void boot(int percentage, const char* str);
     static void clear();
+    static void print(const char* str);
 
 private:
     static void error_code(int i);

@@ -6,6 +6,8 @@
 #define MODBUS_H
 #include <sys/_stdint.h>
 
+#include "Modbus.h"
+
 
 /**
  * @class LocalModbus
@@ -22,9 +24,10 @@ public:
     static void begin();
     static void loop();
     static float readRemote(int address);
-    static float readLocal(int i);
+    static bool readLocal(int address);
 
 private:
+    static void beginRTU();
     static void beginTCP();
     static bool validChecksum(const uint8_t* data, size_t messageLength) const;
     static uint16_t calculateCRC(const uint8_t* array, uint8_t len);

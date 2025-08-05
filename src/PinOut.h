@@ -22,6 +22,8 @@
 #define SOFTWARE_VERSION "1.0.2"
 #define MODBUS_HOUSE "192.168.5.24"
 #define MODBUS_TIMEOUT 2000
+#define MODBUS_CORE 1
+#define MODBUS_BAUD 9600
 
 // Ethernet Stuff.
 #define ETHERNET_CS 5
