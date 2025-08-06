@@ -267,7 +267,7 @@ void Watcher::handleSensors()
         setFlow(meter.getFlowRate_m());
 
         // Read Local Consumption.
-        //readLocalConsumption();
+        readLocalConsumption();
 
         // Read HA Power to compensate.
         if (mode == ModeType::DYNAMIC)

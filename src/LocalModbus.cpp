@@ -229,7 +229,7 @@ void LocalModbus::handleData(ModbusMessage msg, uint32_t token)
                      token, msg.size());
 
 
-    // Create new Onion for Converting.
+    // Create a new Onion for Converting.
     union
     {
         uint32_t i;
@@ -237,12 +237,13 @@ void LocalModbus::handleData(ModbusMessage msg, uint32_t token)
     } converter;
 
     // Add Register (16bit) 0 and Register (16bit) 1.
+    // As Little-Endian
     converter.i = ((uint32_t)msg[0] << 16) | msg[1];
 
-    // for (auto& byte : msg)
-    // {
-    //     WebSerial.printf("%02X ", byte);
-    // }
+    for (auto& byte : msg)
+    {
+        WebSerial.printf("%02X ", byte);
+    }
 
 
     WebSerial.println(converter.f);
