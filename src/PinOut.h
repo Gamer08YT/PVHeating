@@ -25,6 +25,9 @@
 #define MODBUS_CORE 1
 #define MODBUS_BAUD 9600
 
+// Server ID / Input Type  / CRC Size / High / Low
+#define MODBUS_OFFSET 3
+
 // Ethernet Stuff.
 #define ETHERNET_CS 5
 #define ETHERNET_SCK 18

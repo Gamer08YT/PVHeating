@@ -229,24 +229,27 @@ void LocalModbus::handleData(ModbusMessage msg, uint32_t token)
                      token, msg.size());
 
 
-    // Create a new Onion for Converting.
-    union
-    {
-        uint32_t i;
-        float f;
-    } converter;
+    // Add Float Buffer.
+    float values[REGISTER_LENGTH];
 
-    // Add Register (16bit) 0 and Register (16bit) 1.
-    // As Little-Endian
-    converter.i = ((uint32_t)msg[0] << 16) | msg[1];
+    // First value is on pos 3, after server ID, function code and length byte
+    uint16_t offset = MODBUS_OFFSET;
+
+    // The device has values all as IEEE754 float32 in two consecutive registers
+    // Read the requested in a loop
+    for (uint8_t i = 0; i < REGISTER_LENGTH; ++i)
+    {
+        offset = msg.get(offset, values[i]);
+    }
+
+    WebSerial.printf("Values: %f, %f\n", values[0], values[1]);
+
 
     for (auto& byte : msg)
     {
         WebSerial.printf("%02X ", byte);
     }
 
-
-    WebSerial.println(converter.f);
 }
 
 
