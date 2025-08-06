@@ -102,8 +102,14 @@ float LocalModbus::readRemote(int address)
  */
 bool LocalModbus::readLocal(int address)
 {
-    Guardian::print("Local: ");
-    Guardian::println(String(address).c_str());
+    String local = "Local: ";
+    String addressStr = String(address);
+
+    // Append String.
+    local.concat(addressStr);
+
+    // Print to Console.
+    Guardian::println(local.c_str());
 
     // Clear Queue if to full.
     if (localQueue > 10)
@@ -112,9 +118,12 @@ bool LocalModbus::readLocal(int address)
         localQueue = 0;
     }
 
+    // Increment Queue.
+    localQueue++;
+
     // https://github.com/eModbus/eModbus/blob/648a14b2f49de0c3ffcd9821e6b7a1180fd3f3f4/examples/RTU16example/main.cpp#L64
     // uint32_t token, uint8_t serverID, uint8_t functionCode, uint16_t p1, uint16_t p2
-    Error error = modbusRTU->addRequest(0x12345678, MODBUS_CORE, READ_INPUT_REGISTER, address, REGISTER_LENGTH);
+    Error error = modbusRTU->addRequest(localQueue, MODBUS_CORE, READ_INPUT_REGISTER, address, REGISTER_LENGTH);
 
     handleRequestError(error);
 
@@ -218,11 +227,25 @@ void LocalModbus::handleData(ModbusMessage msg, uint32_t token)
 {
     WebSerial.printf("Response: serverID=%d, FC=%d, Token=%08X, length=%d:\n", msg.getServerID(), msg.getFunctionCode(),
                      token, msg.size());
-    for (auto& byte : msg)
+
+
+    // Create new Onion for Converting.
+    union
     {
-        WebSerial.printf("%02X ", byte);
-    }
-    WebSerial.println("");
+        uint32_t i;
+        float f;
+    } converter;
+
+    // Add Register (16bit) 0 and Register (16bit) 1.
+    converter.i = ((uint32_t)msg[0] << 16) | msg[1];
+
+    // for (auto& byte : msg)
+    // {
+    //     WebSerial.printf("%02X ", byte);
+    // }
+
+
+    WebSerial.println(converter.f);
 }
 
 

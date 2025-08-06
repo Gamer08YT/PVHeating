@@ -19,7 +19,7 @@
 #ifndef PINOUT_H
 #define PINOUT_H
 
-#define SOFTWARE_VERSION "1.0.3"
+#define SOFTWARE_VERSION "1.0.4"
 #define MODBUS_HOUSE "192.168.5.24"
 #define MODBUS_TIMEOUT 2000
 #define MODBUS_CORE 1

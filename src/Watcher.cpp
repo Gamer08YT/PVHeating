@@ -246,7 +246,7 @@ void Watcher::handleSensors()
     if (fastInterval.isReady())
     {
         // Read internal Smart Meter Power Usage.
-        //readLocalPower();
+        readLocalPower();
 
         // Handle PWM Duty.
         handlePWM();
@@ -267,7 +267,7 @@ void Watcher::handleSensors()
         setFlow(meter.getFlowRate_m());
 
         // Read Local Consumption.
-        readLocalConsumption();
+        //readLocalConsumption();
 
         // Read HA Power to compensate.
         if (mode == ModeType::DYNAMIC)
@@ -655,8 +655,6 @@ void Watcher::setPower(float current_power)
 void Watcher::readLocalPower()
 {
     float currentPower = LocalModbus::readLocal(POWER_USAGE);
-
-    Guardian::println(String(currentPower, 2).c_str());
 
     setPower(currentPower);
 }
