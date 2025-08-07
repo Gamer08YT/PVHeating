@@ -60,6 +60,9 @@ LEDFader scrPWM(SCR_PWM);
 SimpleTimer fastInterval(500);
 SimpleTimer slowInterval(SLOW_INTERVAL);
 
+// Store Read State.
+bool readTimer = false;
+
 // Store Flow Meter Instance (I know it's easy, but i have Time rush).
 FlowSensor meter(YFB5, FLOW_PULSE);
 
@@ -610,10 +613,25 @@ void MeterISR()
     meter.count();
 }
 
+/**
+ * @brief Initializes and scans devices on the 1-Wire bus.
+ *
+ * This method configures the DallasTemperature library for use with the connected 1-Wire sensors. It disables the
+ * default wait-for-conversion behavior to allow asynchronous operation, ensuring efficient temperature readings.
+ *
+ * The method then retrieves and stores the number of devices detected on the bus. It iterates through all devices,
+ * attempting to retrieve and print their addresses using the provided interface. If a device does not respond with
+ * an address, the method outputs a warning message highlighting potential issues with power or cabling.
+ *
+ * Designed for execution during system setup to prepare the application for ongoing temperature monitoring.
+ */
 void Watcher::begin1Wire()
 {
     // Begin One Wire Sensors.
     sensors.begin();
+
+    // https://github.com/milesburton/Arduino-Temperature-Control-Library/issues/113#issuecomment-389638589
+    sensors.setWaitForConversion(false);
 
     // Grab a count of devices on the wire.
     foundDevices = sensors.getDeviceCount();
@@ -825,48 +843,55 @@ void Watcher::readButtons()
  */
 void Watcher::readTemperature()
 {
-    // Request Temperatures from Sensor.
-    sensors.requestTemperatures();
-    float tempTemperature = -1.0F;
-
-    // Loop through each device, print out temperature data
-    for (int i = 0; i < foundDevices; i++)
+    if (readTimer)
     {
-        float tempC = sensors.getTempCByIndex(i);
+        // Fix: https://github.com/milesburton/Arduino-Temperature-Control-Library/issues/113#issuecomment-389638589
+        pinMode(ONE_WIRE, OUTPUT);
+        digitalWrite(ONE_WIRE, HIGH);
 
-        // Check if temp Temperature is Set.
-        if (tempTemperature == -1)
+        float tempTemperature = -1.0F;
+
+
+        // Loop through each device, print out temperature data
+        for (int i = 0; i < foundDevices; i++)
         {
-            tempTemperature = tempC;
-        }
-        else
-        {
-            if (tempC > tempTemperature)
+            float tempC = sensors.getTempCByIndex(i);
+
+            // Check if temp Temperature is Set.
+            if (tempTemperature == -1)
             {
-                temperatureIn = tempTemperature;
-                temperatureOut = tempC;
+                tempTemperature = tempC;
             }
             else
             {
-                temperatureIn = tempC;
-                temperatureOut = tempTemperature;
+                if (tempC > tempTemperature)
+                {
+                    temperatureIn = tempTemperature;
+                    temperatureOut = tempC;
+                }
+                else
+                {
+                    temperatureIn = tempC;
+                    temperatureOut = tempTemperature;
+                }
             }
         }
-    }
-    // {
-    //     // Search the wire for address
-    //     if (sensors.getAddress(address, i))
-    //     {
-    //         // Output the device ID
-    //         Serial.print("Temperature for device: ");
-    //         Serial.println(i,DEC);
-    //
-    //         // Print the data
-    //         float tempC = sensors.getTempC(address);
-    //
 
-    //     }
-    // }
+        // Set Fail if Dallas Temperature Sensor failed to initialize.
+        if
+        (tempTemperature >= 85.0F)
+        {
+            Guardian::setError(100, "Temp init fail", Guardian::CRITICAL);
+        }
+    }
+    else
+    {
+        // Request Temperatures from Sensor.
+        sensors.requestTemperatures();
+    }
+
+    // Switch Read Timer.
+    readTimer = !readTimer;
 }
 
 /**
