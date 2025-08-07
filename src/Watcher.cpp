@@ -222,9 +222,7 @@ void Watcher::setConsumption(float con)
  */
 void Watcher::readLocalConsumption()
 {
-    float consumption = LocalModbus::readLocal(POWER_IMPORT);
-
-    setConsumption(consumption);
+    LocalModbus::readLocal(POWER_IMPORT);
 }
 
 /**
@@ -246,7 +244,7 @@ void Watcher::handleSensors()
     if (fastInterval.isReady())
     {
         // Read internal Smart Meter Power Usage.
-        //readLocalPower();
+        readLocalPower();
 
         // Handle PWM Duty.
         handlePWM();
@@ -642,21 +640,20 @@ void Watcher::setPower(float current_power)
 }
 
 /**
- * @brief Reads the local power usage and updates the current power state.
+ * @brief Reads the local power usage from the connected device.
  *
- * This method accesses the local power usage data through the Modbus interface by
- * reading the value associated with the POWER_USAGE register. The retrieved power
- * value is then passed to the setPower() method to update the internal state and
- * ensure that the current power is synchronized with the latest reading.
+ * This method utilizes the LocalModbus interface to retrieve the current
+ * power consumption value, specified by the POWER_USAGE register. The
+ * information collected is essential for monitoring and analyzing the
+ * system's internal power usage, enabling energy management and
+ * optimization functionalities.
  *
- * Designed to be invoked periodically as part of sensor handling routines, this method
- * ensures that the local power data is accurately reflected in the system's state.
+ * Intended to be called periodically for consistent updates on power
+ * consumption in scenarios that involve ongoing monitoring or regulation.
  */
 void Watcher::readLocalPower()
 {
-    float currentPower = LocalModbus::readLocal(POWER_USAGE);
-
-    setPower(currentPower);
+    LocalModbus::readLocal(POWER_USAGE);
 }
 
 /**

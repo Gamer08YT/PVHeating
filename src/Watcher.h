@@ -33,6 +33,9 @@ public:
     static void setPumpViaHA(bool state);
     static void startConsume();
     static void setMaxPower(float to_float);
+    static void setPower(float current_power);
+    static void setConsumption(float consumption);
+
 
     /**
      * @enum ModeType
@@ -62,16 +65,13 @@ public:
     static float housePower;
     static float consumption;
     static float flowRate;
-
 private:
     static int duty;
     static void begin1Wire();
     static void setupFlowMeter();
-    static void setPower(float current_power);
     static void readLocalPower();
     static void setHousePower(float house_power);
     static void readHouseMeterPower();
-    static void setConsumption(float consumption);
     static void readLocalConsumption();
     static void handleStandbyLedFade(bool cond);
     static void handleErrorLedFade(bool cond);

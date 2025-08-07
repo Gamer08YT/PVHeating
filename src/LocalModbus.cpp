@@ -8,6 +8,7 @@
 #include "PinOut.h"
 #include "MeterRegisters.h"
 #include "ModbusClientRTU.h"
+#include "Watcher.h"
 #include "WebSerial.h"
 
 // #include "ModbusClientTCP.h"
@@ -123,7 +124,7 @@ bool LocalModbus::readLocal(int address)
 
     // https://github.com/eModbus/eModbus/blob/648a14b2f49de0c3ffcd9821e6b7a1180fd3f3f4/examples/RTU16example/main.cpp#L64
     // uint32_t token, uint8_t serverID, uint8_t functionCode, uint16_t p1, uint16_t p2
-    Error error = modbusRTU->addRequest(localQueue, MODBUS_CORE, READ_INPUT_REGISTER, address, REGISTER_LENGTH);
+    Error error = modbusRTU->addRequest(address, MODBUS_CORE, READ_INPUT_REGISTER, address, REGISTER_LENGTH);
 
     handleRequestError(error);
 
@@ -201,7 +202,7 @@ void LocalModbus::beginRTU()
     modbusRTU->onErrorHandler(handleResponseError);
 
     // Add Message Handler.
-    modbusRTU->onDataHandler(handleData);
+    modbusRTU->onDataHandler(handleLocalData);
 
     // Set Timeout.
     modbusRTU->setTimeout(MODBUS_TIMEOUT);
@@ -214,20 +215,32 @@ void LocalModbus::beginRTU()
 }
 
 /**
- * @brief Handles and processes the received Modbus message data.
+ * @brief Handles the response for a Modbus query and extracts float values from it.
  *
- * This method extracts and displays information from the provided ModbusMessage, such as the server ID,
- * function code, data length, and the full message content in hexadecimal format. The information is
- * logged using the WebSerial interface for debugging or monitoring purposes.
+ * This function processes the incoming Modbus message, extracting data in the form of IEEE754
+ * float32 values from the message payload. It logs the server ID, function code, token,
+ * message length, extracted float values, and the raw byte data for debugging purposes.
  *
- * @param msg The ModbusMessage object containing the message data to be processed.
- * @param token A unique identifier associated with the request or transaction being processed.
+ * The function assumes the response data is formatted in consecutive registers as 32-bit
+ * floating-point values (two registers per value). Extracted values are stored in a local buffer.
+ *
+ * @param msg The Modbus message containing the response data from the queried device.
+ *            It includes the server ID, function code, payload, etc.
+ * @param token A unique identifier that corresponds to the triggered Modbus operation.
+ *
+ * @return The first extracted float value from the response message payload.
+ *
+ * @note The data in the message is accessed starting from a predefined offset. This assumes
+ *       the message structure as per the device's implementation and protocol specifics.
+ *
+ * @warning The function makes use of fixed buffer sizes and assumes all required data is
+ *          present in the Modbus response. Ensure the response matches the expected
+ *          length and format to avoid memory access issues.
  */
-void LocalModbus::handleData(ModbusMessage msg, uint32_t token)
+float LocalModbus::handleResponse(ModbusMessage& msg, uint32_t token)
 {
     WebSerial.printf("Response: serverID=%d, FC=%d, Token=%08X, length=%d:\n", msg.getServerID(), msg.getFunctionCode(),
                      token, msg.size());
-
 
     // Add Float Buffer.
     float values[REGISTER_LENGTH];
@@ -250,6 +263,39 @@ void LocalModbus::handleData(ModbusMessage msg, uint32_t token)
         WebSerial.printf("%02X ", byte);
     }
 
+    return values[0];
+}
+
+/**
+ * @brief Handles and processes the received Modbus message data.
+ *
+ * This method extracts and displays information from the provided ModbusMessage, such as the server ID,
+ * function code, data length, and the full message content in hexadecimal format. The information is
+ * logged using the WebSerial interface for debugging or monitoring purposes.
+ *
+ * @param msg The ModbusMessage object containing the message data to be processed.
+ * @param token A unique identifier associated with the request or transaction being processed.
+ */
+void LocalModbus::handleLocalData(ModbusMessage msg, uint32_t token)
+{
+    float response = handleResponse(msg, token);
+
+    switch (token)
+    {
+    case POWER_USAGE:
+        Watcher::setPower(response));
+        break;
+    case POWER_IMPORT:
+            Watcher::setConsumption(response);
+        break;
+    default:
+        char buffer[50];
+        snprintf(buffer, sizeof(buffer), "Unknown Token: %u", token);
+
+        Guardian::println(buffer);
+
+        break;
+    }
 }
 
 
