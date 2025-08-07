@@ -39,6 +39,7 @@ private:
     static void configureFlowInstance();
     static void configureErrorInstances();
     static void configureMaxPowerInstance();
+    static void configurePWMInstance();
     static void handleMQTT();
 
 public:
@@ -50,6 +51,7 @@ public:
     static void setPump(bool state);
     static void setSCR(bool sender);
     static void setConsumption(float value);
+    static void setPWM(int8_t int8);
 };
 
 

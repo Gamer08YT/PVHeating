@@ -15,7 +15,6 @@
 #include "device-types/HAButton.h"
 #include "device-types/HAHVAC.h"
 #include "device-types/HANumber.h"
-#include "device-types/HASelect.h"
 #include "device-types/HASensorNumber.h"
 #include "device-types/HASwitch.h"
 
@@ -48,6 +47,9 @@ HAButton consumeStart("heating_consume_start");
 
 // Store Consume Input Value Instance.
 HANumber consumeMax("heating_consume_max");
+
+// Store PWM Value Instance.
+HANumber pwm("heating_pwm");
 
 // Store Max Power.
 HANumber maxPower("heating_max_power");
@@ -306,6 +308,7 @@ void HomeAssistant::begin()
     //configureModeInstance();
     configurePumpInstance();
     configureErrorInstances();
+    configurePWMInstance();
 
     // Print Debug Message.
     Guardian::println("HomeAssistant is ready");
@@ -402,6 +405,20 @@ void HomeAssistant::configureMaxPowerInstance()
         Watcher::setMaxPower(number.toFloat());
 
         sender->setState(number);
+    });
+}
+
+void HomeAssistant::configurePWMInstance()
+{
+    pwm.setName("Duty");
+
+    // Handle PWM Change Listener.
+    pwm.onCommand([](HANumeric number, HANumber* sender)
+    {
+        if (Watcher::standby)
+        {
+            Watcher::setPWM(number.toInt8());
+        }
     });
 }
 
@@ -553,4 +570,17 @@ void HomeAssistant::setSCR(bool sender)
 void HomeAssistant::setConsumption(float value)
 {
     consumption.setValue(value);
+}
+
+/**
+ * @brief Sets the PWM (Pulse Width Modulation) state for the heating system in Home Assistant.
+ *
+ * This method updates the PWM state of the heating component in the Home Assistant system
+ * by assigning the provided value to the internal PWM representation.
+ *
+ * @param int8 The new PWM value, which defines the duty cycle or intensity of the heating system.
+ */
+void HomeAssistant::setPWM(int8_t int8)
+{
+    pwm.setState(int8);
 }

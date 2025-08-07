@@ -35,6 +35,8 @@ public:
     static void setMaxPower(float to_float);
     static void setPower(float current_power);
     static void setConsumption(float consumption);
+    static void setPWMHA(int8_t int8);
+    static void setPWM(int8_t int8);
 
 
     /**

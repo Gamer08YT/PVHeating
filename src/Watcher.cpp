@@ -125,8 +125,8 @@ void Watcher::handlePWM()
         }
     }
 
-    // Write SCR PWM Duty via calculated Duty.
-    analogWrite(SCR_PWM, duty);
+    // Update PWM Value.
+    setPWM(duty);
 }
 
 /**
@@ -208,6 +208,37 @@ void Watcher::setConsumption(float con)
     consumption = con;
 
     HomeAssistant::setConsumption(consumption);
+}
+
+/**
+ * @brief Sets the PWM duty cycle for the SCR using the specified value.
+ *
+ * This method writes the provided duty cycle value to the SCR_PWM pin.
+ * It is used to control the PWM signal for the SCR based on the
+ * calculated duty cycle value.
+ *
+ * @param duty The PWM duty cycle value to be set. It is an 8-bit signed integer.
+ */
+void Watcher::setPWMHA(int8_t duty)
+{
+    // Write SCR PWM Duty via calculated Duty.
+    analogWrite(SCR_PWM, duty);
+}
+
+/**
+ * @brief Sets the PWM duty cycle and synchronizes it with Home Assistant.
+ *
+ * This method updates the pulse-width modulation (PWM) duty cycle by setting
+ * the calculated value using the system's hardware abstraction and
+ * propagates this update to Home Assistant for integration with external systems.
+ *
+ * @param int8 The duty cycle value to be applied, represented as an 8-bit integer.
+ */
+void Watcher::setPWM(int8_t int8)
+{
+    setPWMHA(int8);
+
+    HomeAssistant::setPWM(int8);
 }
 
 /**
