@@ -85,9 +85,12 @@ void HomeAssistant::configurePumpInstance()
 
     pumpSwitch.onCommand([](bool state, HASwitch* sender)
     {
-        Watcher::setPumpViaHA(state);
+        if (Watcher::standby)
+        {
+            Watcher::setPumpViaHA(state);
 
-        sender->setState(state);
+            pumpSwitch.setState(state);
+        }
     });
 }
 
@@ -141,9 +144,12 @@ void HomeAssistant::configureSCRInstance()
 
     scrSwitch.onCommand([](bool state, HASwitch* sender)
     {
-        Watcher::setSCRViaHA(state);
+        if (Watcher::standby)
+        {
+            Watcher::setSCRViaHA(state);
 
-        sender->setState(state);
+            scrSwitch.setState(sender);
+        }
     });
 }
 
@@ -528,12 +534,7 @@ void HomeAssistant::setCurrentTemperature(float x)
  */
 void HomeAssistant::setPump(bool state)
 {
-    if (Watcher::standby)
-    {
-        Watcher::setPumpViaHA(state);
-
-        pumpSwitch.setState(state);
-    }
+    pumpSwitch.setState(state);
 }
 
 /**
@@ -548,12 +549,7 @@ void HomeAssistant::setPump(bool state)
  */
 void HomeAssistant::setSCR(bool sender)
 {
-    if (Watcher::standby)
-    {
-        Watcher::setSCRViaHA(false);
-
-        scrSwitch.setState(sender);
-    }
+    scrSwitch.setState(sender);
 }
 
 /**
