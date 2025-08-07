@@ -805,34 +805,6 @@ void Watcher::readButtons()
     modeButton.tick();
 }
 
-/**
- * @brief Sets the internal temperature reading.
- *
- * This method assigns the specified temperature value to the internal
- * temperature tracking variable, ensuring the system has the latest
- * updated temperature data for internal operations.
- *
- * @param i The new temperature value to set for the internal temperature.
- */
-void Watcher::setTemperatureIn(float i)
-{
-    temperatureIn = i;
-}
-
-/**
- * @brief Sets the output temperature value.
- *
- * This method updates the temperatureOut variable with the specified value.
- *
- * @param i The new temperature value to set for the output.
- */
-void Watcher::setTemperatureOut(float i)
-{
-    temperatureOut = i;
-
-    // Set Current Temperature.
-    HomeAssistant::setCurrentTemperature(i);
-}
 
 /**
  * @brief Reads temperature data from connected sensors and updates internal temperature variables.

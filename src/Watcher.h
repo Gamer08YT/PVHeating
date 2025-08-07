@@ -79,8 +79,6 @@ private:
     static void handleErrorLedFade(bool cond);
     static void setupPins();
     static void readButtons();
-    static void setTemperatureIn(float i);
-    static void setTemperatureOut(float i);
     static void readTemperature();
     static void handlePowerBasedDuty();
     static bool checkLocalPowerLimit();
