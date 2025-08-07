@@ -148,7 +148,11 @@ void Watcher::updateDisplay()
         Guardian::setTitle("Dashboard");
         Guardian::setValue(1, "PWM", String(duty, 2).c_str());
         Guardian::setValue(2, "Pin", String(currentPower, 2).c_str(), "W");
-        Guardian::setValue(3, "Tout", String(temperatureOut, 2).c_str(), "C");
+
+        if (displayFlow)
+            Guardian::setValue(3, "Tout", String(temperatureOut, 2).c_str(), "C");
+        else
+            Guardian::setValue(3, "Tin", String(temperatureIn, 2).c_str(), "C");
 
         // Show Flow or Work.
         if (displayFlow)
