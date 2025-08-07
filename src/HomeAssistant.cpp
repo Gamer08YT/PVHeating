@@ -458,31 +458,6 @@ void HomeAssistant::loop()
     publishChanges();
 }
 
-HAHVAC HomeAssistant::getHVAC()
-{
-    return heating;
-}
-
-HASensorNumber HomeAssistant::getCurrentPower()
-{
-    return power;
-}
-
-HASensorNumber HomeAssistant::getConsumption()
-{
-    return consumption;
-}
-
-HASwitch HomeAssistant::getPump()
-{
-    return pumpSwitch;
-}
-
-HASwitch HomeAssistant::getSCR()
-{
-    return scrSwitch;
-}
-
 /**
  * @brief Updates the flow sensor value with the current flow rate.
  *
@@ -495,4 +470,87 @@ HASwitch HomeAssistant::getSCR()
 void HomeAssistant::setFlow(float get_current_flowrate)
 {
     flow.setValue(get_current_flowrate);
+}
+
+/**
+ * @brief Sets the current power value and updates the corresponding sensor instance.
+ *
+ * This method updates the value of the power sensor to represent the current
+ * operational power. The updated value may be used for monitoring purposes
+ * within the Home Assistant system.
+ *
+ * @param current_power The current power value to be set, represented as a floating point number.
+ */
+void HomeAssistant::setCurrentPower(float current_power)
+{
+    power.setValue(current_power);
+}
+
+/**
+ * @brief Sets the current temperature in the HVAC system.
+ *
+ * Updates the HVAC system with the latest temperature reading to ensure accurate
+ * monitoring and operational adjustments.
+ *
+ * @param x The current temperature value to be set, in degrees.
+ */
+void HomeAssistant::setCurrentTemperature(float x)
+{
+    heating.setCurrentTemperature(x);
+}
+
+/**
+ * @brief Sets the operational state of the pump via Home Assistant.
+ *
+ * This method updates the pump state within the system only when in standby mode.
+ * It utilizes Watcher to handle state changes through Home Assistant and syncs
+ * the new state with the associated pump switch instance.
+ *
+ * @param state The desired operational state of the pump, where true activates the
+ *              pump and false deactivates it.
+ */
+void HomeAssistant::setPump(bool state)
+{
+    if (Watcher::standby)
+    {
+        Watcher::setPumpViaHA(state);
+
+        pumpSwitch.setState(state);
+    }
+}
+
+/**
+ * @brief Updates the SCR (silicon controlled rectifier) state if the system is in standby mode.
+ *
+ * This method modifies the SCR's operational state through Home Assistant integration.
+ * If the system is in standby mode, it resets the SCR state in the Watcher system
+ * and synchronizes the state with the Home Assistant SCR switch instance.
+ *
+ * @param sender The new state to set for the SCR. True represents an active state,
+ *               and false represents an inactive state.
+ */
+void HomeAssistant::setSCR(bool sender)
+{
+    if (Watcher::standby)
+    {
+        Watcher::setSCRViaHA(false);
+
+        scrSwitch.setState(sender);
+    }
+}
+
+/**
+ * @brief Sets the consumption value for the Home Assistant instance.
+ *
+ * Updates the current consumption value associated with the sensor and
+ * triggers a corresponding MQTT message if necessary. This value is used
+ * to represent the energy or resource consumption in the Home Assistant
+ * ecosystem.
+ *
+ * @param value The new consumption value to be set. Must match the expected
+ * precision of the sensor instance.
+ */
+void HomeAssistant::setConsumption(float value)
+{
+    consumption.setValue(value);
 }

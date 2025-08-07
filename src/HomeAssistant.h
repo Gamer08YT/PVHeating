@@ -44,12 +44,12 @@ private:
 public:
     static void begin();
     static void loop();
-    static HAHVAC getHVAC();
-    static HASensorNumber getCurrentPower();
-    static HASensorNumber getConsumption();
-    static HASwitch getPump();
-    static HASwitch getSCR();
     static void setFlow(float get_current_flowrate);
+    static void setCurrentPower(float current_power);
+    static void setCurrentTemperature(float x);
+    static void setPump(bool state);
+    static void setSCR(bool sender);
+    static void setConsumption(float value);
 };
 
 

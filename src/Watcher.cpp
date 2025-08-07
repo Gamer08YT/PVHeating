@@ -207,7 +207,7 @@ void Watcher::setConsumption(float con)
 {
     consumption = con;
 
-    HomeAssistant::getConsumption().setCurrentValue(consumption);
+    HomeAssistant::setConsumption(consumption);
 }
 
 /**
@@ -442,7 +442,7 @@ void Watcher::setMaxConsume(float to_float)
  */
 void Watcher::setPump(bool sender)
 {
-    HomeAssistant::getPump().setState(sender);
+    HomeAssistant::setPump(sender);
 
     setPumpViaHA(sender);
 }
@@ -459,7 +459,7 @@ void Watcher::setPump(bool sender)
  */
 void Watcher::setSCR(bool sender)
 {
-    HomeAssistant::getSCR().setState(sender);
+    HomeAssistant::setSCR(sender);
 
     setSCRViaHA(sender);
 }
@@ -636,7 +636,7 @@ void Watcher::setPower(float current_power)
 {
     currentPower = current_power;
 
-    HomeAssistant::getCurrentPower().setCurrentValue(currentPower);
+    HomeAssistant::setCurrentPower(current_power);
 }
 
 /**
@@ -782,7 +782,7 @@ void Watcher::setTemperatureOut(float i)
     temperatureOut = i;
 
     // Set Current Temperature.
-    HomeAssistant::getHVAC().setCurrentTemperature(i, false);
+    HomeAssistant::setCurrentTemperature(i);
 }
 
 /**

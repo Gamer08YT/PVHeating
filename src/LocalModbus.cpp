@@ -283,10 +283,10 @@ void LocalModbus::handleLocalData(ModbusMessage msg, uint32_t token)
     switch (token)
     {
     case POWER_USAGE:
-        Watcher::setPower(response));
+        Watcher::setPower(response);
         break;
     case POWER_IMPORT:
-            Watcher::setConsumption(response);
+        Watcher::setConsumption(response);
         break;
     default:
         char buffer[50];
