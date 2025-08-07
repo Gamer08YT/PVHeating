@@ -329,16 +329,6 @@ void HomeAssistant::begin()
     mqtt.begin("192.168.1.181", "pvheating", "pvheating");
 }
 
-void HomeAssistant::publishChanges()
-{
-    if ((millis() - lastTempPublishAt) > 3000)
-    {
-        heating.setCurrentTemperature(lastTemp);
-        lastTempPublishAt = millis();
-        lastTemp += 0.5;
-    }
-}
-
 /**
  * @brief Configures the fault instances with necessary attributes for
  * integration with HomeAssistant.
@@ -476,9 +466,6 @@ void HomeAssistant::loop()
 {
     // Loop MQTT.
     mqtt.loop();
-
-    // Publish changes.
-    publishChanges();
 }
 
 /**

@@ -88,6 +88,7 @@ private:
     static void handlePWM();
     static void updateDisplay();
     static void setFlow(float get_current_flowrate);
+    static void updateTemperature();
     static void handleSensors();
     static void setupButtons();
     static void printAddress(DeviceAddress deviceAddress);

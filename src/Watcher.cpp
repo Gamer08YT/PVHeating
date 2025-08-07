@@ -179,6 +179,21 @@ void Watcher::setFlow(float get_current_flowrate)
 }
 
 /**
+ * @brief Updates the current temperature in the HomeAssistant system.
+ *
+ * This function communicates the system's current temperature (stored in
+ * the temperatureOut variable) to HomeAssistant, ensuring synchronization
+ * between the Watcher component and HomeAssistant's representation of the
+ * environmental conditions.
+ *
+ * Typically invoked during the periodic sensor update routine.
+ */
+void Watcher::updateTemperature()
+{
+    HomeAssistant::setCurrentTemperature(temperatureOut);
+}
+
+/**
  * @brief Reads the active power imported by the house meter and updates the house power.
  *
  * This method retrieves the current power reading from the house meter using the
@@ -287,7 +302,10 @@ void Watcher::handleSensors()
     if (slowInterval.isReady())
     {
         // Read Temperatures via OneWire.
-        //readTemperature();
+        readTemperature();
+
+        // Update Temperature in HomeAssistant.
+        updateTemperature();
 
         // Calculate Flow.
         meter.read();
@@ -833,41 +851,46 @@ void Watcher::readTemperature()
 {
     // Request Temperatures from Sensor.
     sensors.requestTemperatures();
-    float tempTemperature = -1;
+    float tempTemperature = -1.0F;
 
     // Loop through each device, print out temperature data
     for (int i = 0; i < foundDevices; i++)
     {
-        // Search the wire for address
-        if (sensors.getAddress(address, i))
+        float tempC = sensors.getTempCByIndex(i);
+
+        // Check if temp Temperature is Set.
+        if (tempTemperature == -1)
         {
-            // Output the device ID
-            Serial.print("Temperature for device: ");
-            Serial.println(i,DEC);
-
-            // Print the data
-            float tempC = sensors.getTempC(address);
-
-            // Check if temp Temperature is Set.
-            if (tempTemperature == -1)
+            tempTemperature = tempC;
+        }
+        else
+        {
+            if (tempC > tempTemperature)
             {
-                tempTemperature = tempC;
+                temperatureIn = tempTemperature;
+                temperatureOut = tempC;
             }
             else
             {
-                if (tempC > tempTemperature)
-                {
-                    temperatureIn = tempTemperature;
-                    temperatureOut = tempC;
-                }
-                else
-                {
-                    temperatureIn = tempC;
-                    temperatureOut = tempTemperature;
-                }
+                temperatureIn = tempC;
+                temperatureOut = tempTemperature;
             }
         }
     }
+    // {
+    //     // Search the wire for address
+    //     if (sensors.getAddress(address, i))
+    //     {
+    //         // Output the device ID
+    //         Serial.print("Temperature for device: ");
+    //         Serial.println(i,DEC);
+    //
+    //         // Print the data
+    //         float tempC = sensors.getTempC(address);
+    //
+
+    //     }
+    // }
 }
 
 /**

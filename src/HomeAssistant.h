@@ -34,7 +34,6 @@ private:
     static void configureHeatingInstance();
     static void configurePowerInstance();
     static void configureConsumptionInstance();
-    static void publishChanges();
     static void configureFaultInstances();
     static void configureFlowInstance();
     static void configureErrorInstances();
