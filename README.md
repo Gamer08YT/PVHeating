@@ -96,7 +96,7 @@ graph TD
     - EthernetESP32
     - ElegantOTA
     - Home Assistant Integration
-    - DFRobot_RTU
+    - eModbus
     - OneWire
     - DallasTemperature
     - OneButton
