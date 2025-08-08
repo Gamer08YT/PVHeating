@@ -33,6 +33,7 @@ private:
     static void beginRTU();
     static float handleResponse(ModbusMessage& msg, uint32_t token);
     static void handleLocalData(ModbusMessage msg, uint32_t token);
+    static void handleRemoteData(ModbusMessage msg, uint32_t token);
     static void beginTCP();
     static bool validChecksum(const uint8_t* data, size_t messageLength);
     static uint16_t calculateCRC(const uint8_t* array, uint8_t len);

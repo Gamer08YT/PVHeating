@@ -333,6 +333,36 @@ void LocalModbus::handleLocalData(ModbusMessage msg, uint32_t token)
     }
 }
 
+/**
+ * @brief Handles incoming Modbus messages and processes data based on a token identifier.
+ *
+ * This method processes a Modbus message received from a remote source by invoking
+ * the `handleResponse` method to retrieve a floating-point response value. Based on
+ * the token parameter, it performs specific actions, such as setting house power readings.
+ * If the token is unrecognized, a diagnostic message is logged via the Guardian system.
+ *
+ * @param msg The ModbusMessage object representing the data received.
+ * @param token A unique identifier specifying the type of data or action to be performed.
+ */
+void LocalModbus::handleRemoteData(ModbusMessage msg, uint32_t token)
+{
+    float response = handleResponse(msg, token);
+
+    switch (token)
+    {
+    case POWER_USAGE:
+        Watcher::setHousePower(response);
+        break;
+    default:
+        char buffer[50];
+        snprintf(buffer, sizeof(buffer), "Unknown Token: %u", token);
+
+        Guardian::println(buffer);
+
+        break;
+    }
+}
+
 
 /**
  * @brief Initializes the Modbus TCP communication system.
@@ -351,6 +381,12 @@ void LocalModbus::beginTCP()
 {
     // Initialize TCP Instance.
     modbusTCP = new ModbusClientTCP(*HomeAssistant::getClient(), 10);
+
+    // Add Error Handler.
+    modbusRTU->onErrorHandler(handleResponseError);
+
+    // Add Message Handler.
+    modbusRTU->onDataHandler(handleRemoteData);
 
     // Set Timeout.
     modbusRTU->setTimeout(MODBUS_TIMEOUT);
