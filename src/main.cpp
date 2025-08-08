@@ -31,8 +31,8 @@ void setup()
     // Show Boot Message.
     Guardian::println("Booting...");
 
-    // Clear Error Message.
-    Guardian::clearError();
+    // // Clear Error Message.
+    // Guardian::clearError();
 
     // Begin with Ethernet.
     LocalNetwork::begin();

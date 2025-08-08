@@ -413,18 +413,25 @@ void Watcher::setupButtons()
     // Reset FAULT State on Long Press.
     faultButton.attachLongPressStart([]
     {
+        Guardian::println("Fault L");
+
         setError(false);
     });
 
     // Switch MODE State on Click.
     modeButton.attachClick([]
     {
+        Guardian::println("Mode S");
+
         setStandby(false);
         setMode((mode == ModeType::CONSUME) ? ModeType::DYNAMIC : ModeType::CONSUME);
     });
 
-    modeButton.attachDoubleClick([]
+    // Standby on Long Press.
+    modeButton.attachLongPressStart([]
     {
+        Guardian::println("Mode L");
+
         setStandby(true);
     });
 }
@@ -469,10 +476,17 @@ void Watcher::setup()
  */
 void Watcher::setStandby(bool cond)
 {
-    Guardian::println("S > Standby");
+    if (cond)
+        Guardian::println("Standby");
 
     // Switch LED Fade vs Blink State.
     handleStandbyLedFade(cond);
+
+    // Disable SCR.
+    if (cond)
+    {
+        setSCR(false);
+    }
 
     standby = cond;
 }

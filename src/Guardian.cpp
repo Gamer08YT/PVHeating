@@ -88,6 +88,13 @@ void Guardian::error_level(ErrorType mode)
     }
 }
 
+/**
+ * @brief Updates the fault state in the Home Assistant system.
+ *
+ * Synchronizes the current error title with Home Assistant by invoking
+ * the setErrorTitle function. This ensures that any changes to the
+ * error state are reflected accurately in the Home Assistant interface.
+ */
 void Guardian::updateFault()
 {
     HomeAssistant::setErrorTitle(errorTitle);

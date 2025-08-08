@@ -204,17 +204,21 @@ void HomeAssistant::configureHeatingInstance()
     // Register Mode change Listener.
     heating.onModeCommand([](HAHVAC::Mode mode, HAHVAC* sender)
     {
-        Guardian::println("Mode changed");
-
         switch (mode)
         {
         case HAHVAC::HeatMode:
+            Guardian::println("HeatM");
+
             Watcher::setMode(Watcher::CONSUME);
             break;
         case HAHVAC::AutoMode:
+            Guardian::println("AutoM");
+
             Watcher::setMode(Watcher::DYNAMIC);
             break;
         case HAHVAC::OffMode:
+            Guardian::println("OffM");
+
             Watcher::setStandby(true);
             break;
         }
