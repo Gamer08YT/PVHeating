@@ -95,13 +95,17 @@ void Watcher::handleButtonLeds()
  */
 void Watcher::handlePWM()
 {
-    if (standby || error)
+    bool tempToLow = isTempToLow();
+
+    if (standby || error || !tempToLow)
     {
         duty = 0;
 
         // Disable SCR and Pump.
         setSCR(false);
-        setPump(false);
+
+        // Disable Pump on Error && Standby but if no of these are active don't disable on Temp to high.
+        setPump((!error && !standby && !tempToLow));
     }
     else
     {
