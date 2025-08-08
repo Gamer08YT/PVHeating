@@ -93,7 +93,7 @@ float LocalModbus::readRemote(int address)
 
     // https://github.com/eModbus/eModbus/blob/648a14b2f49de0c3ffcd9821e6b7a1180fd3f3f4/examples/RTU16example/main.cpp#L64
     // uint32_t token, uint8_t serverID, uint8_t functionCode, uint16_t p1, uint16_t p2
-    Error error = modbusRTU->addRequest(address, MODBUS_CORE, READ_INPUT_REGISTER, address, REGISTER_LENGTH);
+    Error error = modbusTCP->addRequest(address, MODBUS_CORE, READ_INPUT_REGISTER, address, REGISTER_LENGTH);
 
     handleRequestError(error);
 
@@ -393,13 +393,13 @@ void LocalModbus::beginTCP()
     modbusTCP = new ModbusClientTCP(*HomeAssistant::getClient(), 10);
 
     // Add Error Handler.
-    modbusRTU->onErrorHandler(handleResponseError);
+    modbusTCP->onErrorHandler(handleResponseError);
 
     // Add Message Handler.
-    modbusRTU->onDataHandler(handleRemoteData);
+    modbusTCP->onDataHandler(handleRemoteData);
 
     // Set Timeout.
-    modbusRTU->setTimeout(MODBUS_TIMEOUT);
+    modbusTCP->setTimeout(MODBUS_TIMEOUT);
 
     // Begin Modbus TCP Client.
     modbusTCP->begin(MODBUS_CORE);
