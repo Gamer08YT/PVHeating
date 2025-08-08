@@ -26,7 +26,6 @@ public:
     static void setDefaults();
     static void setup();
     static void setStandby(bool cond);
-    static void setError(bool cond);
     static void setMaxConsume(float to_float);
     static void setPump(bool sender);
     static void setSCR(bool sender);
@@ -40,6 +39,7 @@ public:
     static void setPWM(int8_t int8);
     static void setTargetTemperature(int is_int8);
     static void setHousePower(float house_power);
+    static void handleErrorLedFade(bool cond);
 
 
     /**
@@ -80,7 +80,6 @@ private:
     static void readHouseMeterPower();
     static void readLocalConsumption();
     static void handleStandbyLedFade(bool cond);
-    static void handleErrorLedFade(bool cond);
     static void setupPins();
     static void readButtons();
     static void readTemperature();

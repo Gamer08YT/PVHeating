@@ -22,7 +22,6 @@
 
 // Definitions from Header.
 Watcher::ModeType Watcher::mode = Watcher::CONSUME;
-bool Watcher::error = false;
 bool Watcher::standby = true;
 float Watcher::temperatureIn = 0.0f;
 float Watcher::temperatureOut = 0.0f;
@@ -421,7 +420,7 @@ void Watcher::setupButtons()
     {
         Guardian::println("Fault L");
 
-        setError(false);
+        Guardian::clearError();
     });
 
     // Switch MODE State on Click.
@@ -495,25 +494,6 @@ void Watcher::setStandby(bool cond)
     }
 
     standby = cond;
-}
-
-/**
- * @brief Sets an error state and logs the action.
- *
- * This method is used to update the error state of the system.
- * It logs the error update using the `Guardian::println` method
- * and modifies the internal `error` state based on the provided condition.
- *
- * @param cond A boolean value representing the error condition.
- * If `true`, the error state is activated. If `false`, the error state is cleared.
- */
-void Watcher::setError(bool cond)
-{
-    Guardian::println("S > Error");
-
-    handleErrorLedFade(cond);
-
-    error = cond;
 }
 
 /**

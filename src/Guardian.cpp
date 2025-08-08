@@ -83,7 +83,7 @@ void Guardian::error_level(ErrorType mode)
     if (errorLevel == CRITICAL)
     {
         // Set Error and Disable everything.
-        Watcher::setError(true);
+        Watcher::handleErrorLedFade(true);
         Watcher::setStandby(true);
     }
 }
@@ -454,6 +454,8 @@ void Guardian::print(const char* str)
 void Guardian::clearError()
 {
     setError(-1, "", NORMAL);
+
+    Watcher::handleErrorLedFade(false);
 }
 
 /**
