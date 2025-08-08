@@ -99,6 +99,8 @@ void Watcher::handlePWM()
 
     if (standby || error || !tempToLow)
     {
+        Guardian::println("Shutdown");
+
         duty = 0;
 
         // Disable SCR and Pump.
@@ -116,6 +118,8 @@ void Watcher::handlePWM()
         // Handle Max Power Limit.
         if (checkLocalPowerLimit())
         {
+            Guardian::println("MaxP");
+
             if (duty > 0)
             {
                 duty--;
