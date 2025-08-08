@@ -471,3 +471,16 @@ Guardian::ErrorType Guardian::getErrorType()
 {
     return errorLevel;
 }
+
+/**
+ * @brief Checks whether the error level of the system is critical.
+ *
+ * This function determines if the current error status of the system
+ * is at a critical level, which typically requires immediate attention.
+ *
+ * @return True if the error level is set to CRITICAL, otherwise false.
+ */
+bool Guardian::isCritical()
+{
+    return errorLevel == CRITICAL;
+}

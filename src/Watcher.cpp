@@ -96,7 +96,7 @@ void Watcher::handlePWM()
 {
     bool tempToLow = isTempToLow();
 
-    if (standby || error || !tempToLow)
+    if (standby || Guardian::isCritical() || !tempToLow)
     {
         Guardian::println("Shutdown");
 
@@ -106,7 +106,7 @@ void Watcher::handlePWM()
         setSCR(false);
 
         // Disable Pump on Error && Standby but if no of these are active don't disable on Temp to high.
-        setPump((!error && !standby && !tempToLow));
+        setPump((!Guardian::isCritical() && !standby && !tempToLow));
     }
     else
     {

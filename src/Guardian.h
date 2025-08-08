@@ -33,6 +33,7 @@ public:
     static void print(const char* str);
     static void clearError();
     static ErrorType getErrorType();
+    static bool isCritical();
 
 private:
     static void error_code(int i);

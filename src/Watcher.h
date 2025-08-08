@@ -60,7 +60,6 @@ public:
 
     static void setMode(ModeType mode);
     static ModeType mode;
-    static bool error;
     static bool standby;
     static float maxPower;
     static float temperatureIn;
