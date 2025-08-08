@@ -102,8 +102,6 @@ void Watcher::handlePWM()
         // Disable SCR and Pump.
         setSCR(false);
         setPump(false);
-
-        isTempToLow()
     }
     else
     {
@@ -980,7 +978,21 @@ void Watcher::handleConsumeBasedDuty()
     }
 }
 
-void Watcher::isTempToLow()
+/**
+ * @brief Checks if the external temperature is too low or undefined.
+ *
+ * This method evaluates whether the `temperatureOut` value indicates a low temperature
+ * condition or is in an invalid (undefined) state. It returns true if the temperature
+ * is below the defined `temperatureMax` threshold or if the value of `temperatureOut`
+ * is not a finite number.
+ *
+ * @return true if the external temperature is too low or undefined, false otherwise.
+ */
+bool Watcher::isTempToLow()
 {
-    return;
+    // If TemperatureOut is undefined.
+    if (!std::isfinite(temperatureOut))
+        return true;
+
+    return temperatureOut < temperatureMax;
 }

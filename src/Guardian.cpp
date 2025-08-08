@@ -6,6 +6,7 @@
 #include "Guardian.h"
 #include <Adafruit_SSD1306.h>
 
+#include "HomeAssistant.h"
 #include "PinOut.h"
 #include "Watcher.h"
 #include "WebSerial.h"
@@ -16,7 +17,7 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 // Override Header Vars.
 const char* Guardian::errorTitle = "";
 int Guardian::errorCode = -1;
-Guardian::ErrorType Guardian::errorLevel = WARNING;
+Guardian::ErrorType Guardian::errorLevel = NORMAL;
 
 
 /**
@@ -89,6 +90,7 @@ void Guardian::error_level(ErrorType mode)
 
 void Guardian::updateFault()
 {
+    HomeAssistant::setErrorState(error_title())
 }
 
 /**
@@ -445,5 +447,19 @@ void Guardian::print(const char* str)
  */
 void Guardian::clearError()
 {
-    setError(-1, "");
+    setError(-1, "", NORMAL);
+}
+
+/**
+ * @brief Retrieves the current error type of the Guardian system.
+ *
+ * This function returns the most recent error type associated with
+ * the Guardian system. The error type indicates the severity level
+ * of the encountered fault or status.
+ *
+ * @return The current error type as a value of the Guardian::ErrorType enum.
+ */
+Guardian::ErrorType Guardian::getErrorType()
+{
+    return errorLevel;
 }

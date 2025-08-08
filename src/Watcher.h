@@ -87,7 +87,7 @@ private:
     static void handlePowerBasedDuty();
     static bool checkLocalPowerLimit();
     static void handleConsumeBasedDuty();
-    static void isTempToLow();
+    static bool isTempToLow();
     static void handlePWM();
     static void updateDisplay();
     static void setFlow(float get_current_flowrate);

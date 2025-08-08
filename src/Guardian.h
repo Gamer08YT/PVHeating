@@ -11,7 +11,7 @@ class Guardian
 public:
     enum ErrorType
     {
-        WARNING, CRITICAL
+        WARNING, CRITICAL, NORMAL
     };
 
 
@@ -32,6 +32,7 @@ public:
     static void clear();
     static void print(const char* str);
     static void clearError();
+    static ErrorType getErrorType();
 
 private:
     static void error_code(int i);
@@ -41,6 +42,8 @@ private:
     static int errorCode;
     static ErrorType errorLevel;
 };
+
+
 
 
 #endif //GUARDIAN_H

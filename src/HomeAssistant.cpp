@@ -449,6 +449,7 @@ void HomeAssistant::handleMQTT()
         // Check for Errors before MQTT was initialized.
         if (Guardian::hasError())
         {
+            fault.setState(Guardian::hasError());
             error_log.setValue(Guardian::getErrorTitle());
         }
     });
