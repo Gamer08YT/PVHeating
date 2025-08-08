@@ -573,3 +573,16 @@ void HomeAssistant::setPWM(int8_t int8)
 {
     pwm.setState(int8);
 }
+
+/**
+ * @brief Sets the error title for the HomeAssistant instance.
+ *
+ * This method updates the error log with a specified error title,
+ * allowing the system to track and reflect the current error state.
+ *
+ * @param error_title A string representing the error title to be logged.
+ */
+void HomeAssistant::setErrorTitle(const char* error_title)
+{
+    error_log.setValue(error_title);
+}

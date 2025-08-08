@@ -90,7 +90,7 @@ void Guardian::error_level(ErrorType mode)
 
 void Guardian::updateFault()
 {
-    HomeAssistant::setErrorState(error_title())
+    HomeAssistant::setErrorTitle(errorTitle);
 }
 
 /**
