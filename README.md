@@ -103,6 +103,7 @@ graph TD
     - LEDFader
     - SimpleTimer
     - FlowSensor
+    - WebSerial
 
 4. Projekt compilieren und hochladen
 
