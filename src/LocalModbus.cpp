@@ -10,6 +10,7 @@
 #include "MeterRegisters.h"
 #include "ModbusClientRTU.h"
 #include "ModbusClientTCP.h"
+#include "ModbusClientTCPasync.h"
 #include "Watcher.h"
 #include "WebSerial.h"
 
@@ -20,7 +21,7 @@
 HardwareSerial serial(2);
 
 // Store Instance of TCP Instance.
-ModbusClientTCP* modbusTCP;
+ModbusClientTCPasync* modbusTCP;
 
 // Store Modbus Instance.
 ModbusClientRTU* modbusRTU;
@@ -84,7 +85,7 @@ float LocalModbus::readRemote(int address)
     // Clear Queue if to full.
     if (remoteQueue > 10)
     {
-        modbusRTU->clearQueue();
+        modbusTCP->clearQueue();
         remoteQueue = 0;
     }
 
@@ -390,7 +391,7 @@ void LocalModbus::handleRemoteData(ModbusMessage msg, uint32_t token)
 void LocalModbus::beginTCP()
 {
     // Initialize TCP Instance.
-    modbusTCP = new ModbusClientTCP(*HomeAssistant::getClient(), 10);
+    modbusTCP = new ModbusClientTCPasync(MODBUS_TCP, MODBUS_TCP_PORT);
 
     // Add Error Handler.
     modbusTCP->onErrorHandler(handleResponseError);
@@ -402,10 +403,7 @@ void LocalModbus::beginTCP()
     modbusTCP->setTimeout(MODBUS_TIMEOUT);
 
     // Begin Modbus TCP Client.
-    modbusTCP->begin(MODBUS_CORE);
-
-    // // Set Target of TCP Connection.
-    modbusTCP->setTarget(IPAddress(MODBUS_TCP), MODBUS_TCP_PORT);
+    modbusTCP->connect();
 
     // Print Debug Message.
     Guardian::boot(60, "TCP");

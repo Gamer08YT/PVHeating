@@ -20,7 +20,7 @@
 #define PINOUT_H
 
 #define SOFTWARE_VERSION "1.0.4"
-#define MODBUS_TIMEOUT 2000
+#define MODBUS_TIMEOUT 500
 #define MODBUS_CORE 1
 #define MODBUS_BAUD 9600
 #define MODBUS_TCP {192, 168, 5, 24}
