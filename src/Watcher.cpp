@@ -634,8 +634,6 @@ void Watcher::setMaxPower(float to_float)
  */
 void Watcher::setMode(ModeType cond)
 {
-    Guardian::println("S > Mode");
-
     mode = cond;
 }
 

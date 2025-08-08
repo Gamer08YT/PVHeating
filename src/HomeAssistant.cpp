@@ -207,12 +207,12 @@ void HomeAssistant::configureHeatingInstance()
         switch (mode)
         {
         case HAHVAC::HeatMode:
-            Guardian::println("HeatM");
+            Guardian::println("ConsumeM");
 
             Watcher::setMode(Watcher::CONSUME);
             break;
         case HAHVAC::AutoMode:
-            Guardian::println("AutoM");
+            Guardian::println("DynamicM");
 
             Watcher::setMode(Watcher::DYNAMIC);
             break;
