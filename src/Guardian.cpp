@@ -434,3 +434,16 @@ void Guardian::print(const char* str)
     // Print to WebSerial.
     WebSerial.print(str);
 }
+
+/**
+ * @brief Clears the currently stored error state.
+ *
+ * This function resets the error code and error message to their default states,
+ * indicating the absence of any current error. It achieves this by calling
+ * the `setError` function with a predefined default error code and an empty
+ * message string.
+ */
+void Guardian::clearError()
+{
+    setError(-1, "");
+}

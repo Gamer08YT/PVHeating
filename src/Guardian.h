@@ -31,6 +31,7 @@ public:
     static void boot(int percentage, const char* str);
     static void clear();
     static void print(const char* str);
+    static void clearError();
 
 private:
     static void error_code(int i);

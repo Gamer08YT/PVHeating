@@ -195,6 +195,9 @@ void HomeAssistant::configureHeatingInstance()
     {
         Guardian::println("Temp changed");
 
+        // Set Target Temperature.
+        Watcher::setTargetTemperature(temperature.toInt8());
+
         sender->setTargetTemperature(temperature);
     });
 

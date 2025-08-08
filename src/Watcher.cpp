@@ -32,6 +32,7 @@ float Watcher::maxPower = 6000.0f;
 float Watcher::housePower = 0.0f;
 float Watcher::consumption = 0.0f;
 int Watcher::duty = 0;
+int Watcher::temperatureMax = 60;
 float Watcher::flowRate = 0.0f;
 bool displayFlow = false;
 
@@ -101,6 +102,8 @@ void Watcher::handlePWM()
         // Disable SCR and Pump.
         setSCR(false);
         setPump(false);
+
+        isTempToLow()
     }
     else
     {
@@ -261,6 +264,20 @@ void Watcher::setPWM(int8_t int8)
     setPWMHA(int8);
 
     HomeAssistant::setPWM(int8);
+}
+
+/**
+ * @brief Sets the maximum target temperature for the system.
+ *
+ * This method updates the `temperatureMax` variable, which represents
+ * the highest allowable target temperature. It is used to define
+ * temperature settings that the system should aim to maintain.
+ *
+ * @param is_int8 The new target temperature, specified as an integer.
+ */
+void Watcher::setTargetTemperature(int is_int8)
+{
+    temperatureMax = is_int8;
 }
 
 /**
@@ -961,4 +978,9 @@ void Watcher::handleConsumeBasedDuty()
         // Reset Duty.
         duty = 0;
     }
+}
+
+void Watcher::isTempToLow()
+{
+    return;
 }

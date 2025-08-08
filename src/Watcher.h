@@ -5,6 +5,7 @@
 #ifndef WATCHER_H
 #define WATCHER_H
 #include "DallasTemperature.h"
+#include "utils/HANumeric.h"
 
 
 /**
@@ -37,6 +38,7 @@ public:
     static void setConsumption(float consumption);
     static void setPWMHA(int8_t int8);
     static void setPWM(int8_t int8);
+    static void setTargetTemperature(int is_int8);
 
 
     /**
@@ -67,6 +69,8 @@ public:
     static float housePower;
     static float consumption;
     static float flowRate;
+    static int temperatureMax;
+
 private:
     static int duty;
     static void begin1Wire();
@@ -83,6 +87,7 @@ private:
     static void handlePowerBasedDuty();
     static bool checkLocalPowerLimit();
     static void handleConsumeBasedDuty();
+    static void isTempToLow();
     static void handlePWM();
     static void updateDisplay();
     static void setFlow(float get_current_flowrate);
