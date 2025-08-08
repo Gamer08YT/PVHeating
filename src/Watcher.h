@@ -39,6 +39,7 @@ public:
     static void setPWMHA(int8_t int8);
     static void setPWM(int8_t int8);
     static void setTargetTemperature(int is_int8);
+    static void setHousePower(float house_power);
 
 
     /**
@@ -76,7 +77,6 @@ private:
     static void begin1Wire();
     static void setupFlowMeter();
     static void readLocalPower();
-    static void setHousePower(float house_power);
     static void readHouseMeterPower();
     static void readLocalConsumption();
     static void handleStandbyLedFade(bool cond);
