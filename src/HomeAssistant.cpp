@@ -411,9 +411,17 @@ void HomeAssistant::configureMaxPowerInstance()
     });
 }
 
+/**
+ * @brief Configures the PWM instance for controlling the duty cycle.
+ *
+ * This method sets the display name and maximum value for the PWM instance.
+ * It also establishes a command listener to handle value changes. When a new
+ * value is received, the listener updates the PWM state in the system
+ * and synchronizes the state*/
 void HomeAssistant::configurePWMInstance()
 {
     pwm.setName("Duty");
+    pwm.setMax(255);
 
     // Handle PWM Change Listener.
     pwm.onCommand([](HANumeric number, HANumber* sender)
