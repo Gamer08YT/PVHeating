@@ -414,6 +414,8 @@ void HomeAssistant::configurePWMInstance()
         if (Watcher::standby)
         {
             Watcher::setPWM(number.toInt8());
+
+            sender->setState(number);
         }
     });
 }
