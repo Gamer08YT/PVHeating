@@ -267,6 +267,11 @@ void Watcher::setPWMHA(int8_t duty)
  */
 void Watcher::setPWM(int8_t int8)
 {
+    char buffer[50];
+    snprintf(buffer, sizeof(buffer), "PWM: %i", int8);
+
+    Guardian::println(buffer);
+
     setPWMHA(int8);
 
     HomeAssistant::setPWM(int8);
