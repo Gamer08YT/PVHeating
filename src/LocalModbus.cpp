@@ -324,13 +324,26 @@ void LocalModbus::handleLocalData(ModbusMessage msg, uint32_t token)
         Watcher::setConsumption(response);
         break;
     default:
-        char buffer[50];
-        snprintf(buffer, sizeof(buffer), "Unknown Token: %u", token);
-
-        Guardian::println(buffer);
+        unknownToken(token);
 
         break;
     }
+}
+
+/**
+ * @brief Logs an error message for an unrecognized token received in Modbus communication.
+ *
+ * This method generates a formatted string indicating an unknown token and logs it
+ * using the Guardian logging system for debugging purposes.
+ *
+ * @param token The unrecognized token value that triggered the error.
+ */
+void LocalModbus::unknownToken(uint32_t token)
+{
+    char buffer[50];
+    snprintf(buffer, sizeof(buffer), "Unknown Token: %u", token);
+
+    Guardian::println(buffer);
 }
 
 /**
@@ -354,10 +367,7 @@ void LocalModbus::handleRemoteData(ModbusMessage msg, uint32_t token)
         Watcher::setHousePower(response);
         break;
     default:
-        char buffer[50];
-        snprintf(buffer, sizeof(buffer), "Unknown Token: %u", token);
-
-        Guardian::println(buffer);
+        unknownToken(token);
 
         break;
     }
