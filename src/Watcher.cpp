@@ -226,7 +226,7 @@ void Watcher::updateTemperature()
  */
 void Watcher::readHouseMeterPower()
 {
-    LocalModbus::readRemote(POWER_IMPORT);
+    LocalModbus::readRemote(POWER_USAGE);
 }
 
 /**
@@ -361,9 +361,6 @@ void Watcher::handleSensors()
             // Read House Meter Active Power.
             readHouseMeterPower();
         }
-
-        // For Debug.
-        readHouseMeterPower();
 
         // Update OLED.
         updateDisplay();
