@@ -29,6 +29,9 @@ ModbusClientRTU* modbusRTU;
 // Store local Queue.
 int localQueue = 0;
 
+// Store remote Queue.
+int remoteQueue = 0;
+
 
 /**
  * @brief Initializes the Modbus communication system.
@@ -76,13 +79,25 @@ void LocalModbus::loop()
  */
 float LocalModbus::readRemote(int address)
 {
-    // Simple Data Buffer Array.
-    uint16_t data[REGISTER_LENGTH];
+    handleReadMessage("Remote", address);
 
-    // Read into Buffer.
-    // modbusTCP.addRequest(1, address, data, REGISTER_LENGTH);
+    // Clear Queue if to full.
+    if (remoteQueue > 10)
+    {
+        modbusRTU->clearQueue();
+        remoteQueue = 0;
+    }
 
-    return -1;
+    // Increment Queue.
+    remoteQueue++;
+
+    // https://github.com/eModbus/eModbus/blob/648a14b2f49de0c3ffcd9821e6b7a1180fd3f3f4/examples/RTU16example/main.cpp#L64
+    // uint32_t token, uint8_t serverID, uint8_t functionCode, uint16_t p1, uint16_t p2
+    Error error = modbusRTU->addRequest(address, MODBUS_CORE, READ_INPUT_REGISTER, address, REGISTER_LENGTH);
+
+    handleRequestError(error);
+
+    return (error == SUCCESS);
 }
 
 /**
@@ -106,14 +121,7 @@ float LocalModbus::readRemote(int address)
  */
 bool LocalModbus::readLocal(int address)
 {
-    String local = "Local: ";
-    String addressStr = String(address);
-
-    // Append String.
-    local.concat(addressStr);
-
-    // Print to Console.
-    Guardian::println(local.c_str());
+    handleReadMessage("Local", address);
 
     // Clear Queue if to full.
     if (localQueue > 10)
@@ -132,6 +140,26 @@ bool LocalModbus::readLocal(int address)
     handleRequestError(error);
 
     return (error == SUCCESS);
+}
+
+/**
+ * @brief Handles the creation and logging of a Modbus read message.
+ *
+ * Combines a string prefix with the provided Modbus address to create a detailed log message
+ * and outputs the resulting string using the Guardian logging system.
+ *
+ * @param str The string prefix to be appended to the address.
+ * @param address The Modbus address to be included in the message.
+ */
+void LocalModbus::handleReadMessage(String str, int address)
+{
+    String addressStr = String(address);
+
+    // Append String.
+    str.concat(addressStr);
+
+    // Print to Console.
+    Guardian::println(str.c_str());
 }
 
 /**
@@ -322,7 +350,7 @@ void LocalModbus::handleLocalData(ModbusMessage msg, uint32_t token)
 void LocalModbus::beginTCP()
 {
     // Initialize TCP Instance.
-    modbusTCP = new ModbusClientTCP(HomeAssistant::getClient());
+    modbusTCP = new ModbusClientTCP(*HomeAssistant::getClient(), 10);
 
     // Set Timeout.
     modbusRTU->setTimeout(MODBUS_TIMEOUT);

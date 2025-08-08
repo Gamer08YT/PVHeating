@@ -54,7 +54,7 @@ public:
     static void setConsumption(float value);
     static void setPWM(int8_t int8);
     static void setErrorTitle(const char* error_title);
-    static EthernetClient getClient();
+    static NetworkClient* getClient();
 };
 
 

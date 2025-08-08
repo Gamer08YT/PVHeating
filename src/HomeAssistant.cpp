@@ -600,7 +600,7 @@ void HomeAssistant::setErrorTitle(const char* error_title)
  *
  * @return The Ethernet client instance currently in use.
  */
-EthernetClient HomeAssistant::getClient()
+NetworkClient* HomeAssistant::getClient()
 {
-    return client;
+    return &client;
 }

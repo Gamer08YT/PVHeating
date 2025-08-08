@@ -27,6 +27,7 @@ public:
     static bool readLocal(int address);
 
 private:
+    static void handleReadMessage(String str, int address);
     static void handleRequestError(Error error);
     static void handleResponseError(Error error, uint32_t token);
     static void beginRTU();
