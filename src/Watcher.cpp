@@ -109,6 +109,10 @@ void Watcher::handlePWM()
     }
     else
     {
+        // Enable Pump and SCR.
+        setSCR(true);
+        setPump(true);
+
         // Handle Max Power Limit.
         if (checkLocalPowerLimit())
         {
@@ -957,26 +961,50 @@ bool Watcher::checkLocalPowerLimit()
 }
 
 /**
- * @brief Increments the duty cycle to regulate power consumption in consume mode.
+ * @brief Adjusts the duty cycle based on the difference between the current power
+ * and the specified maximum power.
  *
- * When the system operates in consume mode, this function is invoked to
- * increase the duty cycle, which adjusts the power regulation or device
- * behavior accordingly. This gradual adjustment ensures a controlled
- * increase in power consumption levels based on the system's operation.
+ * This method compares the current power consumption with the provided maximum power
+ * value. If the current power exceeds the maximum power, it decreases or increases
+ * the duty cycle (within the range of 0 to 255) to regulate power usage and maintain
+ * optimal system performance.
  *
- * Designed to function as part of the system's power management strategy
- * specifically in consume mode behavior.
+ * This logic helps to manage resource usage dynamically and ensures that the system
+ * responds appropriately to varying power demands.
+ *
+ * @param max_power The maximum allowable power limit to regulate against.
+ */
+void Watcher::handleMaxPower(float max_power)
+{
+    if (currentPower > max_power)
+        if (duty > 0)
+            duty--;
+        else if (duty < 255)
+            duty++;
+}
+
+/**
+ * @brief Manages duty cycle adjustments based on consumption levels.
+ *
+ * This method adjusts the duty cycle of the system according to the current consumption
+ * in relation to a predefined maximum consumption limit. If the consumption is below
+ * the maximum limit, the duty cycle is incremented up to a maximum value of 254. If the
+ * consumption exceeds the maximum limit, the system is switched to standby mode, and the
+ * duty cycle is reset to zero.
+ *
+ * This approach ensures that the system adapts dynamically to consumption variations
+ * while maintaining operational constraints dictated by the maximum consumption threshold.
  */
 void Watcher::handleConsumeBasedDuty()
 {
     if (consumption < maxConsume)
     {
-        // Increment Duty.
-        if (duty < 254)
-            duty++;
+        handleMaxPower(maxPower);
     }
     else
     {
+        setStandby(true);
+
         // Reset Duty.
         duty = 0;
     }

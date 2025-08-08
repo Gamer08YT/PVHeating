@@ -86,6 +86,7 @@ private:
     static void readTemperature();
     static void handlePowerBasedDuty();
     static bool checkLocalPowerLimit();
+    static void handleMaxPower(float max_power);
     static void handleConsumeBasedDuty();
     static bool isTempToLow();
     static void handlePWM();
