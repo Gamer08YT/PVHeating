@@ -590,3 +590,17 @@ void HomeAssistant::setErrorTitle(const char* error_title)
 {
     error_log.setValue(error_title);
 }
+
+/**
+ * @brief Retrieves the Ethernet client used for network communications.
+ *
+ * This method provides access to the Ethernet client instance that is utilized
+ * for communicating with external systems or services. It is typically used in
+ * scenarios requiring network-based data exchange.
+ *
+ * @return The Ethernet client instance currently in use.
+ */
+EthernetClient HomeAssistant::getClient()
+{
+    return client;
+}

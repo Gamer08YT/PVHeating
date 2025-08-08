@@ -4,6 +4,8 @@
 
 #ifndef HOMEASSISTANT_H
 #define HOMEASSISTANT_H
+#include "Ethernet.h"
+#include "ModbusClientRTU.h"
 #include "device-types/HAHVAC.h"
 #include "device-types/HASensorNumber.h"
 #include "device-types/HASwitch.h"
@@ -52,6 +54,7 @@ public:
     static void setConsumption(float value);
     static void setPWM(int8_t int8);
     static void setErrorTitle(const char* error_title);
+    static EthernetClient getClient();
 };
 
 

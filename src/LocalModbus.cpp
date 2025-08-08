@@ -5,9 +5,11 @@
 #include <HardwareSerial.h>
 #include <WebServer.h>
 #include "Guardian.h"
+#include "HomeAssistant.h"
 #include "PinOut.h"
 #include "MeterRegisters.h"
 #include "ModbusClientRTU.h"
+#include "ModbusClientTCP.h"
 #include "Watcher.h"
 #include "WebSerial.h"
 
@@ -17,11 +19,12 @@
 // Begin HW Serial 2 (TX=17, RX=16).
 HardwareSerial serial(2);
 
-// Store Instanceo of TCP Instance.
-// ModbusClientTCP modbusTCP(client);
+// Store Instance of TCP Instance.
+ModbusClientTCP* modbusTCP;
 
 // Store Modbus Instance.
 ModbusClientRTU* modbusRTU;
+
 
 // Store local Queue.
 int localQueue = 0;
@@ -239,10 +242,10 @@ void LocalModbus::beginRTU()
  */
 float LocalModbus::handleResponse(ModbusMessage& msg, uint32_t token)
 {
-    #ifdef DEBUG
+#ifdef DEBUG
             WebSerial.printf("Response: serverID=%d, FC=%d, Token=%08X, length=%d:\n", msg.getServerID(), msg.getFunctionCode(),
                              token, msg.size());
-    #endif
+#endif
 
     // Add Float Buffer.
     float values[REGISTER_LENGTH];
@@ -257,14 +260,14 @@ float LocalModbus::handleResponse(ModbusMessage& msg, uint32_t token)
         offset = msg.get(offset, values[i]);
     }
 
-    #ifdef DEBUG
+#ifdef DEBUG
         WebSerial.printf("Values: %f, %f\n", values[0], values[1]);
 
         for (auto& byte : msg)
         {
             WebSerial.printf("%02X ", byte);
         }
-    #endif
+#endif
 
 
     return values[0];
@@ -303,13 +306,32 @@ void LocalModbus::handleLocalData(ModbusMessage msg, uint32_t token)
 }
 
 
+/**
+ * @brief Initializes the Modbus TCP communication system.
+ *
+ * This method sets up and starts the Modbus TCP client for communication. It configures
+ * the target IP address, port, and other parameters required for Modbus TCP operation.
+ * Additionally, it initializes the timeout setting for the associated ModbusRTU client.
+ * A debug message is logged to indicate the status of the initialization process.
+ *
+ * @note This function assumes predefined constants for IP address (MODBUS_TCP),
+ * port (MODBUS_TCP_PORT), timeout (MODBUS_TIMEOUT), and core assignment (MODBUS_CORE).
+ *
+ * @attention Ensure network connectivity to the target Modbus TCP device before calling this method.
+ */
 void LocalModbus::beginTCP()
 {
+    // Initialize TCP Instance.
+    modbusTCP = new ModbusClientTCP(HomeAssistant::getClient());
+
+    // Set Timeout.
+    modbusRTU->setTimeout(MODBUS_TIMEOUT);
+
+    // Begin Modbus TCP Client.
+    modbusTCP->begin(MODBUS_CORE);
+
     // // Set Target of TCP Connection.
-    // modbusTCP.setTarget(IPAddress(MODBUS_HOUSE), 502);
-    //
-    // // Begin Modbus TCP Client.
-    // modbusTCP.begin(1);
+    modbusTCP->setTarget(IPAddress(MODBUS_TCP), MODBUS_TCP_PORT);
 
     // Print Debug Message.
     Guardian::boot(60, "TCP");

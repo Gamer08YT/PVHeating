@@ -20,12 +20,13 @@
 #define PINOUT_H
 
 #define SOFTWARE_VERSION "1.0.4"
-#define MODBUS_HOUSE "192.168.5.24"
 #define MODBUS_TIMEOUT 2000
 #define MODBUS_CORE 1
 #define MODBUS_BAUD 9600
+#define MODBUS_TCP {192, 168, 5, 24}
+#define MODBUS_TCP_PORT 502
 
-// Server ID / Input Type  / CRC Size / High / Low
+// Server ID / Input Type / CRC Size / High / Low
 #define MODBUS_OFFSET 3
 
 // Ethernet Stuff.
