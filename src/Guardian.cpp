@@ -248,7 +248,6 @@ void Guardian::setup()
         display.ssd1306_command(SSD1306_SETCONTRAST);
         display.ssd1306_command(0xFF); // Max. Kontrast
         display.setCursor(0, 0);
-        display.println("Hallo vom ESP32!");
         display.display();
     }
 }
