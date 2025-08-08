@@ -239,8 +239,10 @@ void LocalModbus::beginRTU()
  */
 float LocalModbus::handleResponse(ModbusMessage& msg, uint32_t token)
 {
-    WebSerial.printf("Response: serverID=%d, FC=%d, Token=%08X, length=%d:\n", msg.getServerID(), msg.getFunctionCode(),
-                     token, msg.size());
+    #ifdef DEBUG
+            WebSerial.printf("Response: serverID=%d, FC=%d, Token=%08X, length=%d:\n", msg.getServerID(), msg.getFunctionCode(),
+                             token, msg.size());
+    #endif
 
     // Add Float Buffer.
     float values[REGISTER_LENGTH];
@@ -255,13 +257,15 @@ float LocalModbus::handleResponse(ModbusMessage& msg, uint32_t token)
         offset = msg.get(offset, values[i]);
     }
 
-    WebSerial.printf("Values: %f, %f\n", values[0], values[1]);
+    #ifdef DEBUG
+        WebSerial.printf("Values: %f, %f\n", values[0], values[1]);
 
+        for (auto& byte : msg)
+        {
+            WebSerial.printf("%02X ", byte);
+        }
+    #endif
 
-    for (auto& byte : msg)
-    {
-        WebSerial.printf("%02X ", byte);
-    }
 
     return values[0];
 }
