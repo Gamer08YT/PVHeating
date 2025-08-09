@@ -75,6 +75,7 @@ public:
 
 private:
     static float startConsumed;
+    static u_int8_t standbyCounter;
     static u_int8_t duty;
     static void begin1Wire();
     static void setupFlowMeter();
@@ -86,6 +87,8 @@ private:
     static void readButtons();
     static void readTemperature();
     static bool isEnoughPowerGeneration();
+    static void handleStandbyCounterDisable();
+    static void handleStandbyCounterEnable();
     static void handlePowerBasedDuty();
     static bool checkLocalPowerLimit();
     static void handleMaxPower(float max_power);

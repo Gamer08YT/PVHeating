@@ -34,6 +34,7 @@ float Watcher::minPower = 500.0f;
 float Watcher::housePower = 0.0f;
 float Watcher::consumption = 0.0f;
 u_int8_t Watcher::duty = 0;
+u_int8_t Watcher::standbyCounter = 0;
 int Watcher::temperatureMax = 60;
 float Watcher::flowRate = 0.0f;
 bool displayFlow = false;
@@ -57,7 +58,6 @@ OneButton modeButton(BUTTON_MODE, true);
 // Store LED Instances.
 LEDFader faultLed(LED_FAULT);
 LEDFader modeLed(LED_MODE);
-LEDFader scrPWM(SCR_PWM);
 
 // Store Timer.
 SimpleTimer fastInterval(500);
@@ -124,24 +124,23 @@ void Watcher::handlePWM()
 {
     bool tempToLow = isTempToLow();
 
-    if (standby || Guardian::isCritical() || !tempToLow)
+    if (!tempToLow)
     {
-        Guardian::println("Shutdown");
+        Guardian::println("TempOH");
 
         duty = 0;
 
         // Disable SCR and Pump.
         setSCR(false);
 
-        // Disable Pump on Error && Standby, but if no of these are active, don't disable on Temp to high.
-        setPump((!Guardian::isCritical() && !standby && !tempToLow));
+        // Count to Disable SCR.
+        handleStandbyCounterDisable();
+
+        // // Disable Pump on Error && Standby, but if no of these are active, don't disable on Temp to high.
+        // setPump((!Guardian::isCritical() && !standby && !tempToLow));
     }
     else
     {
-        // Enable Pump and SCR.
-        setSCR(true);
-        setPump(true);
-
         // Limit / handle max Power.
         if (checkLocalPowerLimit())
         {
@@ -162,8 +161,15 @@ void Watcher::handlePWM()
         }
     }
 
-    // Update PWM Value.
-    setPWM(duty);
+    if (!standby)
+    {
+        // Update PWM Value.
+        setPWM(duty);
+
+        // Enable Pump and SCR.
+        setSCR(true);
+        setPump(true);
+    }
 }
 
 /**
@@ -441,7 +447,6 @@ void Watcher::handleSensors()
  */
 void Watcher::loop()
 {
-    scrPWM.update();
     faultLed.update();
     modeLed.update();
 
@@ -504,6 +509,22 @@ void Watcher::setupButtons()
     });
 }
 
+/**
+ * @brief Initializes and sets up the Watcher system components and peripherals.
+ *
+ * This method configures the Watcher system by performing the following steps:
+ * - Sets default system states using `setDefaults`.
+ * - Outputs a boot message to the debug console via `Guardian::boot`.
+ * - Initializes fade transitions for the fault LED, mode LED, and SCR PWM using `fade`.
+ * - Starts the 1-Wire protocol and scans for connected devices with `begin1Wire`.
+ * - Configures GPIO pins via `setupPins`.
+ * - Sets up the button listeners with `setupButtons`.
+ * - Configures the flow meter using `setupFlowMeter`.
+ * - Outputs a "ready" message to the debug console indicating the system is fully initialized.
+ *
+ * This method is intended to be called during the system initialization phase,
+ * providing a comprehensive setup routine for all essential components.
+ */
 void Watcher::setup()
 {
     // Set Default States.
@@ -511,10 +532,6 @@ void Watcher::setup()
 
     // Print Debug Message.
     Guardian::boot(90, "Watcher");
-
-    scrPWM.fade(255, 1000);
-    modeLed.fade(255, 1000);
-    faultLed.fade(255, 1000);
 
     // Begin 1-Wire and Scan for Devices.
     begin1Wire();
@@ -533,14 +550,16 @@ void Watcher::setup()
 }
 
 /**
- * @brief Sets the standby state of the system.
+ * @brief Sets the system to standby mode or exits it based on the given condition.
  *
- * This method updates the standby state to the given condition. It can be
- * used to place the system into a standby mode or take it out of standby
- * by toggling the `standby` member variable.
+ * This method adjusts the system's operational state by enabling or disabling
+ * standby mode. When entering standby mode:
+ * - Outputs a standby message.
+ * - Toggles the LED state between fade and blink.
+ * - Disables the SCR and sets PWM to 0.
+ * The new state is stored for system-wide reference.
  *
- * @param cond The boolean condition to set the standby state.
- *             A value of `true` enables standby mode, and `false` disables it.
+ * @param cond If true, the system enters standby mode; if false, it exits standby mode.
  */
 void Watcher::setStandby(bool cond)
 {
@@ -554,6 +573,7 @@ void Watcher::setStandby(bool cond)
     if (cond)
     {
         setSCR(false);
+        setPWM(0);
     }
 
     standby = cond;
@@ -1057,6 +1077,50 @@ bool Watcher::isEnoughPowerGeneration()
 }
 
 /**
+ * @brief Manages the standby counter and transitions to standby mode if the interval is reached.
+ *
+ * This method increments the standby counter on each invocation until it reaches the predefined
+ * standby interval (STANDBY_INTERVAL). Once the counter reaches this value, the system transitions
+ * to standby mode by invoking the setStandby() method with a true condition.
+ *
+ * Works in tandem with other system components to ensure the transition to standby mode adheres to
+ * defined intervals. Useful for managing power and operational states.
+ */
+void Watcher::handleStandbyCounterDisable()
+{
+    // Equals 15 Seconds.
+    if (standbyCounter < STANDBY_INTERVAL)
+    {
+        standbyCounter++;
+    }
+    else
+    {
+        setStandby(true);
+    }
+}
+
+/**
+ * @brief Manages the state of the standby counter and transitions out of standby mode if necessary.
+ *
+ * This method decrements the `standbyCounter` if it is greater than zero. If the `standbyCounter`
+ * reaches zero, the system transitions out of standby mode by calling `setStandby(false)`.
+ *
+ * Typically used as part of the system's operational logic to control standby state
+ * based on a countdown mechanism.
+ */
+void Watcher::handleStandbyCounterEnable()
+{
+    if (standbyCounter > 0)
+    {
+        standbyCounter--;
+    }
+    else
+    {
+        setStandby(false);
+    }
+}
+
+/**
  * @brief Adjusts the duty cycle based on the power being imported or exported by the house meter.
  *
  * This method monitors the power flow indicated by `housePower` to determine
@@ -1072,19 +1136,19 @@ void Watcher::handlePowerBasedDuty()
 {
     if (isEnoughPowerGeneration())
     {
-        // Check if House Meter is Importing or Exporting.
-        if (housePower < 0)
-        {
-            // If Power is producing/exporting like -1000 W
-            if (duty < 254)
-                duty++;
-        }
-        else
-        {
-            // If Power is consuming/importing like 800 W.
-            if (duty > 0)
-                duty--;
-        }
+        handleStandbyCounterEnable();
+
+        // If Power is producing/exporting like -1000 W
+        if (duty < 254)
+            duty++;
+    }
+    else
+    {
+        // If Power is not enough to generate.
+        if (duty > 0)
+            duty--;
+
+        handleStandbyCounterDisable();
     }
 }
 

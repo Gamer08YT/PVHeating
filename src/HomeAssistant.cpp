@@ -256,6 +256,7 @@ void HomeAssistant::configureConsumptionInstance()
 {
     consumption.setName("Verbrauch");
     consumption.setDeviceClass("energy");
+    consumption.setStateClass("total_increasing");
     consumption.setUnitOfMeasurement("kWh");
     consumption.setIcon("mdi:lightbulb");
 
@@ -430,7 +431,7 @@ void HomeAssistant::configureMinPowerInstance()
 {
     minPower.setName("Min");
     minPower.setDeviceClass("power");
-    minPower.setUnitOfMeasurement("kW");
+    minPower.setUnitOfMeasurement("W");
     minPower.setMin(500);
     minPower.setMax(4000);
     minPower.setRetain(true);
