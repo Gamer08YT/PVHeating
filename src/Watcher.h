@@ -21,7 +21,6 @@ class Watcher
 {
 public:
     static void handleButtonLeds();
-
     static void loop();
     static void setDefaults();
     static void setup();
@@ -72,6 +71,7 @@ public:
     static int temperatureMax;
 
 private:
+    static float startConsumed;
     static int duty;
     static void begin1Wire();
     static void setupFlowMeter();
@@ -91,6 +91,9 @@ private:
     static void updateDisplay();
     static void setFlow(float get_current_flowrate);
     static void updateTemperature();
+    static void handleSlowInterval();
+    static void handleFastInterval();
+    static void handleHAPublish();
     static void handleSensors();
     static void setupButtons();
     static void printAddress(DeviceAddress deviceAddress);

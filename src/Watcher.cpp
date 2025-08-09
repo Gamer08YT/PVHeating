@@ -19,6 +19,7 @@
 #include "WebSerial.h"
 
 #define SLOW_INTERVAL 2000
+#define PUBLISH_INTERVAL 1000
 
 // Definitions from Header.
 Watcher::ModeType Watcher::mode = Watcher::CONSUME;
@@ -60,6 +61,9 @@ LEDFader scrPWM(SCR_PWM);
 SimpleTimer fastInterval(500);
 SimpleTimer slowInterval(SLOW_INTERVAL);
 
+// Publish Timer for HA to save Bandwidth.
+SimpleTimer publishInterval(PUBLISH_INTERVAL);
+
 // Store Read State.
 bool readTimer = false;
 
@@ -80,6 +84,28 @@ void Watcher::handleButtonLeds()
 {
     faultLed.update();
     modeLed.update();
+}
+
+/**
+ * @brief Publishes updated power and PWM values to HomeAssistant at regular intervals.
+ *
+ * This method checks if the specified timer interval for publishing data is ready using the
+ * `publishInterval` timer. If the interval has elapsed, it sends the current system power and
+ * PWM duty cycle to HomeAssistant by calling respective methods in the HomeAssistant class.
+ * After publishing, the timer is reset to ensure periodic execution.
+ *
+ * Designed for integration within the main loop to synchronize system data with HomeAssistant.
+ */
+void Watcher::handleHAPublish()
+{
+    if (publishInterval.isReady())
+    {
+        HomeAssistant::setCurrentPower(currentPower);
+        HomeAssistant::setPWM(duty);
+        HomeAssistant::setFlow(flowRate);
+
+        publishInterval.reset();
+    }
 }
 
 /**
@@ -194,7 +220,8 @@ void Watcher::setFlow(float get_current_flowrate)
 {
     flowRate = get_current_flowrate;
 
-    HomeAssistant::setFlow(get_current_flowrate);
+    // Removed do to MQTT Timeouts.
+    // HomeAssistant::setFlow(get_current_flowrate);
 }
 
 /**
@@ -210,6 +237,84 @@ void Watcher::setFlow(float get_current_flowrate)
 void Watcher::updateTemperature()
 {
     HomeAssistant::setCurrentTemperature(temperatureOut);
+}
+
+/**
+ * @brief Handles operations that occur at a slower predefined interval.
+ *
+ * This method performs a sequence of tasks when the slow timer interval is ready:
+ * - Reads temperature data using a OneWire interface.
+ * - Updates the temperature information in HomeAssistant for monitoring or automation purposes.
+ * - Calculates and updates the flow rate based on the readings from the flow meter.
+ * - Reads local power consumption data to monitor the current usage.
+ * - If the system is in DYNAMIC mode, reads the active power of the house meter for real-time adjustments.
+ * - Updates the OLED display with the latest information.
+ *
+ * Once all these operations are complete, the slow timer interval is reset to ensure proper timing
+ * for the next cycle of operations.
+ *
+ * Designed to be called within the main program loop or as part of a periodic task handler to
+ * execute time-sensitive updates and calculations at a slower rate.
+ */
+void Watcher::handleSlowInterval()
+{
+    if (slowInterval.isReady())
+    {
+        // Read Temperatures via OneWire.
+        readTemperature();
+
+        // Update Temperature in HomeAssistant.
+        updateTemperature();
+
+        // Calculate Flow.
+        meter.read();
+
+        // Set Flow Rate.
+        setFlow(meter.getFlowRate_m());
+
+        // Read Local Consumption.
+        readLocalConsumption();
+
+        // Read HA Power to compensate.
+        if (mode == ModeType::DYNAMIC)
+        {
+            // Read House Meter Active Power.
+            readHouseMeterPower();
+        }
+
+        // Update OLED.
+        updateDisplay();
+
+        // Reset Timer (Endless Loop).
+        slowInterval.reset();
+    }
+}
+
+/**
+ * @brief Handles periodic tasks executed at a fast interval for the system.
+ *
+ * This method is responsible for performing operations that require execution
+ * within a short time interval. Specific tasks include:
+ * - Reading internal power usage from the Smart Meter using `readLocalPower()`.
+ * - Managing the PWM duty cycle to adjust performance based on the system state.
+ * - Resetting the fast interval timer to allow continuous periodic execution.
+ *
+ * Designed to be called frequently to maintain real-time system responsiveness
+ * for fast-changing parameters.
+ */
+void Watcher::handleFastInterval()
+{
+    if (fastInterval.isReady())
+    {
+        // Read internal Smart Meter Power Usage.
+        readLocalPower();
+
+        // Handle PWM Duty.
+        handlePWM();
+
+        // Reset Timer (Endless Loop);
+        fastInterval.reset();
+    }
 }
 
 /**
@@ -277,7 +382,8 @@ void Watcher::setPWM(int8_t int8)
 
     setPWMHA(int8);
 
-    HomeAssistant::setPWM(int8);
+    // Removed do to MQTT Timeouts.
+    // HomeAssistant::setPWM(int8);
 }
 
 /**
@@ -325,48 +431,8 @@ void Watcher::readLocalConsumption()
  */
 void Watcher::handleSensors()
 {
-    if (fastInterval.isReady())
-    {
-        // Read internal Smart Meter Power Usage.
-        readLocalPower();
-
-        // Handle PWM Duty.
-        handlePWM();
-
-        // Reset Timer (Endless Loop);
-        fastInterval.reset();
-    }
-
-    if (slowInterval.isReady())
-    {
-        // Read Temperatures via OneWire.
-        readTemperature();
-
-        // Update Temperature in HomeAssistant.
-        updateTemperature();
-
-        // Calculate Flow.
-        meter.read();
-
-        // Set Flow Rate.
-        setFlow(meter.getFlowRate_m());
-
-        // Read Local Consumption.
-        readLocalConsumption();
-
-        // Read HA Power to compensate.
-        if (mode == ModeType::DYNAMIC)
-        {
-            // Read House Meter Active Power.
-            readHouseMeterPower();
-        }
-
-        // Update OLED.
-        updateDisplay();
-
-        // Reset Timer (Endless Loop).
-        slowInterval.reset();
-    }
+    handleFastInterval();
+    handleSlowInterval();
 }
 
 /**
@@ -386,6 +452,7 @@ void Watcher::loop()
     handleSensors();
     readButtons();
     handleButtonLeds();
+    handleHAPublish();
 }
 
 /**
@@ -577,16 +644,24 @@ void Watcher::setPumpViaHA(bool state)
 }
 
 /**
- * @brief Initiates the consumption process by exiting standby mode.
+ * @brief Initiates the consume mode and updates initial consumption tracking.
  *
- * This method alters the system's operational state by disabling standby mode
- * through the invocation of the setStandby method with an input of `false`.
- * It is designed to signal the system to prepare for or transition into
- * an active consumption state.
+ * This method disables the standby state by calling setStandby(false) and then checks
+ * if the current operational mode is set to ModeType::CONSUME. If the condition is met,
+ * it sets the startConsumed variable to the current consumption value. This ensures
+ * the system begins tracking consumption from the moment consume mode is activated.
+ *
+ * This function plays a critical part in initializing specific behaviors linked with
+ * the consume mode of the Watcher system.
  */
 void Watcher::startConsume()
 {
     setStandby(false);
+
+    if (mode == ModeType::CONSUME)
+    {
+        startConsumed = consumption;
+    }
     //digitalWrite(LED_MODE, HIGH);
 }
 
@@ -728,7 +803,8 @@ void Watcher::setPower(float current_power)
 {
     currentPower = current_power;
 
-    HomeAssistant::setCurrentPower(current_power);
+    // Removed do to MQTT Timeouts.
+    // HomeAssistant::setCurrentPower(current_power);
 }
 
 /**
@@ -982,20 +1058,24 @@ void Watcher::handleMaxPower(float max_power)
 }
 
 /**
- * @brief Manages duty cycle adjustments based on consumption levels.
+ * @brief Adjusts the system's duty cycle based on consumption thresholds.
  *
- * This method adjusts the duty cycle of the system according to the current consumption
- * in relation to a predefined maximum consumption limit. If the consumption is below
- * the maximum limit, the duty cycle is incremented up to a maximum value of 254. If the
- * consumption exceeds the maximum limit, the system is switched to standby mode, and the
- * duty cycle is reset to zero.
+ * This method ensures that the system remains within acceptable consumption limits.
+ * If the total consumption is within the defined maximum threshold, it invokes the
+ * `handleMaxPower` function to regulate the power consumption. Otherwise, it transitions
+ * the system to standby mode and resets the duty cycle.
  *
- * This approach ensures that the system adapts dynamically to consumption variations
- * while maintaining operational constraints dictated by the maximum consumption threshold.
+ * Designed for the "Consume" operating mode to dynamically regulate the duty cycle
+ * in response to consumption metrics.
+ *
+ * Preconditions:
+ * - `startConsumed` is a finite value.
+ * - `consumption` represents the current total consumed power.
+ * - `maxConsume` specifies the maximum allowed additional consumption.
  */
 void Watcher::handleConsumeBasedDuty()
 {
-    if (consumption < maxConsume)
+    if (std::isfinite(startConsumed) && consumption < maxConsume + startConsumed)
     {
         handleMaxPower(maxPower);
     }
