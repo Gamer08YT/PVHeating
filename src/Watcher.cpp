@@ -30,6 +30,7 @@ float Watcher::maxConsume = 0.0f;
 float Watcher::startConsumed = 0.0F;
 float Watcher::currentPower = 0.0f;
 float Watcher::maxPower = 6000.0f;
+float Watcher::minPower = 500.0f;
 float Watcher::housePower = 0.0f;
 float Watcher::consumption = 0.0f;
 u_int8_t Watcher::duty = 0;
@@ -68,14 +69,14 @@ SimpleTimer publishInterval(PUBLISH_INTERVAL);
 // Store Read State.
 bool readTimer = false;
 
-// Store Flow Meter Instance (I know it's easy, but i have Time rush).
+// Store Flow Meter Instance (I know it's easy, but I have Time rush).
 FlowSensor meter(YFB5, FLOW_PULSE);
 
 /**
  * @brief Updates the fault and mode LEDs using their respective controllers.
  *
  * This method invokes the update functionality of the LEDFader objects associated with
- * fault and mode LEDs. It ensures the LEDs reflect any ongoing transitions or effects
+ * fault and mode LEDs. It ensures the LEDs reflect any ongoing transitions or effects,
  * such as fading, occurring due to changes in their state or value.
  *
  * Designed for integration in the main program loop to provide periodic updates
@@ -132,7 +133,7 @@ void Watcher::handlePWM()
         // Disable SCR and Pump.
         setSCR(false);
 
-        // Disable Pump on Error && Standby but if no of these are active don't disable on Temp to high.
+        // Disable Pump on Error && Standby, but if no of these are active, don't disable on Temp to high.
         setPump((!Guardian::isCritical() && !standby && !tempToLow));
     }
     else
@@ -515,7 +516,7 @@ void Watcher::setup()
     modeLed.fade(255, 1000);
     faultLed.fade(255, 1000);
 
-    // Begin 1Wire and Scan for Devices.
+    // Begin 1-Wire and Scan for Devices.
     begin1Wire();
 
     // Setup Pins.
@@ -736,7 +737,7 @@ void Watcher::begin1Wire()
     // Grab a count of devices on the wire.
     foundDevices = sensors.getDeviceCount();
 
-    // Loop through each device, print out address
+    // Loop through each device, print out the address
     for (int i = 0; i < foundDevices; i++)
     {
         // Search the wire for address
@@ -858,7 +859,7 @@ void Watcher::handleStandbyLedFade(bool cond)
 {
     if (cond)
     {
-        // Fade in 1000 Seconds Interval.
+        // Fade in 1000-second Interval.
         modeLed.fade(255, 1000);
     }
     else
@@ -910,10 +911,33 @@ void Watcher::setDuty(int8_t int8)
     duty = int8;
 }
 
+/**
+ * @brief Sets the minimum power level for the watcher system.
+ *
+ * This method updates the internal minimum power variable to the specified value.
+ * The minimum power setting is utilized to impose constraints or thresholds
+ * on system operation, ensuring it adheres to defined parameters.
+ *
+ * @param to_float The new minimum power value, specified as a floating-point number.
+ */
 void Watcher::setMinPower(float to_float)
 {
+    minPower = to_float;
 }
 
+/**
+ * @brief Configures the input and output pins used by the system.
+ *
+ * This method initializes the microcontroller's GPIO pins to their required
+ * modes based on their functionality in the system. It designates certain pins
+ * as inputs, such as buttons and sensors, and others as outputs for controlling
+ * peripherals like LEDs, pumps, and SCR modules. Additionally, it configures
+ * PWM (Pulse Width Modulation) for the SCR control, setting the desired frequency
+ * and resolution.
+ *
+ * The method is a critical step in the system's initialization process to ensure
+ * proper hardware configuration before executing system logic.
+ */
 void Watcher::setupPins()
 {
     // Set Input Pins.
@@ -1017,6 +1041,22 @@ void Watcher::readTemperature()
 }
 
 /**
+ * @brief Determines if the current power generation is sufficient.
+ *
+ * This method evaluates whether the absolute value of the generated power
+ * exceeds the configured minimum power requirement. If the house is
+ * exporting power (negative house power) beyond the minimum threshold,
+ * it returns true.
+ *
+ * @return True if the current power generation meets or exceeds the
+ *         required minimum power threshold, false otherwise.
+ */
+bool Watcher::isEnoughPowerGeneration()
+{
+    return (housePower <= -minPower);
+}
+
+/**
  * @brief Adjusts the duty cycle based on the power being imported or exported by the house meter.
  *
  * This method monitors the power flow indicated by `housePower` to determine
@@ -1030,18 +1070,21 @@ void Watcher::readTemperature()
  */
 void Watcher::handlePowerBasedDuty()
 {
-    // Check if House Meter is Importing or Exporting.
-    if (housePower < 0)
+    if (isEnoughPowerGeneration())
     {
-        // If Power is producing/exporting like -1000W
-        if (duty < 254)
-            duty++;
-    }
-    else
-    {
-        // If Power is consuming/importing like 800W.
-        if (duty > 0)
-            duty--;
+        // Check if House Meter is Importing or Exporting.
+        if (housePower < 0)
+        {
+            // If Power is producing/exporting like -1000 W
+            if (duty < 254)
+                duty++;
+        }
+        else
+        {
+            // If Power is consuming/importing like 800 W.
+            if (duty > 0)
+                duty--;
+        }
     }
 }
 

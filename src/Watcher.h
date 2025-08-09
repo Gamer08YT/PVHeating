@@ -63,6 +63,7 @@ public:
     static ModeType mode;
     static bool standby;
     static float maxPower;
+    static float minPower;
     static float temperatureIn;
     static float temperatureOut;
     static float maxConsume;
@@ -84,6 +85,7 @@ private:
     static void setupPins();
     static void readButtons();
     static void readTemperature();
+    static bool isEnoughPowerGeneration();
     static void handlePowerBasedDuty();
     static bool checkLocalPowerLimit();
     static void handleMaxPower(float max_power);
