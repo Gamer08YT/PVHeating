@@ -27,6 +27,7 @@ bool Watcher::standby = true;
 float Watcher::temperatureIn = 0.0f;
 float Watcher::temperatureOut = 0.0f;
 float Watcher::maxConsume = 0.0f;
+float Watcher::startConsumed = 0.0F;
 float Watcher::currentPower = 0.0f;
 float Watcher::maxPower = 6000.0f;
 float Watcher::housePower = 0.0f;

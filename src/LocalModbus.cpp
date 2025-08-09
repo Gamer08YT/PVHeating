@@ -8,13 +8,9 @@
 #include "PinOut.h"
 #include "MeterRegisters.h"
 #include "ModbusClientRTU.h"
-#include "ModbusClientTCP.h"
 #include "ModbusClientTCPasync.h"
 #include "Watcher.h"
 #include "WebSerial.h"
-
-// #include "ModbusClientTCP.h"
-
 
 // Begin HW Serial 2 (TX=17, RX=16).
 HardwareSerial serial(2);
