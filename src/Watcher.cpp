@@ -661,6 +661,15 @@ void Watcher::startConsume()
 
     if (mode == ModeType::CONSUME)
     {
+        String floatStr = String(consumption);
+        String str = "Consume: ";
+
+        // Append String.
+        str.concat(floatStr);
+
+        // Print to Console.
+        Guardian::println(str.c_str());
+
         startConsumed = consumption;
     }
     //digitalWrite(LED_MODE, HIGH);
