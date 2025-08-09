@@ -32,7 +32,7 @@ float Watcher::currentPower = 0.0f;
 float Watcher::maxPower = 6000.0f;
 float Watcher::housePower = 0.0f;
 float Watcher::consumption = 0.0f;
-int Watcher::duty = 0;
+u_int8_t Watcher::duty = 0;
 int Watcher::temperatureMax = 60;
 float Watcher::flowRate = 0.0f;
 bool displayFlow = false;
@@ -1117,20 +1117,22 @@ void Watcher::handleConsumeBasedDuty()
 }
 
 /**
- * @brief Checks if the external temperature is too low or undefined.
+ * @brief Checks if the system temperature is too low based on operational limits.
  *
- * This method evaluates whether the `temperatureOut` value indicates a low temperature
- * condition or is in an invalid (undefined) state. It returns true if the temperature
- * is below the defined `temperatureMax` threshold or if the value of `temperatureOut`
- * is not a finite number.
+ * This method evaluates the value of the temperature output and compares it to
+ * a predefined maximum threshold. If the temperature is not a finite number (e.g., NaN),
+ * the method considers the temperature undefined and returns false. Otherwise, it returns
+ * true if the temperature is below the defined maximum.
  *
- * @return true if the external temperature is too low or undefined, false otherwise.
+ * @return True if the temperature is below the maximum threshold and defined,
+ *         otherwise false.
  */
 bool Watcher::isTempToLow()
 {
     // If TemperatureOut is undefined.
+    // If TempOut != NaN = true
     if (!std::isfinite(temperatureOut))
-        return true;
+        return false;
 
     return temperatureOut < temperatureMax;
 }

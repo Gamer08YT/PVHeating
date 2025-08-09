@@ -73,7 +73,7 @@ public:
 
 private:
     static float startConsumed;
-    static int duty;
+    static u_int8_t duty;
     static void begin1Wire();
     static void setupFlowMeter();
     static void readLocalPower();
