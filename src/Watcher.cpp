@@ -1127,7 +1127,7 @@ void Watcher::handleStandbyCounterEnable()
  * whether the system is consuming (positive power) or producing/exporting (negative power).
  * It incrementally increases the duty cycle if the system is exporting power and
  * decreases it if the system is consuming power, ensuring the duty remains within
- * the range of 0 to 254.
+ * the range of 0 to X.
  *
  * Designed for dynamic control in power balancing systems by adapting the duty
  * cycle to reflect the current power state.
@@ -1139,7 +1139,7 @@ void Watcher::handlePowerBasedDuty()
         handleStandbyCounterEnable();
 
         // If Power is producing/exporting like -1000 W
-        if (duty < 254)
+        if (duty < SCR_PWM_RANGE)
             duty++;
     }
     else
