@@ -63,6 +63,7 @@
 #define SCR_PWM_FREQUENCY 10000
 #define SCR_PWM_RESOLUTION 10
 #define SCR_PWM_RANGE 1023
+#define SCR_PWM_STEP 10
 
 // Display and I2C Stuff.
 #define DISPLAY_I2C_SDA 32

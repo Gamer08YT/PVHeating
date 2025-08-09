@@ -1140,13 +1140,13 @@ void Watcher::handlePowerBasedDuty()
 
         // If Power is producing/exporting like -1000 W
         if (duty < SCR_PWM_RANGE)
-            duty++;
+            duty = duty + SCR_PWM_STEP;
     }
     else
     {
         // If Power is not enough to generate.
-        if (duty > 0)
-            duty--;
+        if (duty > SCR_PWM_STEP)
+            duty = duty - SCR_PWM_STEP;
 
         handleStandbyCounterDisable();
     }
@@ -1186,13 +1186,13 @@ void Watcher::handleMaxPower(float max_power)
     {
         Guardian::println("M");
 
-        if (duty > 0)
-            duty--;
+        if (duty > SCR_PWM_STEP)
+            duty = duty - SCR_PWM_STEP;
     }
     else
     {
-        if (duty < 255)
-            duty++;
+        if (duty < SCR_PWM_RANGE)
+            duty = duty + SCR_PWM_STEP;
     }
 }
 
