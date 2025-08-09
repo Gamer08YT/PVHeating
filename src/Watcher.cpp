@@ -975,6 +975,7 @@ void Watcher::setupPins()
 
     // Set PWM Frequency.
     ledcAttach(SCR_PWM, SCR_PWM_FREQUENCY, SCR_PWM_RESOLUTION);
+    ledcOutputInvert(SCR_PWM, true);
 }
 
 /**
