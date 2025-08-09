@@ -661,8 +661,8 @@ void Watcher::startConsume()
 
     if (mode == ModeType::CONSUME)
     {
-        String floatStr = String(consumption);
-        String str = "Consume: ";
+        String floatStr = String(consumption + maxConsume);
+        String str = "To: ";
 
         // Append String.
         str.concat(floatStr);
