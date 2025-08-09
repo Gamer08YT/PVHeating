@@ -263,6 +263,7 @@ void HomeAssistant::configureConsumptionInstance()
     consumeMax.setIcon("mdi:lightbulb");
     consumeMax.setMin(1);
     consumeMax.setMax(10);
+    consumeMax.setRetain(true);
     consumeMax.onCommand([](HANumeric number, HANumber* sender)
     {
         Guardian::println("Max changed");
