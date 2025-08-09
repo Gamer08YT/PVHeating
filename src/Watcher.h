@@ -39,6 +39,7 @@ public:
     static void setTargetTemperature(int is_int8);
     static void setHousePower(float house_power);
     static void handleErrorLedFade(bool cond);
+    static void setDuty(int8_t int8);
 
 
     /**

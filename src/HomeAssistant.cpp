@@ -186,7 +186,6 @@ void HomeAssistant::configureHeatingInstance()
     heating.setTargetTemperature(50.00F);
     heating.setCurrentTargetTemperature(10.00F);
 
-
     // Retain Heating Value.
     heating.setRetain(true);
 
@@ -431,6 +430,7 @@ void HomeAssistant::configurePWMInstance()
     {
         if (Watcher::standby)
         {
+            Watcher::setDuty(number.toInt8());
             Watcher::setPWM(number.toInt8());
 
             sender->setState(number);

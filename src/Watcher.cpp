@@ -147,23 +147,18 @@ void Watcher::handlePWM()
             Guardian::println("MaxP");
 
             if (duty > 0)
-            {
                 duty--;
-            }
         }
         else
         {
             // Handle Modes serpate.
             if (mode == ModeType::DYNAMIC)
-            {
                 // Handle Dynamic Mode.
                 handlePowerBasedDuty();
-            }
+
             else
-            {
                 // Handle Consume Mode.
                 handleConsumeBasedDuty();
-            }
         }
     }
 
@@ -900,6 +895,20 @@ void Watcher::handleErrorLedFade(bool cond)
         faultLed.stop_fade();
         faultLed.set_value(0);
     }
+}
+
+/**
+ * @brief Sets the duty value for the Watcher.
+ *
+ * This method assigns the provided integer value to the static duty member of the Watcher class.
+ * It is used to update and modify the internal duty state, which can affect the system's behavior
+ * or operational parameters based on the new duty value.
+ *
+ * @param int8 The new duty value as an 8-bit signed integer.
+ */
+void Watcher::setDuty(int8_t int8)
+{
+    duty = int8;
 }
 
 void Watcher::setupPins()
