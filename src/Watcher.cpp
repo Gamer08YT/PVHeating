@@ -33,7 +33,7 @@ float Watcher::maxPower = 6000.0f;
 float Watcher::minPower = 500.0f;
 float Watcher::housePower = 0.0f;
 float Watcher::consumption = 0.0f;
-u_int8_t Watcher::duty = 0;
+u_int32_t Watcher::duty = 0;
 u_int8_t Watcher::standbyCounter = 0;
 int Watcher::temperatureMax = 60;
 float Watcher::flowRate = 0.0f;
@@ -360,7 +360,7 @@ void Watcher::setConsumption(float con)
  *
  * @param duty The PWM duty cycle value to be set. It is an 8-bit signed integer.
  */
-void Watcher::setPWMHA(int8_t duty)
+void Watcher::setPWMHA(u_int32_t duty)
 {
     // Write SCR PWM Duty via calculated Duty.
     ledcWrite(SCR_PWM, duty);
@@ -375,7 +375,7 @@ void Watcher::setPWMHA(int8_t duty)
  *
  * @param int8 The duty cycle value to be applied, represented as an 8-bit integer.
  */
-void Watcher::setPWM(int8_t int8)
+void Watcher::setPWM(u_int32_t int8)
 {
     char buffer[50];
     snprintf(buffer, sizeof(buffer), "PWM: %u", int8);
@@ -926,7 +926,7 @@ void Watcher::handleErrorLedFade(bool cond)
  *
  * @param int8 The new duty value as an 8-bit signed integer.
  */
-void Watcher::setDuty(int8_t int8)
+void Watcher::setDuty(u_int32_t int8)
 {
     duty = int8;
 }
@@ -975,7 +975,6 @@ void Watcher::setupPins()
 
     // Set PWM Frequency.
     ledcAttach(SCR_PWM, SCR_PWM_FREQUENCY, SCR_PWM_RESOLUTION);
-    ledcOutputInvert(SCR_PWM, true);
 }
 
 /**

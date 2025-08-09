@@ -34,12 +34,12 @@ public:
     static void setMaxPower(float to_float);
     static void setPower(float current_power);
     static void setConsumption(float consumption);
-    static void setPWMHA(int8_t int8);
-    static void setPWM(int8_t int8);
+    static void setPWMHA(u_int32_t duty);
+    static void setPWM(u_int32_t int8);
     static void setTargetTemperature(int is_int8);
     static void setHousePower(float house_power);
     static void handleErrorLedFade(bool cond);
-    static void setDuty(int8_t int8);
+    static void setDuty(u_int32_t int8);
     static void setMinPower(float to_float);
 
 
@@ -76,7 +76,7 @@ public:
 private:
     static float startConsumed;
     static u_int8_t standbyCounter;
-    static u_int8_t duty;
+    static u_int32_t duty;
     static void begin1Wire();
     static void setupFlowMeter();
     static void readLocalPower();
