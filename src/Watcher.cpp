@@ -182,7 +182,7 @@ void Watcher::updateDisplay()
     {
         Guardian::clear();
         Guardian::setTitle("Dashboard");
-        Guardian::setValue(1, "PWM", String(duty, 2).c_str());
+        Guardian::setValue(1, "PWM", String(duty).c_str());
         Guardian::setValue(2, "Pin", String(currentPower, 2).c_str(), "W");
 
         if (displayFlow)
@@ -924,6 +924,9 @@ void Watcher::setupPins()
     pinMode(PUMP_ENABLE, OUTPUT);
     pinMode(SCR_ENABLE, OUTPUT);
     pinMode(SCR_PWM, OUTPUT);
+
+    // Set PWM Frequency.
+    analogWriteFrequency(SCR_PWM, SCR_PWM_FREQUENCY);
 }
 
 /**
@@ -1078,53 +1081,54 @@ void Watcher::handleMaxPower(float max_power)
         if (duty < 255)
             duty++;
     }
+}
 
-    /**
-     * @brief Adjusts the system's duty cycle based on consumption thresholds.
-     *
-     * This method ensures that the system remains within acceptable consumption limits.
-     * If the total consumption is within the defined maximum threshold, it invokes the
-     * `handleMaxPower` function to regulate the power consumption. Otherwise, it transitions
-     * the system to standby mode and resets the duty cycle.
-     *
-     * Designed for the "Consume" operating mode to dynamically regulate the duty cycle
-     * in response to consumption metrics.
-     *
-     * Preconditions:
-     * - `startConsumed` is a finite value.
-     * - `consumption` represents the current total consumed power.
-     * - `maxConsume` specifies the maximum allowed additional consumption.
-     */
-    void Watcher::handleConsumeBasedDuty()
+/**
+ * @brief Adjusts the system's duty cycle based on consumption thresholds.
+ *
+ * This method ensures that the system remains within acceptable consumption limits.
+ * If the total consumption is within the defined maximum threshold, it invokes the
+ * `handleMaxPower` function to regulate the power consumption. Otherwise, it transitions
+ * the system to standby mode and resets the duty cycle.
+ *
+ * Designed for the "Consume" operating mode to dynamically regulate the duty cycle
+ * in response to consumption metrics.
+ *
+ * Preconditions:
+ * - `startConsumed` is a finite value.
+ * - `consumption` represents the current total consumed power.
+ * - `maxConsume` specifies the maximum allowed additional consumption.
+ */
+void Watcher::handleConsumeBasedDuty()
+{
+    if (std::isfinite(startConsumed) && consumption < maxConsume + startConsumed)
     {
-        if (std::isfinite(startConsumed) && consumption < maxConsume + startConsumed)
-        {
-            handleMaxPower(maxPower);
-        }
-        else
-        {
-            setStandby(true);
-
-            // Reset Duty.
-            duty = 0;
-        }
+        handleMaxPower(maxPower);
     }
-
-    /**
-     * @brief Checks if the external temperature is too low or undefined.
-     *
-     * This method evaluates whether the `temperatureOut` value indicates a low temperature
-     * condition or is in an invalid (undefined) state. It returns true if the temperature
-     * is below the defined `temperatureMax` threshold or if the value of `temperatureOut`
-     * is not a finite number.
-     *
-     * @return true if the external temperature is too low or undefined, false otherwise.
-     */
-    bool Watcher::isTempToLow()
+    else
     {
-        // If TemperatureOut is undefined.
-        if (!std::isfinite(temperatureOut))
-            return true;
+        setStandby(true);
 
-        return temperatureOut < temperatureMax;
+        // Reset Duty.
+        duty = 0;
     }
+}
+
+/**
+ * @brief Checks if the external temperature is too low or undefined.
+ *
+ * This method evaluates whether the `temperatureOut` value indicates a low temperature
+ * condition or is in an invalid (undefined) state. It returns true if the temperature
+ * is below the defined `temperatureMax` threshold or if the value of `temperatureOut`
+ * is not a finite number.
+ *
+ * @return true if the external temperature is too low or undefined, false otherwise.
+ */
+bool Watcher::isTempToLow()
+{
+    // If TemperatureOut is undefined.
+    if (!std::isfinite(temperatureOut))
+        return true;
+
+    return temperatureOut < temperatureMax;
+}
