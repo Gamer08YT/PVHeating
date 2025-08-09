@@ -5,7 +5,6 @@
 #include <HardwareSerial.h>
 #include <WebServer.h>
 #include "Guardian.h"
-#include "HomeAssistant.h"
 #include "PinOut.h"
 #include "MeterRegisters.h"
 #include "ModbusClientRTU.h"

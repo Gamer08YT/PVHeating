@@ -19,7 +19,7 @@
 #ifndef PINOUT_H
 #define PINOUT_H
 
-#define SOFTWARE_VERSION "1.0.4"
+#define SOFTWARE_VERSION "1.0.5"
 #define MODBUS_TIMEOUT 500
 #define MODBUS_CORE 1
 #define MODBUS_BAUD 9600
