@@ -910,6 +910,10 @@ void Watcher::setDuty(int8_t int8)
     duty = int8;
 }
 
+void Watcher::setMinPower(float to_float)
+{
+}
+
 void Watcher::setupPins()
 {
     // Set Input Pins.

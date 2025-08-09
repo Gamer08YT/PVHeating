@@ -40,6 +40,7 @@ private:
     static void configureFlowInstance();
     static void configureErrorInstances();
     static void configureMaxPowerInstance();
+    static void configureMinPowerInstance();
     static void configurePWMInstance();
     static void handleMQTT();
 

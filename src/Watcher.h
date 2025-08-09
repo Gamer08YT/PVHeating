@@ -40,6 +40,7 @@ public:
     static void setHousePower(float house_power);
     static void handleErrorLedFade(bool cond);
     static void setDuty(int8_t int8);
+    static void setMinPower(float to_float);
 
 
     /**

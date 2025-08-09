@@ -54,6 +54,9 @@ HANumber pwm("heating_pwm");
 // Store Max Power.
 HANumber maxPower("heating_max_power");
 
+// Store Min Power.
+HANumber minPower("heating_min_power");
+
 // Store SCR Switch Instance.
 HASwitch scrSwitch("scr_switch");
 
@@ -315,6 +318,7 @@ void HomeAssistant::begin()
     configurePowerInstance();
     configureConsumptionInstance();
     configureMaxPowerInstance();
+    configureMinPowerInstance();
     configureFaultInstances();
     configureFlowInstance();
     configureSCRInstance();
@@ -397,15 +401,43 @@ void HomeAssistant::configureErrorInstances()
  */
 void HomeAssistant::configureMaxPowerInstance()
 {
-    maxPower.setName("Max Leistung");
+    maxPower.setName("Max");
     maxPower.setDeviceClass("power");
     maxPower.setUnitOfMeasurement("kW");
     maxPower.setMin(2);
     maxPower.setMax(6);
     maxPower.setIcon("mdi:flash");
+    maxPower.setRetain(true);
     maxPower.onCommand([](HANumeric number, HANumber* sender)
     {
         Watcher::setMaxPower(number.toFloat() * 1000);
+
+        sender->setState(number);
+    });
+}
+
+/**
+ * @brief Configures the minimum power instance for the Home Assistant integration.
+ *
+ * This method sets up the properties and behavior of the minimum power instance.
+ * It defines the name, device class, unit of measurement, minimum and maximum values,
+ * and specifies that the instance retains its state. Additionally, it associates an
+ * icon for visual representation and registers a command handler to process changes
+ * in the instance's state. The handler updates the system's minimum power value
+ * and synchronizes the state with the instance.
+ */
+void HomeAssistant::configureMinPowerInstance()
+{
+    minPower.setName("Min");
+    minPower.setDeviceClass("power");
+    minPower.setUnitOfMeasurement("kW");
+    minPower.setMin(500);
+    minPower.setMax(4000);
+    minPower.setRetain(true);
+    minPower.setIcon("mdi:flash");
+    minPower.onCommand([](HANumeric number, HANumber* sender)
+    {
+        Watcher::setMinPower(number.toFloat());
 
         sender->setState(number);
     });
