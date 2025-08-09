@@ -356,7 +356,7 @@ void Watcher::setConsumption(float con)
 void Watcher::setPWMHA(int8_t duty)
 {
     // Write SCR PWM Duty via calculated Duty.
-    analogWrite(SCR_PWM, duty);
+    ledcWrite(SCR_PWM, duty);
 }
 
 /**
@@ -371,7 +371,7 @@ void Watcher::setPWMHA(int8_t duty)
 void Watcher::setPWM(int8_t int8)
 {
     char buffer[50];
-    snprintf(buffer, sizeof(buffer), "PWM: %i", int8);
+    snprintf(buffer, sizeof(buffer), "PWM: %u", int8);
 
     Guardian::println(buffer);
 
@@ -926,7 +926,7 @@ void Watcher::setupPins()
     pinMode(SCR_PWM, OUTPUT);
 
     // Set PWM Frequency.
-    analogWriteFrequency(SCR_PWM, SCR_PWM_FREQUENCY);
+    ledcAttach(SCR_PWM, SCR_PWM_FREQUENCY, SCR_PWM_RESOLUTION);
 }
 
 /**
@@ -1073,6 +1073,8 @@ void Watcher::handleMaxPower(float max_power)
 {
     if (currentPower > max_power)
     {
+        Guardian::println("M");
+
         if (duty > 0)
             duty--;
     }
