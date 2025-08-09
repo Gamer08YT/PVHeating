@@ -456,15 +456,15 @@ void HomeAssistant::configureMinPowerInstance()
 void HomeAssistant::configurePWMInstance()
 {
     pwm.setName("Duty");
-    pwm.setMax(255);
+    pwm.setMax(SCR_PWM_RANGE);
 
     // Handle PWM Change Listener.
     pwm.onCommand([](HANumeric number, HANumber* sender)
     {
         if (Watcher::standby)
         {
-            Watcher::setDuty(number.toInt8());
-            Watcher::setPWM(number.toInt8());
+            Watcher::setDuty(number.toUInt32());
+            Watcher::setPWM(number.toUInt32());
 
             sender->setState(number);
         }
