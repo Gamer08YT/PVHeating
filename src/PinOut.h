@@ -56,7 +56,7 @@
 #define SCR_FAULT 27
 #define SCR_ENABLE 25
 #define SCR_PWM 15
-#define SCR_PWM_FREQUENCY 10000
+#define SCR_PWM_FREQUENCY 5000
 #define SCR_PWM_RESOLUTION 10
 
 // Display and I2C Stuff.
