@@ -20,6 +20,8 @@
 class Watcher
 {
 public:
+    static bool powerLock;
+    static bool tempLock;
     static void handleButtonLeds();
     static void loop();
     static void setDefaults();
@@ -94,6 +96,7 @@ private:
     static void handleMaxPower(float max_power);
     static void handleConsumeBasedDuty();
     static bool isTempToLow();
+    static bool isOverTemp();
     static void handlePWM();
     static void updateDisplay();
     static void setFlow(float get_current_flowrate);

@@ -24,6 +24,8 @@
 // Definitions from Header.
 Watcher::ModeType Watcher::mode = Watcher::CONSUME;
 bool Watcher::standby = true;
+bool Watcher::tempLock = false;
+bool Watcher::powerLock = false;
 float Watcher::temperatureIn = 0.0f;
 float Watcher::temperatureOut = 0.0f;
 float Watcher::maxConsume = 0.0f;
@@ -56,8 +58,8 @@ OneButton faultButton(BUTTON_FAULT, true);
 OneButton modeButton(BUTTON_MODE, true);
 
 // Store LED Instances.
-LEDFader faultLed(LED_FAULT);
-LEDFader modeLed(LED_MODE);
+//LEDFader faultLed(LED_FAULT);
+//LEDFader modeLed(LED_MODE);
 
 // Store Timer.
 SimpleTimer fastInterval(500);
@@ -84,8 +86,8 @@ FlowSensor meter(YFB5, FLOW_PULSE);
  */
 void Watcher::handleButtonLeds()
 {
-    faultLed.update();
-    modeLed.update();
+    //faultLed.update();
+    //modeLed.update();
 }
 
 /**
@@ -122,53 +124,81 @@ void Watcher::handleHAPublish()
  */
 void Watcher::handlePWM()
 {
-    bool tempToLow = isTempToLow();
-
-    if (!tempToLow)
+    if (!isOverTemp())
     {
-        Guardian::println("TempOH");
+        // If Temp >= 60°C
+        if (isTempToLow())
+        {
+            Guardian::println("TempOH");
 
-        duty = 0;
+            duty = 0;
 
-        // Disable SCR and Pump.
-        setSCR(false);
+            // Disable SCR and Pump.
+            setSCR(false);
 
-        // Count to Disable SCR.
-        handleStandbyCounterDisable();
+            // Add Templock.
+            tempLock = true;
 
-        // // Disable Pump on Error && Standby, but if no of these are active, don't disable on Temp to high.
-        // setPump((!Guardian::isCritical() && !standby && !tempToLow));
+            // Print Debug Message.
+            Guardian::println("TempLock");
+
+            // // Disable Pump on Error && Standby, but if no of these are active, don't disable on Temp to high.
+            // setPump((!Guardian::isCritical() && !standby && !tempToLow));
+        }
+        // If Temp < 60°C
+        else
+        {
+            // If Temperature-Lock is active.
+            if (tempLock)
+            {
+                // Wait until the Temperature drops like 5°C.
+                if (temperatureOut < static_cast<float>(temperatureMax - 5))
+                {
+                    // Remove Temperature Log.
+                    tempLock = false;
+                }
+            }
+            // If Temperature-Lock is not active.
+            else
+            {
+                // If Max Power is exceeded. (currentPower > MaxPower).
+                if (checkLocalPowerLimit())
+                {
+                    Guardian::println("MaxP");
+
+                    if (duty > 0)
+                        duty--;
+                }
+                // If currentPower < MaxPower.
+                else
+                {
+                    // Handle Modes separate.
+                    // Dynamic Mode (Zero Export Mode)
+                    if (mode == ModeType::DYNAMIC)
+                        // Handle Dynamic Mode.
+                        handlePowerBasedDuty();
+                        // Consume Mode (Consume X Energy)
+                    else
+                        // Handle Consume Mode.
+                        handleConsumeBasedDuty();
+                }
+
+                if (!standby && !tempLock && !powerLock)
+                {
+                    // Update PWM Value.
+                    setPWM(duty);
+
+                    // Enable Pump and SCR.
+                    setSCR(true);
+                    setPump(true);
+                }
+            }
+        }
     }
     else
     {
-        // Limit / handle max Power.
-        if (checkLocalPowerLimit())
-        {
-            Guardian::println("MaxP");
-
-            if (duty > 0)
-                duty--;
-        }
-        else
-        {
-            // Handle Modes separate.
-            if (mode == ModeType::DYNAMIC)
-                // Handle Dynamic Mode.
-                handlePowerBasedDuty();
-            else
-                // Handle Consume Mode.
-                handleConsumeBasedDuty();
-        }
-    }
-
-    if (!standby)
-    {
-        // Update PWM Value.
-        setPWM(duty);
-
-        // Enable Pump and SCR.
-        setSCR(true);
-        setPump(true);
+        // Set Error Log and disable Heater.
+        Guardian::setError(55, "Overtemp", Guardian::CRITICAL);
     }
 }
 
@@ -447,8 +477,8 @@ void Watcher::handleSensors()
  */
 void Watcher::loop()
 {
-    faultLed.update();
-    modeLed.update();
+    //faultLed.update();
+    //modeLed.update();
 
     handleSensors();
     readButtons();
@@ -573,6 +603,7 @@ void Watcher::setStandby(bool cond)
     if (cond)
     {
         setSCR(false);
+        setPump(false);
         setPWM(0);
     }
 
@@ -879,14 +910,16 @@ void Watcher::handleStandbyLedFade(bool cond)
 {
     if (cond)
     {
+        digitalWrite(LED_MODE, LOW);
         // Fade in 1000-second Interval.
-        modeLed.fade(255, 1000);
+        //modeLed.fade(255, 1000);
     }
     else
     {
-        // Stop Fade set LED Brightness of Duty Cycle.
-        faultLed.stop_fade();
-        modeLed.set_value(duty);
+        digitalWrite(LED_MODE, HIGH);
+        // // Stop Fade set LED Brightness of Duty Cycle.
+        // faultLed.stop_fade();
+        // modeLed.set_value(duty);
     }
 }
 
@@ -906,14 +939,16 @@ void Watcher::handleErrorLedFade(bool cond)
 {
     if (cond)
     {
+        digitalWrite(LED_FAULT, HIGH);
         // Fade in 1000-second Interval.
-        faultLed.fade(255, 1000);
+        //faultLed.fade(255, 1000);
     }
     else
     {
+        digitalWrite(LED_FAULT, LOW);
         // Stop Fade and Disable LED.
-        faultLed.stop_fade();
-        faultLed.set_value(0);
+        //faultLed.stop_fade();
+        //faultLed.set_value(0);
     }
 }
 
@@ -1095,7 +1130,7 @@ void Watcher::handleStandbyCounterDisable()
     }
     else
     {
-        setStandby(true);
+        powerLock = true;
     }
 }
 
@@ -1116,7 +1151,7 @@ void Watcher::handleStandbyCounterEnable()
     }
     else
     {
-        setStandby(false);
+        powerLock = false;
     }
 }
 
@@ -1134,6 +1169,8 @@ void Watcher::handleStandbyCounterEnable()
  */
 void Watcher::handlePowerBasedDuty()
 {
+    // If Generation is a negative Value.
+    // Eq. Exporting
     if (isEnoughPowerGeneration())
     {
         handleStandbyCounterEnable();
@@ -1142,6 +1179,8 @@ void Watcher::handlePowerBasedDuty()
         if (duty < SCR_PWM_RANGE)
             duty = duty + SCR_PWM_STEP;
     }
+    // If Generation is a positive Value.
+    // eq. Importing
     else
     {
         // If Power is not enough to generate.
@@ -1245,5 +1284,23 @@ bool Watcher::isTempToLow()
     if (!std::isfinite(temperatureOut))
         return false;
 
-    return temperatureOut < temperatureMax;
+    // If piping hot Spot < Max => true
+    // If piping hot Spot > Max => false
+    return temperatureOut < static_cast<float>(temperatureMax);
+}
+
+/**
+ * @brief Checks if the system has exceeded the defined temperature threshold.
+ *
+ * This method evaluates whether either `temperatureOut` or `temperatureIn` has surpassed
+ * the maximum allowable temperature, indicating an over-temperature condition.
+ *
+ * @return True if either `temperatureOut` or `temperatureIn` is greater than or equal
+ *         to the maximum temperature limit of 62.0 degrees; otherwise, false.
+ */
+bool Watcher::isOverTemp()
+{
+    float maxTemp = 62.0F;
+
+    return temperatureOut >= maxTemp || temperatureIn >= maxTemp;
 }

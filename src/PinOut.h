@@ -47,9 +47,9 @@
 #define ONE_WIRE 22
 
 // Hardware Control IO.
-#define BUTTON_FAULT 34
+#define BUTTON_FAULT 35
 #define LED_FAULT 14
-#define BUTTON_MODE 35
+#define BUTTON_MODE 34
 #define LED_MODE 13
 
 // Pump and Flow Meter.
