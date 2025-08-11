@@ -663,27 +663,32 @@ NetworkClient* HomeAssistant::getClient()
 }
 
 /**
- * @brief Sets the HVAC operating mode in the Home Assistant system.
+ * @brief Sets the operating mode of the heating system based on the provided input.
  *
- * Updates the heating system's mode based on the specified string input.
- * The method translates the provided mode string into a corresponding
- * HAHVAC mode and applies the mode change to the system.
+ * This method updates the heating system's mode by mapping the given numeric input
+ * to a corresponding operation mode of the HAHVAC component. The modes include heating,
+ * automatic control, and turning the system off. Any unsupported inputs are ignored.
  *
- * @param str A string representing the desired HVAC mode. It can take values
- * such as "HEAT", "AUTO", or "OFF".
+ * @param str The numeric indicator for the desired mode:
+ *            - 1: Heat mode
+ *            - 2: Auto mode
+ *            - 0: Off mode
  */
-void HomeAssistant::setMode(const char* str)
+void HomeAssistant::setMode(int str)
 {
     switch (str)
     {
-    case "HEAT":
+    case 1:
         heating.setMode(HAHVAC::HeatMode);
         break;
-    case "AUTO":
+    case 2:
         heating.setMode(HAHVAC::AutoMode);
         break;
-    case "OFF":
+    case 0:
         heating.setMode(HAHVAC::OffMode);
+        break;
+    default:
+        // Should not happen.
         break;
     }
 }

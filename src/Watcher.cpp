@@ -295,7 +295,7 @@ void Watcher::handleOneWireClearInterval()
 {
     if (oneWireOutOfRange > 0)
     {
-        // Every 2 Steps * 2 Seconds, decrement 1 from Fail List.
+        // Every 2 Steps * 2 Seconds, decrement 1 from the Fail List.
         // Increment Step.
         if (oneWireClearInterval < 2)
         {
@@ -570,7 +570,7 @@ void Watcher::setupButtons()
 
         setStandby(false);
         setMode((mode == ModeType::CONSUME) ? ModeType::DYNAMIC : ModeType::CONSUME);
-        HomeAssistant::setMode(mode == ModeType::CONSUME ? "HEAT" : "AUTO");
+        HomeAssistant::setMode(mode == ModeType::CONSUME ? 1 : 2);
     });
 
     // Standby on Long Press.
@@ -580,7 +580,7 @@ void Watcher::setupButtons()
 
         setStandby(true);
 
-        HomeAssistant::setMode("OFF");
+        HomeAssistant::setMode(0);
     });
 }
 

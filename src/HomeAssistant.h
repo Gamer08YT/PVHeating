@@ -57,7 +57,7 @@ public:
     static void setPWM(uint32_t int8);
     static void setErrorTitle(const char* error_title);
     static NetworkClient* getClient();
-    static void setMode(const char* str);
+    static void setMode(int str);
 };
 
 
