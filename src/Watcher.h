@@ -38,7 +38,7 @@ public:
     static void setConsumption(float consumption);
     static void setPWMHA(u_int32_t duty);
     static void setPWM(u_int32_t int8);
-    static void setTargetTemperature(int is_int8);
+    static void setTargetTemperature(float is_int8);
     static void setHousePower(float house_power);
     static void handleErrorLedFade(bool cond);
     static void setDuty(u_int32_t int8);

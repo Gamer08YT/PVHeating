@@ -470,9 +470,9 @@ void Watcher::setPWM(u_int32_t int8)
  *
  * @param is_int8 The new target temperature, specified as an integer.
  */
-void Watcher::setTargetTemperature(int is_int8)
+void Watcher::setTargetTemperature(float is_int8)
 {
-    temperatureMax = static_cast<float>(is_int8);
+    temperatureMax = is_int8;
 }
 
 /**
