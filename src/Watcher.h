@@ -101,6 +101,7 @@ private:
     static void updateDisplay();
     static void setFlow(float get_current_flowrate);
     static void updateTemperature();
+    static void handleOneWireClearInterval();
     static void handleSlowInterval();
     static void handleFastInterval();
     static void handleHAPublish();

@@ -43,6 +43,9 @@ float Watcher::flowRate = 0.0f;
 // Sometimes the OneWire Lib is unable to decode buffer and Returns +85°C.
 int oneWireOutOfRange = 0;
 
+// Store OneWire Clear Interval.
+int oneWireClearInterval = 0;
+
 // Switch between Display Mode.
 bool displayFlow = false;
 
@@ -275,6 +278,39 @@ void Watcher::updateTemperature()
 }
 
 /**
+ * @brief Manages the reset mechanism for OneWire error counters.
+ *
+ * This method regulates the decrement of the `oneWireOutOfRange` error counter
+ * by utilizing a time-based interval defined by `oneWireClearInterval`.
+ * The process ensures that errors are gradually cleared over time, minimizing
+ * sudden resumptions or changes in states.
+ *
+ * Specifically, the interval counter (`oneWireClearInterval`) is incremented with
+ * each invocation until it reaches the threshold of 2. Once the threshold is met,
+ * one error is subtracted from the `oneWireOutOfRange` counter, and the interval
+ * counter is reset. This mechanism operates only when `oneWireOutOfRange` has a
+ * value greater than zero, ensuring that the process halts when no errors are present.
+ */
+void Watcher::handleOneWireClearInterval()
+{
+    if (oneWireOutOfRange > 0)
+    {
+        // Every 2 Steps * 2 Seconds, decrement 1 from Fail List.
+        // Increment Step.
+        if (oneWireClearInterval < 2)
+        {
+            oneWireClearInterval++;
+        }
+        // Decrement one Error, if Interval exceed.
+        else
+        {
+            oneWireOutOfRange--;
+            oneWireClearInterval = 0;
+        }
+    }
+}
+
+/**
  * @brief Handles operations that occur at a slower predefined interval.
  *
  * This method performs a sequence of tasks when the slow timer interval is ready:
@@ -319,6 +355,9 @@ void Watcher::handleSlowInterval()
 
         // Update OLED.
         updateDisplay();
+
+        // Clear OneWire Errors.
+        handleOneWireClearInterval();
 
         // Reset Timer (Endless Loop).
         slowInterval.reset();
@@ -1084,12 +1123,12 @@ void Watcher::readTemperature()
             }
         }
 
-        // Set Fail if Dallas Temperature Sensor failed to initialize.
-        if
-        (tempTemperature >= 85.0F)
-        {
-            Guardian::setError(100, "TempInit", Guardian::CRITICAL);
-        }
+        // // Set Fail if Dallas Temperature Sensor failed to initialize.
+        // if
+        // (tempTemperature >= 85.0F)
+        // {
+        //     Guardian::setError(100, "TempInit", Guardian::CRITICAL);
+        // }
     }
     else
     {
@@ -1300,17 +1339,36 @@ bool Watcher::isTempToLow()
 }
 
 /**
- * @brief Checks if the system has exceeded the defined temperature threshold.
+ * @brief Checks if the system is operating beyond allowable temperature limits.
  *
- * This method evaluates whether either `temperatureOut` or `temperatureIn` has surpassed
- * the maximum allowable temperature, indicating an over-temperature condition.
+ * This method monitors the internal and external temperatures reported by sensors
+ * to determine if the system is overheating. It also detects if the sensor is reporting
+ * an out-of-range value (such as 85.0). If the sensor repeatedly reports out-of-range
+ * values, the system triggers a critical error using the Guardian system.
  *
- * @return True if either `temperatureOut` or `temperatureIn` is greater than or equal
- *         to the maximum temperature limit of 62.0 degrees; otherwise, false.
+ * @return True if either the internal or external temperature exceeds the defined
+ * maximum threshold; otherwise, false.
  */
 bool Watcher::isOverTemp()
 {
     float maxTemp = 62.0F;
+
+    // Check if OneWire Sensor is Out of Range.
+    if (temperatureIn == 85.0F || temperatureOut == 85.0F)
+    {
+        // Increment Value if its under 3 Errors.
+        if (oneWireOutOfRange < 2)
+        {
+            oneWireOutOfRange++;
+        }
+        // If Error exceeds 3 Fails, Shutdown!
+        else
+        {
+            Guardian::setError(100, "TempInit", Guardian::CRITICAL);
+        }
+
+        return false;
+    }
 
     return temperatureOut >= maxTemp || temperatureIn >= maxTemp;
 }
