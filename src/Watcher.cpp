@@ -37,7 +37,7 @@ float Watcher::housePower = 0.0f;
 float Watcher::consumption = 0.0f;
 u_int32_t Watcher::duty = 0;
 u_int8_t Watcher::standbyCounter = 0;
-float Watcher::temperatureMax = 60;
+float Watcher::temperatureMax = 60.0F;
 float Watcher::flowRate = 0.0f;
 
 // Sometimes the OneWire Lib is unable to decode buffer and Returns +85°C.
@@ -122,14 +122,25 @@ void Watcher::handleHAPublish()
 }
 
 /**
- * @brief Handles the Pulse-Width Modulation (PWM) functionality based on power conditions.
+ * @brief Handles the PWM control logic, managing temperatures, power, and system states.
  *
- * This method evaluates the `currentPower` member variable to determine if the power level
- * is acceptable for further action. It facilitates the PWM control mechanism by incorporating
- * system-specific power logic, updating or managing outputs as needed.
+ * This method governs the system’s PWM (Pulse Width Modulation) operations by executing
+ * conditional checks and actions based on temperature thresholds, power limits, and
+ * operating modes. It ensures safe operation by implementing temperature locks,
+ * managing duty cycles, and toggling system components like SCR and the pump.
  *
- * This function is intended to be invoked within the periodic system update cycle, ensuring
- * real-time responsiveness to changes in the power state.
+ * Key functionalities include:
+ * - Monitoring over-temperature and taking critical actions to prevent damage,
+ *   including disabling components and setting an error state.
+ * - Applying a temperature lock to delay operation when the temperature exceeds
+ *   defined limits and ensuring sufficient cooling before resuming normal function.
+ * - Adjusting PWM duty cycle dynamically based on the operational mode, such as DYNAMIC
+ *   or CONSUME, and verifying power limits to optimize system performance.
+ * - Controlling SCR and pump activation based on the current state of the system,
+ *   including standby, locks, and power constraints.
+ *
+ * Intended to run regularly as part of the system's main or interval loop to
+ * maintain operational safety and efficiency.
  */
 void Watcher::handlePWM()
 {
