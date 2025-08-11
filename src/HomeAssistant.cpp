@@ -45,6 +45,9 @@ HASensorNumber flow("heating_flow", HABaseDeviceType::PrecisionP2);
 // Store Consume Start Action Instance.
 HAButton consumeStart("heating_consume_start");
 
+// Store Reset Button Instance.
+HAButton reset("heating_restart");
+
 // Store Consume Input Value Instance.
 HANumber consumeMax("heating_consume_max");
 
@@ -327,6 +330,7 @@ void HomeAssistant::begin()
     configurePumpInstance();
     configureErrorInstances();
     configurePWMInstance();
+    configureResetInstance();
 
     // Print Debug Message.
     Guardian::println("HomeAssistant is ready");
@@ -500,6 +504,15 @@ void HomeAssistant::handleMQTT()
             fault.setState(Guardian::hasError());
             error_log.setValue(Guardian::getErrorTitle());
         }
+    });
+}
+
+void HomeAssistant::configureResetInstance()
+{
+    reset.setName("Restart");
+    reset.onCommand([](HAButton* sender)
+    {
+        ESP.restart();
     });
 }
 

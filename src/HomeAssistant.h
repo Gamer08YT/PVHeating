@@ -45,6 +45,7 @@ private:
     static void handleMQTT();
 
 public:
+    static void configureResetInstance();
     static void begin();
     static void loop();
     static void setFlow(float get_current_flowrate);

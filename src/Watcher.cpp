@@ -1082,7 +1082,7 @@ void Watcher::readTemperature()
         if
         (tempTemperature >= 85.0F)
         {
-            Guardian::setError(100, "Temp init fail", Guardian::CRITICAL);
+            Guardian::setError(100, "TempInit", Guardian::CRITICAL);
         }
     }
     else
