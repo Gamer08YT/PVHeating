@@ -46,6 +46,7 @@ private:
 
 public:
     static void configureResetInstance();
+    static void configureTemperatureInputInstance();
     static void begin();
     static void loop();
     static void setFlow(float get_current_flowrate);
@@ -58,6 +59,7 @@ public:
     static void setErrorTitle(const char* error_title);
     static NetworkClient* getClient();
     static void setMode(int str);
+    static void setTemperatureIn(float temperature_in);
 };
 
 

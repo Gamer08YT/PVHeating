@@ -149,6 +149,7 @@ bool LocalModbus::readLocal(int address)
  */
 void LocalModbus::handleReadMessage(String str, int address)
 {
+#ifdef DEBUG
     String addressStr = String(address);
 
     // Append String.
@@ -156,6 +157,7 @@ void LocalModbus::handleReadMessage(String str, int address)
 
     // Print to Console.
     Guardian::println(str.c_str());
+#endif
 }
 
 /**

@@ -115,6 +115,7 @@ void Watcher::handleHAPublish()
         HomeAssistant::setCurrentPower(currentPower);
         HomeAssistant::setPWM(duty);
         HomeAssistant::setFlow(flowRate);
+        HomeAssistant::setTemperatureIn(temperatureIn);
 
         publishInterval.reset();
     }

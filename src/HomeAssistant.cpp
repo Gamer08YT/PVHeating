@@ -30,6 +30,9 @@ HAMqtt mqtt(client, device, 16);
 // Store HAVAC Instance.
 HAHVAC heating("heating", HAHVAC::TargetTemperatureFeature | HAHVAC::ModesFeature);
 
+// Store TemperatureIn Instance.
+HASensorNumber temperatureIn("heating_in", HABaseDeviceType::PrecisionP2);
+
 // Store Power Usage Instance.
 HASensorNumber power("heating_load", HABaseDeviceType::PrecisionP2);
 
@@ -319,6 +322,7 @@ void HomeAssistant::begin()
 
     // Configure all Instances.
     configureHeatingInstance();
+    configureTemperatureInputInstance();
     configurePowerInstance();
     configureConsumptionInstance();
     configureMaxPowerInstance();
@@ -517,6 +521,21 @@ void HomeAssistant::configureResetInstance()
 }
 
 /**
+ * @brief Configures the temperature input instance with its name, device class, and unit of measurement.
+ *
+ * This method sets up the temperature input instance by assigning it a display name,
+ * categorizing it under the temperature device class, and defining its unit of measurement
+ * as degrees Celsius (°C). This configuration establishes the instance for monitoring
+ * and reporting temperature data in the system.
+ */
+void HomeAssistant::configureTemperatureInputInstance()
+{
+    temperatureIn.setName("Tin");
+    temperatureIn.setDeviceClass("temperature");
+    temperatureIn.setUnitOfMeasurement("°C");
+}
+
+/**
  * @brief Continuously executes the main execution cycle of the program.
  *
  * This method is the central loop responsible for performing repeated actions
@@ -691,4 +710,18 @@ void HomeAssistant::setMode(int str)
         // Should not happen.
         break;
     }
+}
+
+/**
+ * @brief Updates the input temperature value for the Home Assistant system.
+ *
+ * This method sets the current input temperature by assigning the provided value
+ * to the associated sensor representation. It ensures the temperature state
+ * is properly updated within the system.
+ *
+ * @param temperature_in The new temperature value to set, typically in degrees.
+ */
+void HomeAssistant::setTemperatureIn(float temperature_in)
+{
+    temperatureIn.setValue(temperature_in);
 }
