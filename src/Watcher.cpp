@@ -663,6 +663,11 @@ void Watcher::setStandby(bool cond)
         setPump(false);
         setPWM(0);
     }
+    else
+    {
+        duty = 0;
+        setPWM(0);
+    }
 
     standby = cond;
 }
@@ -804,6 +809,8 @@ void Watcher::setMaxPower(float to_float)
 void Watcher::setMode(ModeType cond)
 {
     duty = 0;
+
+    setPWM(duty);
 
     mode = cond;
 }
