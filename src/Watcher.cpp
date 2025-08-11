@@ -129,8 +129,6 @@ void Watcher::handlePWM()
         // If Temp >= 60°C
         if (!isTempToLow())
         {
-            Guardian::println("TempOH");
-
             duty = 0;
 
             // Disable SCR and Pump.
@@ -1282,7 +1280,11 @@ bool Watcher::isTempToLow()
     // If TemperatureOut is undefined.
     // If TempOut != NaN = true
     if (!std::isfinite(temperatureOut))
+    {
+        Guardian::println("Tisfinite");
+
         return false;
+    }
 
     // If piping hot Spot < Max => true
     // If piping hot Spot > Max => false
