@@ -37,7 +37,7 @@ float Watcher::housePower = 0.0f;
 float Watcher::consumption = 0.0f;
 u_int32_t Watcher::duty = 0;
 u_int8_t Watcher::standbyCounter = 0;
-int Watcher::temperatureMax = 60;
+float Watcher::temperatureMax = 60;
 float Watcher::flowRate = 0.0f;
 
 // Sometimes the OneWire Lib is unable to decode buffer and Returns +85°C.
@@ -159,7 +159,7 @@ void Watcher::handlePWM()
             if (tempLock)
             {
                 // Wait until the Temperature drops like 5°C.
-                if (temperatureOut < static_cast<float>(temperatureMax - 5))
+                if (temperatureOut < (temperatureMax - 5.0F))
                 {
                     // Remove Temperature Log.
                     tempLock = false;
@@ -472,7 +472,7 @@ void Watcher::setPWM(u_int32_t int8)
  */
 void Watcher::setTargetTemperature(int is_int8)
 {
-    temperatureMax = is_int8;
+    temperatureMax = static_cast<float>(is_int8);
 }
 
 /**
@@ -1336,7 +1336,7 @@ bool Watcher::isTempToLow()
 
     // If piping hot Spot < Max => true
     // If piping hot Spot > Max => false
-    return temperatureOut < static_cast<float>(temperatureMax);
+    return (temperatureOut < temperatureMax);
 }
 
 /**

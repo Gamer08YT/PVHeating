@@ -73,7 +73,7 @@ public:
     static float housePower;
     static float consumption;
     static float flowRate;
-    static int temperatureMax;
+    static float temperatureMax;
 
 private:
     static float startConsumed;
