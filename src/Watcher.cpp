@@ -127,7 +127,7 @@ void Watcher::handlePWM()
     if (!isOverTemp())
     {
         // If Temp >= 60°C
-        if (isTempToLow())
+        if (!isTempToLow())
         {
             Guardian::println("TempOH");
 
