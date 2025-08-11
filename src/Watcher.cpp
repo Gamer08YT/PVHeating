@@ -39,6 +39,11 @@ u_int32_t Watcher::duty = 0;
 u_int8_t Watcher::standbyCounter = 0;
 int Watcher::temperatureMax = 60;
 float Watcher::flowRate = 0.0f;
+
+// Sometimes the OneWire Lib is unable to decode buffer and Returns +85°C.
+int oneWireOutOfRange = 0;
+
+// Switch between Display Mode.
 bool displayFlow = false;
 
 // Store One Wire Instance.
@@ -526,6 +531,7 @@ void Watcher::setupButtons()
 
         setStandby(false);
         setMode((mode == ModeType::CONSUME) ? ModeType::DYNAMIC : ModeType::CONSUME);
+        HomeAssistant::setMode(mode == ModeType::CONSUME ? "HEAT" : "AUTO");
     });
 
     // Standby on Long Press.
@@ -534,6 +540,8 @@ void Watcher::setupButtons()
         Guardian::println("Mode L");
 
         setStandby(true);
+
+        HomeAssistant::setMode("OFF");
     });
 }
 
