@@ -53,7 +53,7 @@ public:
     static void setPump(bool state);
     static void setSCR(bool sender);
     static void setConsumption(float value);
-    static void setPWM(uint8_t int8);
+    static void setPWM(uint32_t int8);
     static void setErrorTitle(const char* error_title);
     static NetworkClient* getClient();
 };

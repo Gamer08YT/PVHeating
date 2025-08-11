@@ -617,7 +617,7 @@ void HomeAssistant::setConsumption(float value)
  *
  * @param int8 The new PWM value, which defines the duty cycle or intensity of the heating system.
  */
-void HomeAssistant::setPWM(uint8_t int8)
+void HomeAssistant::setPWM(uint32_t int8)
 {
     pwm.setState(int8);
 }
