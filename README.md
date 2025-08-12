@@ -20,10 +20,10 @@ dürfen nur von qualifizierten Fachkräften unter Beachtung aller geltenden Vors
 
 - ESP32 (AZ-Delivery DevKit v4)
 - ENC28J60 Ethernet-Modul
-- Dallas OneWire Temperatursensoren
-- Modbus RTU Schnittstelle
-- SCR (Silicon Controlled Rectifier) für Heizungssteuerung
-- Durchflussmesser
+- Dallas OneWire Temperatursensoren (DS18B20)
+- Modbus RTU Schnittstelle (Max 485)
+- SCR (Silicon Controlled Rectifier) für Heizungssteuerung (Tyco 3)
+- Durchflussmesser [YFB5](https://github.com/Gamer08YT/FlowSensor-Arduino/blob/2d238f10bb0df1d9aced42f86a5f5e600b737310/src/FlowSensor_Type.h#L17C1-L17C17)
 - Status-LEDs und Bedientaster
 
 ## Hauptfunktionen
