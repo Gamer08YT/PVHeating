@@ -848,6 +848,9 @@ void Watcher::begin1Wire()
     // Begin One Wire Sensors.
     sensors.begin();
 
+    // Use 10 Bit Resolution.
+    sensors.setResolution(10);
+
     // https://github.com/milesburton/Arduino-Temperature-Control-Library/issues/113#issuecomment-389638589
     sensors.setWaitForConversion(false);
 
@@ -1378,7 +1381,7 @@ bool Watcher::isOverTemp()
     if (temperatureIn == 85.0F || temperatureOut == 85.0F)
     {
         // Increment Value if its under 3 Errors.
-        if (oneWireOutOfRange < 2)
+        if (oneWireOutOfRange < 3)
         {
             oneWireOutOfRange++;
         }
