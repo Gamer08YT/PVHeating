@@ -1,5 +1,7 @@
 # PVHeating
 
+![img.png](img.png)
+
 ## Beschreibung
 
 PVHeating ist ein intelligentes Steuerungssystem für Heizungsanlagen in Kombination mit Photovoltaik-Systemen. Das
