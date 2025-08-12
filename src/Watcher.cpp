@@ -62,8 +62,8 @@ DeviceAddress address;
 int foundDevices = 0;
 
 // Store Button Instances.
-OneButton faultButton(BUTTON_FAULT, true);
-OneButton modeButton(BUTTON_MODE, true);
+OneButton faultButton(BUTTON_FAULT, false);
+OneButton modeButton(BUTTON_MODE, false);
 
 // Store LED Instances.
 //LEDFader faultLed(LED_FAULT);
