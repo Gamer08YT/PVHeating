@@ -43,6 +43,7 @@ public:
     static void handleErrorLedFade(bool cond);
     static void setDuty(u_int32_t int8);
     static void setMinPower(float to_float);
+    static void setupPins();
 
 
     /**
@@ -85,7 +86,6 @@ private:
     static void readHouseMeterPower();
     static void readLocalConsumption();
     static void handleStandbyLedFade(bool cond);
-    static void setupPins();
     static void readButtons();
     static void readTemperature();
     static bool isEnoughPowerGeneration();

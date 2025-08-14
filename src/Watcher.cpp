@@ -634,8 +634,8 @@ void Watcher::setup()
     // Begin 1-Wire and Scan for Devices.
     begin1Wire();
 
-    // Setup Pins.
-    setupPins();
+    // Setup Pins. -> Moved to main.cpp to avoid multiple relais switching on start.
+    // setupPins();
 
     // Setup Button Listeners.
     setupButtons();

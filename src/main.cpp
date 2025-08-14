@@ -25,6 +25,9 @@ void setup()
     // Begin Serial for Debugging.
     Serial.begin(9600);
 
+    // Setup Pins.
+    Watcher::setupPins();
+
     // Setup Display.
     Guardian::setup();
 
