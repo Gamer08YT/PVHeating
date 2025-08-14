@@ -51,6 +51,9 @@ HAButton consumeStart("heating_consume_start");
 // Store Reset Button Instance.
 HAButton reset("heating_restart");
 
+// Store Standby Instance.
+HABinarySensor standby("heating_standby");
+
 // Store Consume Input Value Instance.
 HANumber consumeMax("heating_consume_max");
 
@@ -335,6 +338,7 @@ void HomeAssistant::begin()
     configureErrorInstances();
     configurePWMInstance();
     configureResetInstance();
+    configureStandbyInstance();
 
     // Print Debug Message.
     Guardian::println("HomeAssistant is ready");
@@ -536,6 +540,18 @@ void HomeAssistant::configureTemperatureInputInstance()
 }
 
 /**
+ * @brief Configures the standby binary sensor instance by defining its name.
+ *
+ * This method sets up the binary sensor instance for standby mode by assigning a
+ * display name. The standby instance represents the operational state of
+ * the heating system in standby mode.
+ */
+void HomeAssistant::configureStandbyInstance()
+{
+    standby.setName("Standby");
+}
+
+/**
  * @brief Continuously executes the main execution cycle of the program.
  *
  * This method is the central loop responsible for performing repeated actions
@@ -724,4 +740,17 @@ void HomeAssistant::setMode(int str)
 void HomeAssistant::setTemperatureIn(float temperature_in)
 {
     temperatureIn.setValue(temperature_in);
+}
+
+/**
+ * @brief Sets the standby state of the Home Assistant system.
+ *
+ * This method updates the internal standby state by setting the associated binary sensor's state.
+ *
+ * @param cond A boolean value representing the standby state to be set.
+ *             `true` indicates standby mode is activated, and `false` indicates it is deactivated.
+ */
+void HomeAssistant::setStandby(bool cond)
+{
+    standby.setState(cond);
 }

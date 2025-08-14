@@ -681,6 +681,8 @@ void Watcher::setStandby(bool cond)
     }
 
     standby = cond;
+
+    HomeAssistant::setStandby(cond);
 }
 
 /**

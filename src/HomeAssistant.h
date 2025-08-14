@@ -47,6 +47,7 @@ private:
 public:
     static void configureResetInstance();
     static void configureTemperatureInputInstance();
+    static void configureStandbyInstance();
     static void begin();
     static void loop();
     static void setFlow(float get_current_flowrate);
@@ -60,6 +61,7 @@ public:
     static NetworkClient* getClient();
     static void setMode(int str);
     static void setTemperatureIn(float temperature_in);
+    static void setStandby(bool cond);
 };
 
 
