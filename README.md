@@ -149,3 +149,7 @@ Die Grundkonfiguration erfolgt in der `platformio.ini`. Hier können Sie:
 Das System unterstützt Over-the-Air Updates über den integrierten Webserver. Zugriff erfolgt über: http://[IP-Adresse]
 /update
 
+
+## Sonstiges
+
+![img_1.png](img_1.png)
