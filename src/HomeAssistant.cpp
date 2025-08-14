@@ -49,7 +49,7 @@ HASensorNumber flow("heating_flow", HABaseDeviceType::PrecisionP2);
 HAButton consumeStart("heating_consume_start");
 
 // Store Reset Button Instance.
-HAButton reset("heating_restart");
+HAButton restart("heating_restart");
 
 // Store Standby Instance.
 HABinarySensor standby("heating_standby");
@@ -74,6 +74,9 @@ HASwitch pumpSwitch("pump_switch");
 
 // Store Heating Error Log.
 HASensor error_log("heating_error");
+
+// Store Error Reset Instance.
+HAButton reset("heating_reset");
 
 // Store Mode Select Instance.
 // HASelect modeSelect("mode_select");
@@ -338,6 +341,7 @@ void HomeAssistant::begin()
     configureErrorInstances();
     configurePWMInstance();
     configureResetInstance();
+    configureRestartInstance();
     configureStandbyInstance();
 
     // Print Debug Message.
@@ -520,18 +524,18 @@ void HomeAssistant::handleMQTT()
 }
 
 /**
- * @brief Configures the reset button instance by setting its name and defining its behavior.
+ * @brief Configures the reset button instance with specific behavior and display settings.
  *
- * This method initializes the reset button instance with a display name and assigns
- * a command handler. When activated by the user, the handler triggers a system restart
- * using ESP.restart().
+ * This method initializes the reset button instance by assigning a display name and
+ * configuring a command handler. When the button receives a command, the handler triggers
+ * the error-clearing mechanism in the Guardian system to reset the error state.
  */
 void HomeAssistant::configureResetInstance()
 {
-    reset.setName("Restart");
+    reset.setName("Reset");
     reset.onCommand([](HAButton* sender)
     {
-        ESP.restart();
+        Guardian::clearError();
     });
 }
 
@@ -560,6 +564,22 @@ void HomeAssistant::configureTemperatureInputInstance()
 void HomeAssistant::configureStandbyInstance()
 {
     standby.setName("Standby");
+}
+
+/**
+ * @brief Configures the "Restart" button instance for Home Assistant integration.
+ *
+ * This method sets up the "Restart" button with a display name and associates a command handler.
+ * When the button is activated in Home Assistant, the command handler triggers a system restart
+ * by invoking the `ESP.restart()` function.
+ */
+void HomeAssistant::configureRestartInstance()
+{
+    restart.setName("Restart");
+    restart.onCommand([](HAButton* sender)
+    {
+        ESP.restart();
+    });
 }
 
 /**

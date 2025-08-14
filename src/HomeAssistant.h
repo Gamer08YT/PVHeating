@@ -48,6 +48,7 @@ public:
     static void configureResetInstance();
     static void configureTemperatureInputInstance();
     static void configureStandbyInstance();
+    static void configureRestartInstance();
     static void begin();
     static void loop();
     static void setFlow(float get_current_flowrate);
