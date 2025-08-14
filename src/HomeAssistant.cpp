@@ -493,6 +493,10 @@ void HomeAssistant::configurePWMInstance()
  */
 void HomeAssistant::handleMQTT()
 {
+    // Set MQTT Keep Alive Timeout.
+    mqtt.setKeepAlive(60);
+
+
     // On MQTT Disconnect.
     mqtt.onDisconnected([]
     {
