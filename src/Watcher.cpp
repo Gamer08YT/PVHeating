@@ -1209,6 +1209,8 @@ void Watcher::handleStandbyCounterDisable()
     if (standbyCounter < STANDBY_INTERVAL)
     {
         standbyCounter++;
+
+        Guardian::println("Pc");
     }
     else
     {
