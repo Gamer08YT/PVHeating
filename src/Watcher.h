@@ -97,6 +97,7 @@ private:
     static void handleConsumeBasedDuty();
     static bool isTempToLow();
     static bool isOverTemp();
+    static bool isAllowedShutdown();
     static void handlePWM();
     static void updateDisplay();
     static void setFlow(float get_current_flowrate);

@@ -215,6 +215,11 @@ void Watcher::handlePWM()
                     setSCR(true);
                     setPump(true);
                 }
+                else if (powerLock)
+                {
+                    setPump(isAllowedShutdown());
+                    setSCR(false);
+                }
             }
         }
     }
@@ -1343,6 +1348,7 @@ void Watcher::handleConsumeBasedDuty()
     }
     else
     {
+        // Disable Machine after consumption reached.
         setStandby(true);
 
         // Reset Duty.
@@ -1415,4 +1421,9 @@ bool Watcher::isOverTemp()
     }
 
     return temperatureOut >= maxTemp || temperatureIn >= maxTemp;
+}
+
+bool Watcher::isAllowedShutdown()
+{
+    return !tempLock && (standbyCounter == STANDBY_INTERVAL);
 }
