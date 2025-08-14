@@ -515,6 +515,13 @@ void HomeAssistant::handleMQTT()
     });
 }
 
+/**
+ * @brief Configures the reset button instance by setting its name and defining its behavior.
+ *
+ * This method initializes the reset button instance with a display name and assigns
+ * a command handler. When activated by the user, the handler triggers a system restart
+ * using ESP.restart().
+ */
 void HomeAssistant::configureResetInstance()
 {
     reset.setName("Restart");
