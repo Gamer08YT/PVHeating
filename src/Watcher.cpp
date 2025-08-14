@@ -115,7 +115,12 @@ void Watcher::handleHAPublish()
         HomeAssistant::setCurrentPower(currentPower);
         HomeAssistant::setPWM(duty);
         HomeAssistant::setFlow(flowRate);
-        HomeAssistant::setTemperatureIn(temperatureIn);
+
+        // Check for DallaTemp Lib Error.
+        if (temperatureIn > 0)
+        {
+            HomeAssistant::setTemperatureIn(temperatureIn);
+        }
 
         publishInterval.reset();
     }
@@ -286,7 +291,11 @@ void Watcher::setFlow(float get_current_flowrate)
  */
 void Watcher::updateTemperature()
 {
-    HomeAssistant::setCurrentTemperature(temperatureOut);
+    // Check for DallaTemp Lib Error.
+    if (temperatureOut < 85)
+    {
+        HomeAssistant::setCurrentTemperature(temperatureOut);
+    }
 }
 
 /**
@@ -461,7 +470,7 @@ void Watcher::setPWMHA(u_int32_t duty)
  */
 void Watcher::setPWM(u_int32_t int8)
 {
-    char buffer[50];
+    char buffer[15];
     snprintf(buffer, sizeof(buffer), "PWM: %u", int8);
 
     Guardian::println(buffer);
@@ -1380,12 +1389,17 @@ bool Watcher::isOverTemp()
     // Check if OneWire Sensor is Out of Range.
     if (temperatureIn == 85.0F || temperatureOut == 85.0F)
     {
-        // Increment Value if its under 3 Errors.
-        if (oneWireOutOfRange < 3)
+        // Increment Value if its under 6 Errors.
+        if (oneWireOutOfRange < 6)
         {
             oneWireOutOfRange++;
+
+            char buffer[10];
+            snprintf(buffer, sizeof(buffer), "OFR+: %u", oneWireOutOfRange);
+
+            Guardian::println(buffer);
         }
-        // If Error exceeds 3 Fails, Shutdown!
+        // If Error exceeds 6 Fails, Shutdown!
         else
         {
             Guardian::setError(100, "TempInit", Guardian::CRITICAL);
