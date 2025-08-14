@@ -190,7 +190,7 @@ void Watcher::handlePWM()
                     Guardian::println("MaxP");
 
                     if (duty > 0)
-                        duty--;
+                        duty = duty - SCR_PWM_STEP;
                 }
                 // If currentPower < MaxPower.
                 else
