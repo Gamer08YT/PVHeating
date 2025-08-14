@@ -325,6 +325,8 @@ void Watcher::handleOneWireClearInterval()
         // Decrement one Error, if Interval exceed.
         else
         {
+            Guardian::println("OUF: c");
+
             oneWireOutOfRange--;
             oneWireClearInterval = 0;
         }
