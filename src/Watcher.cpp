@@ -625,9 +625,6 @@ void Watcher::setupButtons()
  */
 void Watcher::setup()
 {
-    // Set Default States.
-    setDefaults();
-
     // Print Debug Message.
     Guardian::boot(90, "Watcher");
 
@@ -1092,6 +1089,9 @@ void Watcher::setupPins()
 
     // Set PWM Frequency.
     ledcAttach(SCR_PWM, SCR_PWM_FREQUENCY, SCR_PWM_RESOLUTION);
+
+    // Set Default States.
+    setDefaults();
 }
 
 /**
