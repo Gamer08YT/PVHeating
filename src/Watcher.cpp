@@ -325,7 +325,7 @@ void Watcher::handleOneWireClearInterval()
         // Decrement one Error, if Interval exceed.
         else
         {
-            Guardian::println("OUF: c");
+            Guardian::println("OFR: c");
 
             oneWireOutOfRange--;
             oneWireClearInterval = 0;
@@ -1393,7 +1393,7 @@ bool Watcher::isOverTemp()
     // Check if OneWire Sensor is Out of Range.
     if (temperatureIn == 85.0F || temperatureOut == 85.0F)
     {
-        // Increment Value if its under 6 Errors.
+        // Increment Value if it's under 6 Errors.
         if (oneWireOutOfRange < 6)
         {
             oneWireOutOfRange++;
