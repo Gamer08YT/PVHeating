@@ -1402,7 +1402,7 @@ bool Watcher::isOverTemp()
     if (temperatureIn == 85.0F || temperatureOut == 85.0F)
     {
         // Increment Value if it's under 6 Errors.
-        if (oneWireOutOfRange < 6)
+        if (oneWireOutOfRange < 12)
         {
             oneWireOutOfRange++;
 
@@ -1423,6 +1423,15 @@ bool Watcher::isOverTemp()
     return temperatureOut >= maxTemp || temperatureIn >= maxTemp;
 }
 
+/**
+ * @brief Checks whether the system is allowed to initiate a shutdown process.
+ *
+ * This method evaluates if the conditions are met for a safe shutdown of the system.
+ * A shutdown is allowed only when the temporary lock (`tempLock`) is not active
+ * and the `standbyCounter` has reached the predefined standby interval (`STANDBY_INTERVAL`).
+ *
+ * @return Returns true if shutdown is allowed; false otherwise.
+ */
 bool Watcher::isAllowedShutdown()
 {
     return !tempLock && (standbyCounter == STANDBY_INTERVAL);
