@@ -185,10 +185,16 @@ void LocalNetwork::update()
         if (millis() - lastReconnectAttempt >= RECONNECT_INTERVAL)
         {
             Guardian::println("Connection lost, reconnecting");
+            Guardian::setError(101, "Network", Guardian::WARNING);
 
             if (Ethernet.begin() == 1)
             {
                 Guardian::println("Reconnect success");
+
+                if (Guardian::getErrorCode() == 101)
+                {
+                    Guardian::clearError();
+                }
             }
             else
             {

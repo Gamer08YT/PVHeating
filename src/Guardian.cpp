@@ -98,6 +98,7 @@ void Guardian::error_level(ErrorType mode)
 void Guardian::updateFault()
 {
     HomeAssistant::setErrorTitle(errorTitle);
+    HomeAssistant::setErrorState(getErrorType() == CRITICAL);
 }
 
 /**
@@ -483,4 +484,18 @@ Guardian::ErrorType Guardian::getErrorType()
 bool Guardian::isCritical()
 {
     return errorLevel == CRITICAL;
+}
+
+/**
+ * @brief Retrieves the current error code of the Guardian system.
+ *
+ * This function provides the current error code set in the system. It can be used
+ * to determine if an error condition exists and what type of error has been logged.
+ *
+ * @return The current error code as an integer. A negative value indicates no error,
+ * while a positive value corresponds to a specific error code.
+ */
+int Guardian::getErrorCode()
+{
+    return errorCode;
 }

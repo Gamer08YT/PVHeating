@@ -44,6 +44,7 @@ private:
     static void configurePWMInstance();
     static void handleMQTT();
 
+
 public:
     static void configureResetInstance();
     static void configureTemperatureInputInstance();
@@ -63,6 +64,7 @@ public:
     static void setMode(int str);
     static void setTemperatureIn(float temperature_in);
     static void setStandby(bool cond);
+    static void setErrorState(bool cond);
 };
 
 

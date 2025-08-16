@@ -582,6 +582,7 @@ void HomeAssistant::configureRestartInstance()
     });
 }
 
+
 /**
  * @brief Continuously executes the main execution cycle of the program.
  *
@@ -784,4 +785,18 @@ void HomeAssistant::setTemperatureIn(float temperature_in)
 void HomeAssistant::setStandby(bool cond)
 {
     standby.setState(cond);
+}
+
+/**
+ * @brief Updates the error state representation in the HomeAssistant system.
+ *
+ * This method sets the fault state in the HomeAssistant system based on the given condition.
+ * It is used to represent whether a fault or error condition is currently active.
+ *
+ * @param cond A boolean value indicating the error state.
+ *             `true` represents an active error state, while `false` represents no error.
+ */
+void HomeAssistant::setErrorState(bool cond)
+{
+    fault.setState(cond);
 }
