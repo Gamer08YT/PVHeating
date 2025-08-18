@@ -48,6 +48,10 @@ void LocalNetwork::handleOTA()
         Watcher::setStandby(true);
 
         isOTAUploading = true;
+
+        // Clear and Update Display.
+        Guardian::clear();
+        Guardian::update();
     });
 
     // Add OTA End Listener.

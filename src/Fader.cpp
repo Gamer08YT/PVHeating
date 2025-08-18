@@ -25,7 +25,7 @@ Fader::Fader(int pin)
 {
     dutyPin = pin;
 
-    ledcAttach(pin);
+    ledcAttach(pin, 950, 8);
 }
 
 /**
