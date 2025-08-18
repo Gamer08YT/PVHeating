@@ -116,7 +116,7 @@ void Watcher::handleHAPublish()
         HomeAssistant::setPWM(duty);
         HomeAssistant::setFlow(flowRate);
 
-        if (mode == ModeType::DYNAMIC)
+        if (mode == ModeType::CONSUME)
         {
             HomeAssistant::setConsumptionRemain(getRemainConsumption());
         }
@@ -1036,7 +1036,7 @@ void Watcher::handleStandbyLedFade(bool cond)
         //digitalWrite(LED_MODE, HIGH);
         // // Stop Fade set LED Brightness of Duty Cycle.
         modeLed.setFade(false);
-        modeLed.setValue(255);
+        modeLed.setValue(0);
     }
 }
 
