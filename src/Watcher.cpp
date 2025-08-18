@@ -6,9 +6,9 @@
 
 #include "PinOut.h"
 #include "DallasTemperature.h"
+#include "Fader.h"
 #include "Guardian.h"
 #include "HomeAssistant.h"
-#include "LEDFader.h"
 #include "LocalModbus.h"
 #include "OneButton.h"
 #include "OneWire.h"
@@ -67,7 +67,7 @@ OneButton modeButton(BUTTON_MODE, false);
 
 // Store LED Instances.
 //LEDFader faultLed(LED_FAULT);
-LEDFader modeLed(LED_MODE);
+Fader modeLed(LED_MODE);
 
 // Store Timer.
 SimpleTimer fastInterval(500);
@@ -1028,14 +1028,15 @@ void Watcher::handleStandbyLedFade(bool cond)
     {
         //digitalWrite(LED_MODE, LOW);
         // Fade in 1000-second Interval.
+        modeLed.setFade(true);
         modeLed.fade(255, 1000);
     }
     else
     {
         //digitalWrite(LED_MODE, HIGH);
         // // Stop Fade set LED Brightness of Duty Cycle.
-        modeLed.stop_fade();
-        modeLed.set_value(255);
+        modeLed.setFade(false);
+        modeLed.setValue(255);
     }
 }
 

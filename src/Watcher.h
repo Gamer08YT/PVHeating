@@ -5,7 +5,6 @@
 #ifndef WATCHER_H
 #define WATCHER_H
 #include "DallasTemperature.h"
-#include "utils/HANumeric.h"
 
 
 /**
