@@ -629,7 +629,10 @@ void Watcher::setupButtons()
     {
         Guardian::println("Mode S");
 
-        setStandby(false);
+        // Disable Standby and Handle Mode.
+        startConsume();
+
+        //setStandby(false);
         //setMode((mode == ModeType::CONSUME) ? ModeType::DYNAMIC : ModeType::CONSUME);
         //HomeAssistant::setMode(mode == ModeType::CONSUME ? 1 : 2);
     });
