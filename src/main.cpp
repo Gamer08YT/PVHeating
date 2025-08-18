@@ -23,7 +23,7 @@
 void setup()
 {
     // Begin Serial for Debugging.
-    Serial.begin(9600);
+    Serial.begin(115200);
 
     // Setup Pins.
     Watcher::setupPins();
