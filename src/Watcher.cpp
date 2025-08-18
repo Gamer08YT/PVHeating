@@ -116,6 +116,16 @@ void Watcher::handleHAPublish()
         HomeAssistant::setPWM(duty);
         HomeAssistant::setFlow(flowRate);
 
+        if (mode == ModeType::DYNAMIC)
+        {
+            HomeAssistant::setConsumptionRemain(getRemainConsumption());
+        }
+        else
+        {
+            HomeAssistant::setConsumptionRemain(0.0F);
+        }
+
+
         // Check for DallaTemp Lib Error.
         if (temperatureIn > 0)
         {
@@ -417,6 +427,29 @@ void Watcher::handleFastInterval()
         // Reset Timer (Endless Loop);
         fastInterval.reset();
     }
+}
+
+/**
+ * @brief Calculates the remaining consumption capacity.
+ *
+ * This method determines the available energy consumption capacity by subtracting
+ * the current consumption from the sum of the starting consumption baseline and the
+ * maximum allowable consumption. If the calculated remaining capacity results in a negative
+ * value, it returns 0 to ensure the result is non-negative.
+ *
+ * @return The remaining consumption capacity as a float value. Returns 0 if the calculated
+ *         remaining capacity is less than 0.
+ */
+float Watcher::getRemainConsumption()
+{
+    // Start at eq. 204kWh + 10kWh = 214kWh
+    float remain = (startConsumed + maxConsume) - consumption;
+
+    if (remain < 0)
+        return 0;
+
+
+    return remain;
 }
 
 /**

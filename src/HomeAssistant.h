@@ -50,6 +50,7 @@ public:
     static void configureTemperatureInputInstance();
     static void configureStandbyInstance();
     static void configureRestartInstance();
+    static void configureConsumptionRemainInstance();
     static void begin();
     static void loop();
     static void setFlow(float get_current_flowrate);
@@ -65,6 +66,7 @@ public:
     static void setTemperatureIn(float temperature_in);
     static void setStandby(bool cond);
     static void setErrorState(bool cond);
+    static void setConsumptionRemain(float value);
 };
 
 

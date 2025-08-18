@@ -39,6 +39,9 @@ HASensorNumber power("heating_load", HABaseDeviceType::PrecisionP2);
 // Store Power Consumption Instance.
 HASensorNumber consumption("heating_consumption", HABaseDeviceType::PrecisionP2);
 
+// Store Power Consume remain.
+HASensorNumber consumeRemain("heating_consume_remain");
+
 // Store Error State Instance.
 HABinarySensor fault("heating_fault");
 
@@ -331,6 +334,7 @@ void HomeAssistant::begin()
     configureTemperatureInputInstance();
     configurePowerInstance();
     configureConsumptionInstance();
+    configureConsumptionRemainInstance();
     configureMaxPowerInstance();
     configureMinPowerInstance();
     configureFaultInstances();
@@ -582,6 +586,21 @@ void HomeAssistant::configureRestartInstance()
     });
 }
 
+/**
+ * @brief Configures the consumption remaining sensor instance.
+ *
+ * This method initializes the consumption remaining sensor instance with a user-friendly
+ * name, device class, unit of measurement, and an associated icon. The sensor tracks and
+ * communicates the remaining energy consumption value to the HomeAssistant integration.
+ */
+void HomeAssistant::configureConsumptionRemainInstance()
+{
+    consumeRemain.setName("Rest");
+    consumeRemain.setDeviceClass("energy");
+    consumeRemain.setUnitOfMeasurement("kWh");
+    consumeRemain.setIcon("mdi:lightbulb");
+}
+
 
 /**
  * @brief Continuously executes the main execution cycle of the program.
@@ -799,4 +818,18 @@ void HomeAssistant::setStandby(bool cond)
 void HomeAssistant::setErrorState(bool cond)
 {
     fault.setState(cond);
+}
+
+/**
+ * @brief Sets the remaining consumption value for the heating system.
+ *
+ * This method updates the remaining consumption measurement by setting
+ * its value in the associated sensor representation. It helps to track
+ * the remaining consumption in the system accurately.
+ *
+ * @param value The remaining consumption value to be set, represented as a float.
+ */
+void HomeAssistant::setConsumptionRemain(float value)
+{
+    consumeRemain.setValue(value);
 }

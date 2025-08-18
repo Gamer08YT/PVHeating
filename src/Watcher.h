@@ -105,6 +105,7 @@ private:
     static void handleOneWireClearInterval();
     static void handleSlowInterval();
     static void handleFastInterval();
+    static float getRemainConsumption();
     static void handleHAPublish();
     static void handleSensors();
     static void setupButtons();
