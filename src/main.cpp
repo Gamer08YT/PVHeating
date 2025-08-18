@@ -6,7 +6,6 @@
 #include "LocalModbus.h"
 #include "LocalNetwork.h"
 #include "Watcher.h"
-#include "GDBStub.h"
 
 
 /**
@@ -25,9 +24,6 @@ void setup()
 {
     // Begin Serial for Debugging.
     Serial.begin(9600);
-
-    // GDB-Stub start
-    gdbstub_init();
 
     // Setup Pins.
     Watcher::setupPins();
