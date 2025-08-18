@@ -1034,7 +1034,7 @@ void Watcher::handleStandbyLedFade(bool cond)
     {
         //digitalWrite(LED_MODE, HIGH);
         // // Stop Fade set LED Brightness of Duty Cycle.
-        modeLED.stop_fade();
+        modeLed.stop_fade();
         modeLed.set_value(255);
     }
 }
