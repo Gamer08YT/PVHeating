@@ -442,7 +442,7 @@ void Watcher::handleFastInterval()
  */
 float Watcher::getRemainConsumption()
 {
-    // Start at eq. 204kWh + 10kWh = 214kWh
+    // Start at eq. 204kWh + 10kWh = 214kWh - 205kWh => 9kWh
     float remain = (startConsumed + maxConsume) - consumption;
 
     if (remain < 0)
