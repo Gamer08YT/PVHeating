@@ -253,7 +253,7 @@ void Watcher::handlePWM()
  */
 void Watcher::updateDisplay()
 {
-    if (!Guardian::hasError() && LocalNetwork::isUploading)
+    if (!Guardian::hasError() && !LocalNetwork::isUploading)
     {
         Guardian::clear();
         Guardian::setTitle("Dashboard");

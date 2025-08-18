@@ -25,7 +25,7 @@ EthernetClient client;
 HADevice device;
 
 // Store MQTT Instance.
-HAMqtt mqtt(client, device, 16);
+HAMqtt mqtt(client, device, 18);
 
 // Store HAVAC Instance.
 HAHVAC heating("heating", HAHVAC::TargetTemperatureFeature | HAHVAC::ModesFeature);
