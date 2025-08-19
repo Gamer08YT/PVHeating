@@ -40,7 +40,7 @@ HASensorNumber power("heating_load", HABaseDeviceType::PrecisionP2);
 HASensorNumber consumption("heating_consumption", HABaseDeviceType::PrecisionP2);
 
 // Store Power Consume remain.
-HASensorNumber consumeRemain("heating_consume_remain");
+HASensorNumber consumeRemain("heating_consume_remain", HABaseDeviceType::PrecisionP2);
 
 // Store Error State Instance.
 HABinarySensor fault("heating_fault");
