@@ -153,3 +153,16 @@ Das System unterstützt Over-the-Air Updates über den integrierten Webserver. Z
 ## Sonstiges
 
 ![img_1.png](img_1.png)
+
+
+## Debug
+
+Da der ESP32 mehr oder weniger aktuell nur über JTAG gedebugt werden kann (ganz anders als beim ESP8266), habe ich versucht meine eigene Methode zu implementieren.
+
+Dafür habe ich die handleHeap() Methode in der Main geschrieben.
+
+Mit ``pio device monitor`` kann man dem Seriellen Monitor attachen und mit
+
+``C:\Users\<User>\.platformio\packages\toolchain-xtensa-esp32\bin\xtensa-esp32-elf-addr2line.exe -pfiaC -e .pio\build\az-delivery-devkit-v4\firmware.elf 0x400d12ab 0x400d2345`` bspw. das Exception Analysieren.
+
+Andernfalls kann ich https://esphome.github.io/esp-stacktrace-decoder/ sehr empfehlen.

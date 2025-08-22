@@ -1,11 +1,26 @@
 #include <Arduino.h>
 #include <Wire.h>
 
+#include "Backtrace.h"
 #include "Guardian.h"
 #include "HomeAssistant.h"
 #include "LocalModbus.h"
 #include "LocalNetwork.h"
+#include "SimpleTimer.h"
 #include "Watcher.h"
+
+extern "C" {
+    #include "esp_debug_helpers.h"
+}
+
+
+// Store vars for GDB-.
+size_t free_internal;
+size_t free_spiram;
+UBaseType_t stack_highwater;
+
+// Store Heap Task.
+SimpleTimer heapTask(1000);
 
 /**
  * @brief Initializes the system components and prepares the application to run.
@@ -54,6 +69,36 @@ void setup()
 }
 
 /**
+ * @brief Handles heap and stack monitoring and periodically logs memory statistics.
+ *
+ * This function checks if the heap monitoring task is due based on the timer.
+ * If so, it:
+ * - Retrieves and logs the current size of free internal and external SPIRAM heap memory.
+ * - Retrieves and logs the high-water mark of the task stack, indicating the
+ *   minimum free stack space observed during runtime.
+ * - Resets the timer to begin monitoring again after the specified interval.
+ */
+void handleHeap()
+{
+    if (heapTask.isReady())
+    {
+        // Free Heap request
+        free_internal = heap_caps_get_free_size(MALLOC_CAP_INTERNAL);
+        free_spiram = heap_caps_get_free_size(MALLOC_CAP_SPIRAM);
+
+        // Stack High watermark of actual Task
+        stack_highwater = uxTaskGetStackHighWaterMark(NULL);
+
+        Serial.printf("Free internal: %u bytes, Free SPIRAM: %u bytes, Stack HighWater: %u words\n",
+                      free_internal, free_spiram, stack_highwater);
+
+        Backtrace::report_backtrace_to_ha();
+
+        heapTask.reset();
+    }
+}
+
+/**
  * @brief Executes a repetitive process until a certain condition is met.
  *
  * This method is responsible for performing a loop operation. The loop runs
@@ -74,4 +119,6 @@ void loop()
 
     // Loop Watcher.
     Watcher::loop();
+
+    handleHeap();
 }
