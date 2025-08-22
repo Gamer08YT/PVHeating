@@ -10,7 +10,9 @@
 #include "ModbusClientRTU.h"
 #include "ModbusClientTCPasync.h"
 #include "Watcher.h"
+#ifdef DEBUG
 #include "WebSerial.h"
+#endif
 
 // Begin HW Serial 2 (TX=17, RX=16).
 HardwareSerial serial(2);
@@ -175,7 +177,9 @@ void LocalModbus::handleRequestError(Error error)
     {
         ModbusError e(error);
 
+#ifdef DEBUG
         WebSerial.printf("Error creating request: %02X - %s\n", error, (const char*)e);
+#endif
     }
 }
 
@@ -196,7 +200,9 @@ void LocalModbus::handleResponseError(Error error, uint32_t token)
     {
         ModbusError e(error);
 
+#ifdef DEBUG
         WebSerial.printf("Error response: %02X - %s\n", error, (const char*)e);
+#endif
     }
 }
 

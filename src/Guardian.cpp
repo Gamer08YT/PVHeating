@@ -9,7 +9,10 @@
 #include "HomeAssistant.h"
 #include "PinOut.h"
 #include "Watcher.h"
+
+#ifdef DEBUG
 #include "WebSerial.h"
+#endif
 
 // Store OLED Instance.
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
@@ -35,9 +38,10 @@ void Guardian::println(const char* str)
     // First Print to Serial.
     Serial.println(str);
 
+#ifdef DEBUG
     // Print to WebSerial.
     WebSerial.println(str);
-
+#endif
     // // Clear last Message.
     // display.clearDisplay();
     //
@@ -119,10 +123,12 @@ void Guardian::setError(int i, const char* str, ErrorType level)
     Serial.print(" - ");
     Serial.println(str);
 
+#ifdef DEBUG
     WebSerial.print("Error: ");
     WebSerial.print(i);
     WebSerial.print(" - ");
     WebSerial.println(str);
+#endif
 
     error_code(i);
     error_title(str);
@@ -221,7 +227,7 @@ void Guardian::error_code(int i)
  * - Sets the default text size and color for the display.
  * - Sends specific precharge commands to the display for configuration.
  *
- * @details The function utilizes Adafruit_SSD1306 library commands for display configuration
+ * @details The function uses Adafruit_SSD1306 library commands for display configuration
  * and assumes the hardware is connected with proper wiring configurations. It performs minimal error
  * checking for display initialization.
  */
@@ -440,8 +446,10 @@ void Guardian::print(const char* str)
     // First Print to Serial.
     Serial.print(str);
 
+#ifdef DEBUG
     // Print to WebSerial.
     WebSerial.print(str);
+#endif
 }
 
 /**

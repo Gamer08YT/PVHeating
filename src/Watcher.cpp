@@ -39,6 +39,7 @@ u_int32_t Watcher::duty = 0;
 u_int8_t Watcher::standbyCounter = 0;
 float Watcher::temperatureMax = 60.0F;
 float Watcher::flowRate = 0.0f;
+float Watcher::remainCalculation = 0.0f;
 
 // Sometimes the OneWire Lib is unable to decode buffer and Returns +85°C.
 int oneWireOutOfRange = 0;
@@ -118,7 +119,7 @@ void Watcher::handleHAPublish()
 
         if (mode == ModeType::CONSUME)
         {
-            HomeAssistant::setConsumptionRemain(getRemainConsumption());
+            HomeAssistant::setConsumptionRemain(remainCalculation);
         }
         else
         {
@@ -257,7 +258,11 @@ void Watcher::updateDisplay()
     {
         Guardian::clear();
         Guardian::setTitle("Dashboard");
-        Guardian::setValue(1, "PWM", String(duty).c_str());
+        if (displayFlow && mode == ModeType::CONSUME)
+            Guardian::setValue(1, "Wremain", String(remainCalculation, 2).c_str(), "kWh");
+        else
+            Guardian::setValue(1, "PWM", String(duty).c_str());
+
         Guardian::setValue(2, "Pin", String(currentPower, 2).c_str(), "W");
 
         if (displayFlow)
@@ -349,6 +354,20 @@ void Watcher::handleOneWireClearInterval()
 }
 
 /**
+ * @brief Calculates and updates the remaining energy consumption.
+ *
+ * This method determines the remaining consumption by invoking the `getRemainConsumption`
+ * function and updates the `remainCalculation` field with the result.
+ *
+ * Typically used within periodic processing contexts to ensure the system maintains
+ * an accurate record of the remaining energy usage.
+ */
+void Watcher::calculateRemainingConsumption()
+{
+    remainCalculation = getRemainConsumption();
+}
+
+/**
  * @brief Handles operations that occur at a slower predefined interval.
  *
  * This method performs a sequence of tasks when the slow timer interval is ready:
@@ -389,6 +408,10 @@ void Watcher::handleSlowInterval()
         {
             // Read House Meter Active Power.
             readHouseMeterPower();
+        } else
+        {
+            // Calculate remaining energy.
+            calculateRemainingConsumption();
         }
 
         // Update OLED.

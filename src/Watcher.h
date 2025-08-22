@@ -76,6 +76,7 @@ public:
     static float temperatureMax;
 
 private:
+    static float remainCalculation;
     static float startConsumed;
     static u_int8_t standbyCounter;
     static u_int32_t duty;
@@ -102,6 +103,7 @@ private:
     static void setFlow(float get_current_flowrate);
     static void updateTemperature();
     static void handleOneWireClearInterval();
+    static void calculateRemainingConsumption();
     static void handleSlowInterval();
     static void handleFastInterval();
     static float getRemainConsumption();

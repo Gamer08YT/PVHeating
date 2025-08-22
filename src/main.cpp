@@ -7,7 +7,6 @@
 #include "LocalNetwork.h"
 #include "Watcher.h"
 
-
 /**
  * @brief Initializes the system components and prepares the application to run.
  *

@@ -11,7 +11,10 @@
 #include "PinOut.h"
 #include "Guardian.h"
 #include "Watcher.h"
+
+#ifdef DEBUG
 #include "WebSerial.h"
+#endif
 
 // Store Object of Ethernet Driver.
 ENC28J60Driver driver(ETHERNET_CS);
@@ -78,11 +81,13 @@ void LocalNetwork::handleOTA()
  */
 void LocalNetwork::handleSerial()
 {
+#ifdef DEBUG
     // Allow initial Buffer Size of 40.
     WebSerial.setBuffer(40);
 
     // Begin WebSerial.
     WebSerial.begin(&server);
+#endif
 }
 
 /**
@@ -210,8 +215,10 @@ void LocalNetwork::update()
     // Handle OTA Loop.
     ElegantOTA.loop();
 
+#ifdef DEBUG
     // Handle WebSerial Loop.
     WebSerial.loop();
+#endif
 }
 
 /**
