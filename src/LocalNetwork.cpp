@@ -186,31 +186,31 @@ void LocalNetwork::update()
     Ethernet.maintain();
 
     // Überprüfen, ob die Verbindung noch besteht
-    if (Ethernet.linkStatus() != LinkON)
-    {
-        // Nur alle RECONNECT_INTERVAL versuchen neu zu verbinden
-        if (millis() - lastReconnectAttempt >= RECONNECT_INTERVAL)
-        {
-            Guardian::println("Connection lost, reconnecting");
-            Guardian::setError(101, "Network", Guardian::WARNING);
-
-            if (Ethernet.begin() == 1)
-            {
-                Guardian::println("Reconnect success");
-
-                if (Guardian::getErrorCode() == 101)
-                {
-                    Guardian::clearError();
-                }
-            }
-            else
-            {
-                Guardian::println("Reconnect failed");
-            }
-
-            lastReconnectAttempt = millis();
-        }
-    }
+    // if (Ethernet.linkStatus() != LinkON)
+    // {
+    //     // Nur alle RECONNECT_INTERVAL versuchen neu zu verbinden
+    //     if (millis() - lastReconnectAttempt >= RECONNECT_INTERVAL)
+    //     {
+    //         Guardian::println("Connection lost, reconnecting");
+    //         Guardian::setError(101, "Network", Guardian::WARNING);
+    //
+    //         if (Ethernet.begin() == 1)
+    //         {
+    //             Guardian::println("Reconnect success");
+    //
+    //             if (Guardian::getErrorCode() == 101)
+    //             {
+    //                 Guardian::clearError();
+    //             }
+    //         }
+    //         else
+    //         {
+    //             Guardian::println("Reconnect failed");
+    //         }
+    //
+    //         lastReconnectAttempt = millis();
+    //     }
+    // }
 
     // Handle OTA Loop.
     ElegantOTA.loop();
