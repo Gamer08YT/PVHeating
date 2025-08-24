@@ -1,23 +1,12 @@
 #include <Arduino.h>
 #include <Wire.h>
 
-#include "Backtrace.h"
 #include "Guardian.h"
 #include "HomeAssistant.h"
 #include "LocalModbus.h"
 #include "LocalNetwork.h"
 #include "SimpleTimer.h"
 #include "Watcher.h"
-
-extern "C" {
-    #include "esp_debug_helpers.h"
-}
-
-
-// Store vars for GDB-.
-size_t free_internal;
-size_t free_spiram;
-UBaseType_t stack_highwater;
 
 // Store Heap Task.
 SimpleTimer heapTask(1000);
@@ -83,16 +72,14 @@ void handleHeap()
     if (heapTask.isReady())
     {
         // Free Heap request
-        free_internal = heap_caps_get_free_size(MALLOC_CAP_INTERNAL);
-        free_spiram = heap_caps_get_free_size(MALLOC_CAP_SPIRAM);
+        size_t free_internal = heap_caps_get_free_size(MALLOC_CAP_INTERNAL);
+        size_t free_spiram = heap_caps_get_free_size(MALLOC_CAP_SPIRAM);
 
         // Stack High watermark of actual Task
-        stack_highwater = uxTaskGetStackHighWaterMark(NULL);
-
+        UBaseType_t stack_highwater = uxTaskGetStackHighWaterMark(NULL);
         Serial.printf("Free internal: %u bytes, Free SPIRAM: %u bytes, Stack HighWater: %u words\n",
                       free_internal, free_spiram, stack_highwater);
 
-        Backtrace::report_backtrace_to_ha();
 
         heapTask.reset();
     }

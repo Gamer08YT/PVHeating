@@ -408,7 +408,8 @@ void Watcher::handleSlowInterval()
         {
             // Read House Meter Active Power.
             readHouseMeterPower();
-        } else
+        }
+        else
         {
             // Calculate remaining energy.
             calculateRemainingConsumption();
@@ -721,12 +722,6 @@ void Watcher::setup()
  */
 void Watcher::setStandby(bool cond)
 {
-    if (cond)
-        Guardian::println("Standby");
-
-    // Switch LED Fade vs Blink State.
-    handleStandbyLedFade(cond);
-
     // Disable SCR.
     if (cond)
     {
@@ -741,6 +736,12 @@ void Watcher::setStandby(bool cond)
     }
 
     standby = cond;
+
+    if (cond)
+        Guardian::println("Standby");
+
+    // Switch LED Fade vs Blink State.
+    handleStandbyLedFade(cond);
 
     HomeAssistant::setStandby(cond);
 }

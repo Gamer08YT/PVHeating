@@ -161,7 +161,7 @@ Da der ESP32 mehr oder weniger aktuell nur über JTAG gedebugt werden kann (ganz
 
 Dafür habe ich die handleHeap() Methode in der Main geschrieben.
 
-Mit ``pio device monitor`` kann man dem Seriellen Monitor attachen und mit
+Mit ``pio device monitor`` oder `` pio debug --interface=gdb`` kann man dem Seriellen Monitor attachen und mit
 
 ``C:\Users\<User>\.platformio\packages\toolchain-xtensa-esp32\bin\xtensa-esp32-elf-addr2line.exe -pfiaC -e .pio\build\az-delivery-devkit-v4\firmware.elf 0x400d12ab 0x400d2345`` bspw. das Exception Analysieren.
 

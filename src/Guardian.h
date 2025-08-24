@@ -20,6 +20,8 @@ public:
     static void setError(int i, const char* str, ErrorType level);
     static void setError(int i, const char* str);
     static void testScan();
+    static void registerShutdownHandler();
+    static void registerExceptionHandler();
     static void setup();
     static bool hasError();
     static const char* getErrorTitle();

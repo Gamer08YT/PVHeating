@@ -6,7 +6,7 @@
 #include "Fader.h"
 
 bool allowFade = false;
-uint8_t fadeSpeed = 500;
+uint64_t fadeSpeed = 500;
 uint8_t fadeDuty = 255;
 uint8_t currentDuty = 0;
 unsigned long lastMs = 0;

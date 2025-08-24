@@ -2,6 +2,8 @@
 // Created by JanHe on 27.07.2025.
 //
 
+#define ARDUINOHA_DEBUG
+
 #include "HomeAssistant.h"
 
 #include "Ethernet.h"
@@ -17,6 +19,7 @@
 #include "device-types/HANumber.h"
 #include "device-types/HASensorNumber.h"
 #include "device-types/HASwitch.h"
+#include "esp_debug_helpers.h"
 
 // Store Instance of Ethernet Client.
 EthernetClient client;
@@ -539,6 +542,9 @@ void HomeAssistant::configureResetInstance()
     reset.setName("Reset");
     reset.onCommand([](HAButton* sender)
     {
+        // Print Backtrace if available.
+        esp_backtrace_print(10);
+
         Guardian::clearError();
     });
 }

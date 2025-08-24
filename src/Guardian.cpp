@@ -201,6 +201,27 @@ void Guardian::testScan()
         Serial.println("Scan complete\n");
 }
 
+/**
+ * @brief Registers a handler to manage shutdown events.
+ *
+ * This function registers a shutdown handler using the ESP-IDF API.
+ * The registered handler ensures the system transitions to standby mode
+ * when a shutdown event occurs. The handling logic is encapsulated through
+ * a lambda function that invokes Watcher::setStandby with a value of true.
+ */
+void Guardian::registerShutdownHandler()
+{
+    esp_register_shutdown_handler([]
+    {
+        Watcher::setStandby(true);
+    });
+}
+
+void Guardian::registerExceptionHandler()
+{
+
+}
+
 
 /**
  * @brief Sets the error code for the Guardian system.
@@ -239,6 +260,12 @@ void Guardian::setup()
     // Set up IC2 Bus.
     Wire.begin(DISPLAY_I2C_SDA, DISPLAY_I2C_SCL);
 
+
+    // Register Shutdown Handler.
+    registerShutdownHandler();
+
+    // Register Exception Handler.
+    registerExceptionHandler();
 
     // Test Scan for Devices.
     testScan();
