@@ -25,7 +25,7 @@ AsyncWebServer server(80);
 // Definitions for Reconnect Interval.
 const unsigned long INITIAL_TIMEOUT = 5000; // 5 Seconds
 const unsigned long RECONNECT_INTERVAL = 10000; // 10 Seconds
-unsigned long lastReconnectAttempt = 0;
+// unsigned long lastReconnectAttempt = 0;
 
 bool isOTAUploading = false;
 
@@ -124,7 +124,7 @@ void LocalNetwork::begin()
     while (!connected && (millis() - startTime < INITIAL_TIMEOUT))
     {
         // Begin with the default MAC address and DHCP IP.
-        if (Ethernet.begin() == 1)
+        if (reconnect() == 1)
         {
             connected = true;
             Guardian::println("Network is ready");
@@ -139,10 +139,10 @@ void LocalNetwork::begin()
 
     if (!connected)
     {
-        Guardian::println("Network failed - reconnecting");
+        Guardian::println("Network failed"); // - reconnecting");
 
         // Allow direct reconnect try.
-        lastReconnectAttempt = 0;
+        //lastReconnectAttempt = 0;
     }
 
     // Setup OTA.
@@ -233,4 +233,17 @@ void LocalNetwork::update()
 uint8_t* LocalNetwork::getMac()
 {
     return mac;
+}
+
+/**
+ * @brief Attempts to reconnect the Ethernet connection using the default MAC address and DHCP.
+ *
+ * This method initializes the Ethernet connection by calling the internal Ethernet driver. It
+ * returns a status indicating whether the Ethernet begin operation was successful or not.
+ *
+ * @return int 1 if the Ethernet connection was successfully established, 0 otherwise.
+ */
+int LocalNetwork::reconnect()
+{
+    return Ethernet.begin();
 }

@@ -27,6 +27,7 @@ public:
     static bool isUploading();
     static void update();
     static uint8_t* getMac();
+    static int reconnect();
 };
 
 

@@ -9,6 +9,7 @@
 #include "HomeAssistant.h"
 #include "PinOut.h"
 #include "Watcher.h"
+#include "esp_debug_helpers.h"
 
 #ifdef DEBUG
 #include "WebSerial.h"
@@ -489,6 +490,9 @@ void Guardian::print(const char* str)
  */
 void Guardian::clearError()
 {
+    // Print Backtrace if available.
+    esp_backtrace_print(10);
+
     setError(-1, "", NORMAL);
 
     Watcher::handleErrorLedFade(false);

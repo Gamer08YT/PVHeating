@@ -67,6 +67,7 @@ public:
     static void setStandby(bool cond);
     static void setErrorState(bool cond);
     static void setConsumptionRemain(float value);
+    static void reconnectMQTT();
 };
 
 

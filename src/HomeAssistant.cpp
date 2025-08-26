@@ -19,7 +19,7 @@
 #include "device-types/HANumber.h"
 #include "device-types/HASensorNumber.h"
 #include "device-types/HASwitch.h"
-#include "esp_debug_helpers.h"
+
 
 // Store Instance of Ethernet Client.
 EthernetClient client;
@@ -90,6 +90,7 @@ HAButton reset("heating_reset");
 
 unsigned long lastTempPublishAt = 0;
 float lastTemp = 45;
+unsigned long lastReconnectAttempt;
 
 /**
  * @brief Configures the pump switch instance by defining its name, icon, and behavior.
@@ -360,8 +361,7 @@ void HomeAssistant::begin()
     // Print Debug Message.
     Guardian::boot(40, "MQTT");
 
-    // Connect to HomeAssistant.
-    mqtt.begin("192.168.1.181", "pvheating", "pvheating");
+    reconnectMQTT();
 }
 
 /**
@@ -542,9 +542,6 @@ void HomeAssistant::configureResetInstance()
     reset.setName("Reset");
     reset.onCommand([](HAButton* sender)
     {
-        // Print Backtrace if available.
-        esp_backtrace_print(10);
-
         Guardian::clearError();
     });
 }
@@ -838,4 +835,52 @@ void HomeAssistant::setErrorState(bool cond)
 void HomeAssistant::setConsumptionRemain(float value)
 {
     consumeRemain.setValue(value);
+}
+
+
+/**
+ * @brief Establishes an MQTT connection to the Home Assistant server.
+ *
+ * This method initiates the MQTT connection by providing the server's hostname,
+ * username, and password credentials. It uses the underlying MQTT object to
+ * begin communication with Home Assistant, ensuring the device synchronizes
+ * with the specified server configuration.
+ */
+void HomeAssistant::reconnectMQTT()
+{
+    // Connect to HomeAssistant.
+    mqtt.begin("192.168.1.181", "pvheating", "pvheating");
+}
+
+/**
+ * @brief Monitors and maintains network and MQTT connection stability.
+ *
+ * This method checks whether the MQTT client is connected to the broker. If the connection is lost,
+ * and a sufficient time interval has passed since the last reconnection attempt, it determines
+ * the appropriate recovery action based on the Ethernet link status. If the link is active, it
+ * attempts to reconnect to the MQTT broker. Otherwise, it tries to re-establish the Ethernet
+ * connection before attempting to reconnect MQTT.
+ */
+void checkConnection()
+{
+    // Check if MQTT is connected to Broker.
+    if (!mqtt.isConnected())
+    {
+        // Check for Reconnect Cooldown.
+        if (millis() - lastReconnectAttempt > 5000)
+        {
+            lastReconnectAttempt = millis();
+
+            // Check if Link is active.
+            if (Ethernet.linkStatus() == LinkON)
+            {
+                // Reconnect to Broker.
+                HomeAssistant::reconnectMQTT();
+            } else
+            {
+                // Reconnect Ethernet.
+                LocalNetwork::reconnect();
+            }
+        }
+    }
 }
