@@ -43,6 +43,8 @@ private:
     static void configureMinPowerInstance();
     static void configurePWMInstance();
     static void handleMQTT();
+    static void checkConnection();
+
 
 
 public:

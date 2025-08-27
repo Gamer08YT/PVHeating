@@ -532,6 +532,7 @@ void HomeAssistant::handleMQTT()
     });
 }
 
+
 /**
  * @brief Configures the reset button instance with specific behavior and display settings.
  *
@@ -622,6 +623,9 @@ void HomeAssistant::configureConsumptionRemainInstance()
  */
 void HomeAssistant::loop()
 {
+    // Check Connection.
+    checkConnection();
+
     // Loop MQTT.
     mqtt.loop();
 }
@@ -866,7 +870,7 @@ void HomeAssistant::reconnectMQTT()
  * attempts to reconnect to the MQTT broker. Otherwise, it tries to re-establish the Ethernet
  * connection before attempting to reconnect MQTT.
  */
-void checkConnection()
+void HomeAssistant::checkConnection()
 {
     // Check for Reconnect Cooldown.
     if (millis() - lastReconnectAttempt > 2000)
@@ -880,7 +884,7 @@ void checkConnection()
             if (Ethernet.linkStatus() == LinkON)
             {
                 // Reconnect to Broker.
-                HomeAssistant::reconnectMQTT();
+                reconnectMQTT();
             }
             else
             {
@@ -890,7 +894,7 @@ void checkConnection()
 
             failCounter++;
 
-            // Check if Fail Counter exceed.
+            // Check if Fail Counter exceeds.
             if (failCounter > 2)
             {
                 // Reconf Ethernet.
@@ -902,6 +906,4 @@ void checkConnection()
         else
             failCounter = 0;
     }
-}
-
 }
