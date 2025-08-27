@@ -23,7 +23,10 @@ dürfen nur von qualifizierten Fachkräften unter Beachtung aller geltenden Vors
 - Dallas OneWire Temperatursensoren (DS18B20)
 - Modbus RTU Schnittstelle (Max 485)
 - SCR (Silicon Controlled Rectifier) für Heizungssteuerung (Tyco 3)
-- Durchflussmesser [YFB5](https://github.com/Gamer08YT/FlowSensor-Arduino/blob/2d238f10bb0df1d9aced42f86a5f5e600b737310/src/FlowSensor_Type.h#L17C1-L17C17)
+-
+
+Durchflussmesser [YFB5](https://github.com/Gamer08YT/FlowSensor-Arduino/blob/2d238f10bb0df1d9aced42f86a5f5e600b737310/src/FlowSensor_Type.h#L17C1-L17C17)
+
 - Status-LEDs und Bedientaster
 
 ## Hauptfunktionen
@@ -88,6 +91,11 @@ graph TD
 - VS Code oder CLion
 - Git (optional)
 
+## Dashboard
+
+Das HomeAssistant Dashboard Template befindet sich unter [
+homeassistant-dashboard.yml](https://github.com/Gamer08YT/PVHeating/blob/master/homeassistant-dashboard.yml)
+
 ## Installation
 
 1. Projekt klonen oder herunterladen:
@@ -97,15 +105,15 @@ graph TD
 3. Abhängigkeiten werden automatisch installiert (definiert in platformio.ini):
     - EthernetESP32
     - ElegantOTA
-    - Home Assistant Integration
+    - ArduinoHA
     - eModbus
     - OneWire
     - DallasTemperature
     - OneButton
-    - LEDFader
+    - ~~LEDFader~~
     - SimpleTimer
     - FlowSensor
-    - WebSerial
+    - ~~WebSerial~~
 
 4. Projekt compilieren und hochladen
 
@@ -149,20 +157,20 @@ Die Grundkonfiguration erfolgt in der `platformio.ini`. Hier können Sie:
 Das System unterstützt Over-the-Air Updates über den integrierten Webserver. Zugriff erfolgt über: http://[IP-Adresse]
 /update
 
-
 ## Sonstiges
 
 ![img_1.png](img_1.png)
 
-
 ## Debug
 
-Da der ESP32 mehr oder weniger aktuell nur über JTAG gedebugt werden kann (ganz anders als beim ESP8266), habe ich versucht meine eigene Methode zu implementieren.
+Da der ESP32 mehr oder weniger aktuell nur über JTAG gedebugt werden kann (ganz anders als beim ESP8266), habe ich
+versucht meine eigene Methode zu implementieren.
 
 Dafür habe ich die handleHeap() Methode in der Main geschrieben.
 
 Mit ``pio device monitor`` oder `` pio debug --interface=gdb`` kann man dem Seriellen Monitor attachen und mit
 
-``C:\Users\<User>\.platformio\packages\toolchain-xtensa-esp32\bin\xtensa-esp32-elf-addr2line.exe -pfiaC -e .pio\build\az-delivery-devkit-v4\firmware.elf 0x400d12ab 0x400d2345`` bspw. das Exception Analysieren.
+``C:\Users\<User>\.platformio\packages\toolchain-xtensa-esp32\bin\xtensa-esp32-elf-addr2line.exe -pfiaC -e .pio\build\az-delivery-devkit-v4\firmware.elf 0x400d12ab 0x400d2345``
+bspw. das Exception Analysieren.
 
 Andernfalls kann ich https://esphome.github.io/esp-stacktrace-decoder/ sehr empfehlen.
