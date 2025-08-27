@@ -245,5 +245,30 @@ uint8_t* LocalNetwork::getMac()
  */
 int LocalNetwork::reconnect()
 {
+    // Print Debug Message.
+    Serial.println("Eth begin");
+
     return Ethernet.begin();
+}
+
+/**
+ * @brief Reconfigures the Ethernet connection.
+ *
+ * This method terminates the current Ethernet connection and performs a reinitialization
+ * to restore connectivity. It ensures the Ethernet driver is properly reset before attempting
+ * a reconnection. A short delay is introduced to allow the hardware components to stabilize.
+ */
+void LocalNetwork::reconf()
+{
+    // Print Debug Message.
+    Serial.println("Eth reconf");
+
+    // End Ethernet.
+    Ethernet.end();
+
+    // Short delay.
+    delay(500);
+
+    // Recreate Connection.
+    reconnect();
 }

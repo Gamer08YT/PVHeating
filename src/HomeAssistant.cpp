@@ -91,6 +91,8 @@ HAButton reset("heating_reset");
 unsigned long lastTempPublishAt = 0;
 float lastTemp = 45;
 unsigned long lastReconnectAttempt;
+int failCounter;
+
 
 /**
  * @brief Configures the pump switch instance by defining its name, icon, and behavior.
@@ -848,9 +850,12 @@ void HomeAssistant::setConsumptionRemain(float value)
  */
 void HomeAssistant::reconnectMQTT()
 {
+    Serial.println("MQTT begin");
+
     // Connect to HomeAssistant.
     mqtt.begin("192.168.1.181", "pvheating", "pvheating");
 }
+
 
 /**
  * @brief Monitors and maintains network and MQTT connection stability.
@@ -863,11 +868,11 @@ void HomeAssistant::reconnectMQTT()
  */
 void checkConnection()
 {
-    // Check if MQTT is connected to Broker.
-    if (!mqtt.isConnected())
+    // Check for Reconnect Cooldown.
+    if (millis() - lastReconnectAttempt > 2000)
     {
-        // Check for Reconnect Cooldown.
-        if (millis() - lastReconnectAttempt > 5000)
+        // Check if MQTT is connected to Broker.
+        if (!mqtt.isConnected())
         {
             lastReconnectAttempt = millis();
 
@@ -876,11 +881,27 @@ void checkConnection()
             {
                 // Reconnect to Broker.
                 HomeAssistant::reconnectMQTT();
-            } else
+            }
+            else
             {
                 // Reconnect Ethernet.
                 LocalNetwork::reconnect();
             }
+
+            failCounter++;
+
+            // Check if Fail Counter exceed.
+            if (failCounter > 2)
+            {
+                // Reconf Ethernet.
+                LocalNetwork::reconf();
+
+                failCounter = 0;
+            }
         }
+        else
+            failCounter = 0;
     }
+}
+
 }

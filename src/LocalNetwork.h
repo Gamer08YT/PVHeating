@@ -28,6 +28,7 @@ public:
     static void update();
     static uint8_t* getMac();
     static int reconnect();
+    static void reconf();
 };
 
 
