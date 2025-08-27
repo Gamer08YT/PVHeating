@@ -1,0 +1,219 @@
+type: sections
+title: PV-Heating
+path: pv-heating
+icon: mdi:sun-wireless
+sections:
+  - type: grid
+    cards:
+      - type: heading
+        heading_style: title
+        heading: Elektrische Metadaten
+        icon: mdi:lightning-bolt-outline
+        badges:
+          - type: entity
+            show_state: true
+            show_icon: true
+            entity: sensor.pvheating_verbrauch
+            name: Gesamtverbrauch
+            state_content:
+              - name
+              - state
+            color: pink
+            tap_action:
+              action: more-info
+      - type: gauge
+        entity: sensor.pvheating_leistung
+        name: Verwendete Energie
+        needle: true
+        severity:
+          green: 0
+          yellow: 4000
+          red: 5000
+        max: 6000
+      - chart_type: line
+        period: hour
+        type: statistics-graph
+        entities:
+          - sensor.pvheating_verbrauch
+        stat_types:
+          - state
+        title: Umgewandelte Energie
+        hide_legend: false
+        logarithmic_scale: false
+  - type: grid
+    cards:
+      - type: heading
+        heading_style: title
+        heading: Temperaturregler
+        icon: mdi:heating-coil
+      - features:
+          - type: target-temperature
+          - type: climate-hvac-modes
+        type: tile
+        entity: climate.pvheating_heizung
+        features_position: bottom
+        vertical: false
+        state_content:
+          - current_temperature
+          - temperature
+          - state
+        name: Thermostat
+        grid_options:
+          columns: full
+      - type: heading
+        icon: mdi:alert
+        heading: Meldungen
+        heading_style: title
+      - type: vertical-stack
+        cards:
+          - type: tile
+            entity: binary_sensor.pvheating_fehler
+            features_position: bottom
+            vertical: false
+            name: Status
+            show_entity_picture: false
+            hide_state: false
+            color: green
+          - type: tile
+            entity: sensor.pvheating_mqtt_sensor
+            features_position: bottom
+            vertical: false
+            name: Meldung
+            hide_state: false
+      - type: markdown
+        text_only: true
+        content: >-
+          ### Fehlersuche
+
+
+          Der SCR benötigt **im Idle ca. 7W**, die Umwäzpumpe **ca. 20W auf
+          voller Leistung**.
+
+
+          #### DS18B20
+
+          Die DallasTemperature Lib, **kann falsche Temperaturwerte
+          zurückgeben**, wenn der Sensor / OneWire Buffer zu früh gelesen wird.
+
+
+          **In diesem Falle beträgt die Temperatur -127°C oder +85°C.**
+  - type: grid
+    cards:
+      - type: heading
+        icon: mdi:wrench
+        heading_style: title
+        heading: Steuerung
+      - type: vertical-stack
+        cards:
+          - features:
+              - type: numeric-input
+                style: buttons
+            type: tile
+            entity: number.pvheating_min
+            features_position: bottom
+            vertical: false
+            name: Minimale Wirkleistung
+          - features:
+              - type: numeric-input
+                style: buttons
+            type: tile
+            entity: number.pvheating_max_leistung
+            features_position: bottom
+            vertical: false
+            hide_state: false
+            state_content:
+              - last_changed
+              - state
+            name: Maximale Wirkleistung
+          - features:
+              - type: numeric-input
+                style: buttons
+            type: tile
+            entity: number.pvheating_verbrauch_limit
+            features_position: bottom
+            vertical: false
+            name: Maximaler Verbrauch
+          - features:
+              - type: button
+            type: tile
+            entity: button.pvheating_start
+            features_position: bottom
+            vertical: false
+            name: Start
+    column_span: 1
+badges:
+  - type: entity
+    show_name: true
+    show_state: true
+    show_icon: true
+    entity: switch.pvheating_pumpe
+    name: Zirkulationspumpe
+  - type: entity
+    show_name: true
+    show_state: true
+    show_icon: true
+    entity: switch.pvheating_scr
+    name: Thyristorensteller
+  - type: entity
+    show_name: true
+    show_state: true
+    show_icon: true
+    entity: sensor.pvheating_fluss
+    name: Durchflussmenge
+  - type: entity
+    show_name: true
+    show_state: true
+    show_icon: true
+    entity: number.pvheating_duty
+    name: PWM Duty
+  - type: entity
+    show_name: true
+    show_state: true
+    show_icon: true
+    entity: sensor.pvheating_tagesverbrauch
+    name: Tagesverbrauch (24h)
+  - type: entity
+    show_name: true
+    show_state: true
+    show_icon: true
+    entity: sensor.pvheating_tin
+    name: Eingangstemperatur
+  - type: entity
+    show_name: true
+    show_state: true
+    show_icon: true
+    entity: binary_sensor.pvheating_standby
+    name: Standby
+    show_entity_picture: false
+  - type: entity
+    show_name: true
+    show_state: true
+    show_icon: true
+    entity: sensor.pvheating_rest
+  - type: entity
+    show_name: true
+    show_state: true
+    show_icon: true
+    entity: button.pvheating_reset
+    name: Fault reset
+    show_entity_picture: false
+    state_content: state
+max_columns: 3
+cards: []
+subview: false
+header:
+  card:
+    type: markdown
+    text_only: true
+    content: >-
+      # Hallo {{ user }} 
+
+      Wilkommen bei dem neuen PV-Heating.
+
+
+      Der Modus **Auto entspricht dem Dynamischen Modus**, **der Heizmodus
+      entspricht der Funktion Konsumieren** und muss manuell **mit dem Start
+      Knopf aus dem Standby aufgeweckt werden.**
+  layout: center
+  badges_position: bottom
+  badges_wrap: wrap
