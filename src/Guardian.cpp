@@ -220,7 +220,6 @@ void Guardian::registerShutdownHandler()
 
 void Guardian::registerExceptionHandler()
 {
-
 }
 
 
@@ -490,9 +489,6 @@ void Guardian::print(const char* str)
  */
 void Guardian::clearError()
 {
-    // Print Backtrace if available.
-    esp_backtrace_print(10);
-
     setError(-1, "", NORMAL);
 
     Watcher::handleErrorLedFade(false);
