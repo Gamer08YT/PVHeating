@@ -96,6 +96,14 @@ graph TD
 Das HomeAssistant Dashboard Template befindet sich unter [
 homeassistant-dashboard.yml](https://github.com/Gamer08YT/PVHeating/blob/master/homeassistant-dashboard.yml)
 
+## Bekannte Probleme
+
+In meinem Projekt nutze ich den ENC28J60 Ethernet Treiber, leider gibt es Verbindungsprobleme mit der EthernetESP32 Lib,
+dies ist aber die einzige funktionierende Lib die ich gefunden habe im Zusammenhang mit dem ENC28J60.
+
+Als Workarround prüfe ich die Verbindung zum MQTT Broker und starte die Ethernet Verbindung nach 2 Versuchen neu, leider
+hatte ich keine IOs mehr frei um meinen JTAG Adapter anzuschließen.
+
 ## Installation
 
 1. Projekt klonen oder herunterladen:
