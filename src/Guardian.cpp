@@ -5,11 +5,12 @@
 #include <Arduino.h>
 #include "Guardian.h"
 #include <Adafruit_SSD1306.h>
+#include <Adafruit_NeoPixel.h>
 
 #include "HomeAssistant.h"
 #include "PinOut.h"
 #include "Watcher.h"
-#include "esp_debug_helpers.h"
+
 
 #ifdef DEBUG
 #include "WebSerial.h"
@@ -119,6 +120,8 @@ void Guardian::updateFault()
  */
 void Guardian::setError(int i, const char* str, ErrorType level)
 {
+    Watcher::setLEDColor(255, 0, 0, 50);
+
     Serial.print("Error: ");
     Serial.print(i);
     Serial.print(" - ");
