@@ -42,6 +42,7 @@ public:
     static void handleErrorLedFade(bool cond);
     static void setDuty(u_int32_t int8);
     static void setMinPower(float to_float);
+    static void setLEDColor(int r, int g, int b, int brightness);
     static void setupPins();
 
 
