@@ -4,9 +4,7 @@
 
 #include <Arduino.h>
 #include "Guardian.h"
-
 #include <Wire.h>
-
 #include "Adafruit_SH110X.h"
 #include "HomeAssistant.h"
 #include "PinOut.h"
@@ -277,7 +275,7 @@ void Guardian::setup()
     Serial.println("I2C ready");
 
     // Display Setup.
-    if (!display.begin(0x3C, DISPLAY_ADDRESS))
+    if (!display.begin(DISPLAY_ADDRESS, -1))
     {
         // Set Warning.
         setError(10, "Display Initialization Failed.");
@@ -287,7 +285,7 @@ void Guardian::setup()
         Serial.println("Display ready.");
 
         display.clearDisplay();
-        display.setRotation(1);
+        display.setRotation(3);
         display.setTextSize(1);
         display.setTextColor(SH110X_WHITE);
         display.setContrast(0.5);
