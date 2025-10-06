@@ -7,6 +7,8 @@
 #include <EthernetESP32.h>
 #include "LocalNetwork.h"
 
+#include <WebServer.h>
+
 #include "ElegantOTA.h"
 #include "PinOut.h"
 #include "Guardian.h"
