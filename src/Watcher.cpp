@@ -1055,15 +1055,17 @@ void Watcher::handleStandbyLedFade(bool cond)
     {
         //digitalWrite(LED_MODE, LOW);
         // Fade in 1000-second Interval.
-        modeLed.setFade(true);
-        modeLed.fade(255, 1000);
+        // modeLed.setFade(true);
+        // modeLed.fade(255, 1000);
+        digitalWrite(LED_MODE, LOW);
     }
     else
     {
         //digitalWrite(LED_MODE, HIGH);
         // // Stop Fade set LED Brightness of Duty Cycle.
-        modeLed.setFade(false);
-        modeLed.setValue(0);
+        // modeLed.setFade(false);
+        // modeLed.setValue(0);
+        digitalWrite(LED_MODE, HIGH);
     }
 }
 
