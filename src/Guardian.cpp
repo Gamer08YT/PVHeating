@@ -5,6 +5,8 @@
 #include <Arduino.h>
 #include "Guardian.h"
 
+#include <Wire.h>
+
 #include "Adafruit_SH110X.h"
 #include "HomeAssistant.h"
 #include "PinOut.h"
@@ -16,7 +18,6 @@
 #endif
 
 // Store OLED Instance.
-//Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 Adafruit_SH1107 display = Adafruit_SH1107(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1, 1000000, 100000);
 
 // Override Header Vars.
@@ -221,6 +222,7 @@ void Guardian::registerShutdownHandler()
 
 void Guardian::registerExceptionHandler()
 {
+
 }
 
 
@@ -261,6 +263,7 @@ void Guardian::setup()
     // Set up IC2 Bus.
     Wire.begin(DISPLAY_I2C_SDA, DISPLAY_I2C_SCL);
 
+
     // Register Shutdown Handler.
     registerShutdownHandler();
 
@@ -291,7 +294,6 @@ void Guardian::setup()
         display.setCursor(0, 0);
         display.display();
     }
-
 }
 
 /**
