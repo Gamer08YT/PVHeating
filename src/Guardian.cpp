@@ -4,8 +4,8 @@
 
 #include <Arduino.h>
 #include "Guardian.h"
-#include <Adafruit_SSD1306.h>
 
+#include "Adafruit_SH110X.h"
 #include "HomeAssistant.h"
 #include "PinOut.h"
 #include "Watcher.h"
@@ -16,7 +16,8 @@
 #endif
 
 // Store OLED Instance.
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+//Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+Adafruit_SH1107 display = Adafruit_SH1107(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1, 1000000, 100000);
 
 // Override Header Vars.
 const char* Guardian::errorTitle = "";
@@ -220,7 +221,6 @@ void Guardian::registerShutdownHandler()
 
 void Guardian::registerExceptionHandler()
 {
-
 }
 
 
@@ -261,7 +261,6 @@ void Guardian::setup()
     // Set up IC2 Bus.
     Wire.begin(DISPLAY_I2C_SDA, DISPLAY_I2C_SCL);
 
-
     // Register Shutdown Handler.
     registerShutdownHandler();
 
@@ -275,7 +274,7 @@ void Guardian::setup()
     Serial.println("I2C ready");
 
     // Display Setup.
-    if (!display.begin(SSD1306_SWITCHCAPVCC, DISPLAY_ADDRESS))
+    if (!display.begin(0x3C, DISPLAY_ADDRESS))
     {
         // Set Warning.
         setError(10, "Display Initialization Failed.");
@@ -285,13 +284,14 @@ void Guardian::setup()
         Serial.println("Display ready.");
 
         display.clearDisplay();
+        display.setRotation(1);
         display.setTextSize(1);
-        display.setTextColor(SSD1306_WHITE);
-        display.ssd1306_command(SSD1306_SETCONTRAST);
-        display.ssd1306_command(0xFF); // Max. Kontrast
+        display.setTextColor(SH110X_WHITE);
+        display.setContrast(0.5);
         display.setCursor(0, 0);
         display.display();
     }
+
 }
 
 /**
@@ -345,11 +345,11 @@ void Guardian::setProgress(int i, unsigned int progress)
     // display.fillRect(x, y, width, height, BLACK);
 
     // Draw Border.
-    display.drawRect(x, y, width, height, WHITE);
+    display.drawRect(x, y, width, height, SH110X_WHITE);
 
     // Fill Border.
     int fillWidth = (progress * (width - 2)) / 100;
-    display.fillRect(x + 1, y + 1, fillWidth, height - 2, WHITE);
+    display.fillRect(x + 1, y + 1, fillWidth, height - 2, SH110X_WHITE);
 
     // Update Display.
     update();
