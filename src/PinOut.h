@@ -20,12 +20,11 @@
 #define PINOUT_H
 
 #define SOFTWARE_VERSION "1.0.5"
-#define STATUS_LED_INTERNAL 8
 
 // 30 * 0,5S => 15 Seconds for Standby.
 #define STANDBY_INTERVAL 30
 
-#define MODBUS_TIMEOUT 500
+#define MODBUS_TIMEOUT 5000
 #define MODBUS_CORE 1
 #define MODBUS_BAUD 9600
 #define MODBUS_TCP {192, 168, 5, 24}

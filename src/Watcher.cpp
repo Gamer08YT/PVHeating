@@ -4,7 +4,6 @@
 
 #include "Watcher.h"
 
-#include "Adafruit_NeoPixel.h"
 #include "PinOut.h"
 #include "DallasTemperature.h"
 #include "Fader.h"
@@ -21,9 +20,6 @@
 
 #define SLOW_INTERVAL 2000
 #define PUBLISH_INTERVAL 1000
-
-// Define Status-LED.
-Adafruit_NeoPixel statusLed(1, STATUS_LED_INTERNAL, NEO_GRB + NEO_KHZ800);
 
 // Definitions from Header.
 Watcher::ModeType Watcher::mode = Watcher::CONSUME;
@@ -845,9 +841,6 @@ void Watcher::startConsume()
 {
     setStandby(false);
 
-    // Set Internal Status LED Green.
-    setLEDColor(0, 255, 0, 50);
-
     if (mode == ModeType::CONSUME)
     {
         String floatStr = String(consumption + maxConsume);
@@ -1134,30 +1127,6 @@ void Watcher::setMinPower(float to_float)
 }
 
 /**
- * @brief Sets the color and brightness of the status LED.
- *
- * This method adjusts the RGB values and brightness of the status LED.
- * The RGB values are scaled based on the brightness percentage provided.
- * After calculating and setting the appropriate color values,
- * it updates the LED to reflect the changes.
- *
- * @param r Red component of the LED color (0-255).
- * @param g Green component of the LED color (0-255).
- * @param b Blue component of the LED color (0-255).
- * @param brightness Brightness level as a percentage (0-100).
- */
-void Watcher::setLEDColor(int r, int g, int b, int brightness)
-{
-    uint16_t scale = (uint16_t)brightness * 255 / 100;
-    uint8_t rN = static_cast<uint8_t>((static_cast<uint16_t>(r) * scale) / 255);
-    uint8_t gN = static_cast<uint8_t>((static_cast<uint16_t>(g) * scale) / 255);
-    uint8_t bN = static_cast<uint8_t>((static_cast<uint16_t>(b) * scale) / 255);
-
-    statusLed.setPixelColor(0, statusLed.Color(rN, gN, bN));
-    statusLed.show();
-}
-
-/**
  * @brief Configures the input and output pins used by the system.
  *
  * This method initializes the microcontroller's GPIO pins to their required
@@ -1184,13 +1153,6 @@ void Watcher::setupPins()
     pinMode(PUMP_ENABLE, OUTPUT);
     pinMode(SCR_ENABLE, OUTPUT);
     pinMode(SCR_PWM, OUTPUT);
-
-    // Begin Neo Pixel LED.
-    statusLed.begin();
-    statusLed.show();
-
-    // Set Status-LED.
-    setLEDColor(0, 0, 255, 50);
 
     // Set PWM Frequency.
     ledcAttach(SCR_PWM, SCR_PWM_FREQUENCY, SCR_PWM_RESOLUTION);
