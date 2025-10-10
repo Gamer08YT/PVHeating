@@ -42,47 +42,30 @@ Durchflussmesser [YFB5](https://github.com/Gamer08YT/FlowSensor-Arduino/blob/2d2
 
 ```mermaid
 graph TD
-    subgraph ESP32["ESP32 Controller"]
-        ETH[ENC28J60 Ethernet]
-        OTA[OTA Updates]
-        HASS[Home Assistant]
-        TEMP[Temperatursensoren]
-        PUMP[Pumpensteuerung]
-        SCR[SCR Controller]
-        FLOW[Durchflussmesser]
-        MOD[Modbus RTU]
-        LED[Status LEDs]
-        BTN[Bedientaster]
-    end
+    ESP32 <--> SPI(SPI)
+    SPI <--> ENC28J60
+    Flow[Flow Meter] --> DigitalIn
+    DigitalIn(Digital Input) --> ESP32
+    Mode[Mode / Start Btn.] --> DigitalIn
+    Reset[Reset Btn.] --> DigitalIn
+    ESP32 --> DigitalOut(Digital Output)
+    ENC28J60 <--> HA(HomeAssistant)
+    ENC28J60 <--> TCP(Modbus TCP\nSmartMeter)
+    DigitalOut --> ErrorLed[Error LED]
+    DigitalOut --> ModeLed[Mode LED]
+    DigitalOut --> Pump[Relais Pump]
+    DigitalOut --> SCR[SCR Relais]
+    ESP32 <--> Serial(Serial)
+    Serial <--> Max485
+    Max485 <--> SmartMeter[Easton SmartMeter]
+    OneWire(OneWire) --> ESP32
+    DS18B20(DS18B20) --> OneWire
+    TempIn[Temp. In] --> DS18B20
+    TempOut[Temp. Out] --> DS18B20
+    ESP32 --> Analog(Analog Output)
+    Analog --> PWM(SCR PWM)
+    PWM --> Tyco(Tyco 3 + Heater)
 
-    NET[Netzwerk] <--> ETH
-    ETH --> OTA
-    ETH <--> HASS
-    TEMP -->|Temperaturwerte| ESP32
-    FLOW -->|Durchflussdaten| ESP32
-    ESP32 -->|Steuerung| PUMP
-    ESP32 -->|PWM| SCR
-
-    subgraph Bedienung
-        BTN -->|Moduswechsel| ESP32
-        LED -->|Status Anzeige| USER[Benutzer]
-    end
-
-    subgraph Sensoren
-        DS["Dallas OneWire\nTemperatursensoren"] --> TEMP
-        FM[Durchflusssensor] --> FLOW
-    end
-
-    subgraph Aktoren
-        PUMP -->|Steuerung| P[Pumpe]
-        SCR -->|Leistungsregelung| H[Heizung]
-    end
-
-    style ESP32 fill: #f9f, stroke: #333, stroke-width: 4px
-    style NET fill: #bbf, stroke: #333
-    style Bedienung fill: #dfd, stroke: #333
-    style Sensoren fill: #fdd, stroke: #333
-    style Aktoren fill: #ddf, stroke: #333
 ```
 
 ## Voraussetzungen
