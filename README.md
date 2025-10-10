@@ -50,7 +50,7 @@ graph TD
     Reset[Reset Btn.] --> DigitalIn
     ESP32 --> DigitalOut(Digital Output)
     ENC28J60 <--> HA(HomeAssistant)
-    ENC28J60 <--> TCP(Modbus TCP\nSmartMeter)
+    ENC28J60 <--> TCP(Modbus TCP<br>SmartMeter)
     DigitalOut --> ErrorLed[Error LED]
     DigitalOut --> ModeLed[Mode LED]
     DigitalOut --> Pump[Relais Pump]
