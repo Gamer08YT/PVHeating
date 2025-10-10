@@ -277,7 +277,9 @@ void Guardian::showBootLogo()
     display.setCursor(34, 96);
     display.print("PVHeating");
     display.display();
-    sleep(2500);
+
+    // Wait some time.
+    delay(2500);
 }
 
 
@@ -343,14 +345,17 @@ void Guardian::setup()
 
         display.clearDisplay();
         display.setRotation(3);
-        display.setTextSize(1);
+        display.setTextSize(2);
         display.setTextColor(SH110X_WHITE);
         display.setContrast(0.5);
-        display.setCursor(0, 0);
         display.display();
 
         // Show boot Logo.
         showBootLogo();
+
+        // Reset Cursor Position and Text Size.
+        display.setCursor(0, 0);
+        display.setTextSize(1);
     }
 }
 
