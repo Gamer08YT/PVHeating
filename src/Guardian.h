@@ -22,6 +22,7 @@ public:
     static void testScan();
     static void registerShutdownHandler();
     static void registerExceptionHandler();
+    static void showBootLogo();
     static void setup();
     static bool hasError();
     static const char* getErrorTitle();
