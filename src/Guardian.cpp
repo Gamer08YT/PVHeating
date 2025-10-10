@@ -273,8 +273,8 @@ void Guardian::showBootLogo()
      **/
 
     // Draw Bitmap at X=32, Y=32 and with/height 64px.
-    display.drawBitmap(32, 32, logo, 64, 64, 1);
-    display.setCursor(34, 96);
+    display.drawBitmap(32, 16, logo, 64, 64, 1);
+    display.setCursor(12, 96);
     display.print("PVHeating");
     display.display();
 
