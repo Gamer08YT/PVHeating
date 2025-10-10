@@ -45,7 +45,7 @@ graph TD
     ESP32 <--> SPI(SPI)
     ESP32 <--> I2C(I²C)
     I2C --> Display(OLED Display<br> SH1107) 
-    SPI <--> ENC28J60
+    SPI <--> ENC28J60(Ethernet<br>ENC28J60)
     Flow[Flow Meter] --> DigitalIn
     DigitalIn(Digital Input) --> ESP32
     Mode[Mode / Start Btn.] --> DigitalIn
@@ -58,7 +58,7 @@ graph TD
     DigitalOut --> Pump[Relais Pump]
     DigitalOut --> SCR[SCR Relais]
     ESP32 <--> Serial(Serial)
-    Serial <--> Max485
+    Serial <--> Max485(Modbus<br>MAX485)
     Max485 <--> SmartMeter[Easton SmartMeter]
     OneWire(OneWire) --> ESP32
     DS18B20(DS18B20) --> OneWire
