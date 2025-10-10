@@ -43,6 +43,8 @@ Durchflussmesser [YFB5](https://github.com/Gamer08YT/FlowSensor-Arduino/blob/2d2
 ```mermaid
 graph TD
     ESP32 <--> SPI(SPI)
+    ESP32 <--> I2C(I²C)
+    I2C --> Display(OLED Display<br> SH1107) 
     SPI <--> ENC28J60
     Flow[Flow Meter] --> DigitalIn
     DigitalIn(Digital Input) --> ESP32
