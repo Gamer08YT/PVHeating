@@ -141,6 +141,38 @@ bool LocalModbus::readLocal(int address)
 }
 
 /**
+ * @brief Retrieves the count of pending TCP Modbus messages in the queue.
+ *
+ * This method accesses the ModbusClientTCPasync instance to fetch the
+ * number of Modbus TCP messages currently queued for processing.
+ *
+ * @return The count of messages in the Modbus TCP queue as a long integer.
+ **/
+long LocalModbus::getQueueTCP()
+{
+    return modbusTCP->getMessageCount();
+}
+
+/**
+ * @brief Retrieves the current count of pending Modbus RTU messages.
+ *
+ * This method queries the associated Modbus RTU client instance to determine
+ * the number of messages currently waiting in the message queue.
+ *
+ * @return The number of pending Modbus RTU messages in the queue.
+ *
+ * @note This function relies on the Modbus RTU client being properly initialized
+ * and configured before invocation.
+ *
+ * @attention Ensure that the Modbus RTU client (`modbusRTU`) is accessible and valid,
+ * as the function interacts directly with its message count retrieval mechanism.
+ **/
+long LocalModbus::getQueueRTU()
+{
+    return modbusRTU->getMessageCount();
+}
+
+/**
  * @brief Handles the creation and logging of a Modbus read message.
  *
  * Combines a string prefix with the provided Modbus address to create a detailed log message

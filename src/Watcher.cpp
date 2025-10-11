@@ -276,6 +276,21 @@ void Watcher::updateDisplay()
         else
             Guardian::setValue(4, "Wheat", String(consumption, 2).c_str(), "kWh");
 
+        // Show Temp-lock State.
+        Guardian::setValue(5, "TLock", (tempLock ? "ON" : "OFF"));
+
+        // Show Mode State.
+        Guardian::setValue(6, "Mode", (mode == ModeType::CONSUME ? "Consume" : "Dynamic"));
+
+        // Show TCP and RTU Message Queues.
+        if (displayFlow)
+            Guardian::setValue(7, "TCP", String(LocalModbus::getQueueTCP()).c_str());
+        else
+            Guardian::setValue(7, "RTU", String(LocalModbus::getQueueRTU()).c_str());
+
+        // Show House Power.
+        Guardian::setValue(8, "Phouse", String(housePower, 2).c_str(), "W");
+
         displayFlow = !displayFlow;
 
         Guardian::update();

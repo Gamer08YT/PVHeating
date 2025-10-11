@@ -25,6 +25,8 @@ public:
     static void loop();
     static float readRemote(int address);
     static bool readLocal(int address);
+    static long getQueueTCP();
+    static long getQueueRTU();
 
 private:
     static void handleReadMessage(String str, int address);
