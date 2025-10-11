@@ -71,19 +71,13 @@ void handleHeap()
 {
     if (heapTask.isReady())
     {
-        // Free Heap request
-        size_t free_internal = heap_caps_get_free_size(MALLOC_CAP_INTERNAL);
-        size_t free_spiram = heap_caps_get_free_size(MALLOC_CAP_SPIRAM);
-
-        // Stack High watermark of actual Task
-        UBaseType_t stack_highwater = uxTaskGetStackHighWaterMark(NULL);
-        Serial.printf("Free internal: %u bytes, Free SPIRAM: %u bytes, Stack HighWater: %u words\n",
-                      free_internal, free_spiram, stack_highwater);
-
+        Guardian::logHeap("");
+        Guardian::logStack("");
 
         heapTask.reset();
     }
 }
+
 
 /**
  * @brief Executes a repetitive process until a certain condition is met.

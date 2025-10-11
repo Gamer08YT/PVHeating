@@ -603,3 +603,36 @@ int Guardian::getErrorCode()
 {
     return errorCode;
 }
+
+/**
+ * @brief Logs the current state of the heap memory.
+ *
+ * This method retrieves information about the heap memory, including the total
+ * amount of free memory available and the size of the largest contiguous free block.
+ * It then logs these details using the provided tag for context.
+ *
+ * @param tag A string used to label or identify the log output.
+ */
+void Guardian::logHeap(const char* tag) {
+    size_t free8 = heap_caps_get_free_size(MALLOC_CAP_8BIT);
+    size_t largest8 = heap_caps_get_largest_free_block(MALLOC_CAP_8BIT);
+    Serial.printf("[HEAP][%s] free=%uB largest=%uB\n",
+                  tag, (unsigned)free8, (unsigned)largest8);
+}
+
+
+/**
+ * @brief Logs the unused stack space for the current task.
+ *
+ * This method calculates and logs the high watermark of the stack memory,
+ * which indicates the minimum amount of remaining stack space available during
+ * the task execution. It is used for monitoring and debugging purposes to
+ * ensure that the task has sufficient stack memory.
+ *
+ * @param tag A string tag used to identify the log message context or source.
+ */
+void Guardian::logStack(const char* tag) {
+    UBaseType_t words = uxTaskGetStackHighWaterMark(nullptr);
+    size_t bytes = words * sizeof(StackType_t);
+    Serial.printf("[STACK][%s] high-watermark=%uB\n", tag, (unsigned)bytes);
+}

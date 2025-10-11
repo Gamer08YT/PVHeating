@@ -1425,6 +1425,11 @@ void Watcher::handleConsumeBasedDuty()
     }
     else
     {
+        Guardian::print("CStandby ");
+        Guardian::print(String(remainCalculation).c_str());
+        Guardian::print(" ");
+        Guardian::println(String(consumption).c_str());
+
         // Disable Machine after consumption reached.
         setStandby(true);
 

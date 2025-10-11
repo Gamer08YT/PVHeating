@@ -38,6 +38,8 @@ public:
     static ErrorType getErrorType();
     static bool isCritical();
     static int getErrorCode();
+    static void logStack(const char* str);
+    static void logHeap(const char* str);
 
 private:
     static void error_code(int i);
