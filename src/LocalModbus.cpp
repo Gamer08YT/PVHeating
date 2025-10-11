@@ -80,9 +80,10 @@ float LocalModbus::readRemote(int address)
     handleReadMessage("Remote", address);
 
     // Clear Queue if to full.
-    if (remoteQueue > 10)
+    if (remoteQueue > 50)
     {
         modbusTCP->clearQueue();
+        modbusTCP->resetCounts();
         remoteQueue = 0;
     }
 
@@ -122,9 +123,10 @@ bool LocalModbus::readLocal(int address)
     handleReadMessage("Local", address);
 
     // Clear Queue if to full.
-    if (localQueue > 10)
+    if (localQueue > 50)
     {
         modbusRTU->clearQueue();
+        modbusRTU->resetCounts();
         localQueue = 0;
     }
 
