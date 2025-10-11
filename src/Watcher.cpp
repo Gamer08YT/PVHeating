@@ -170,7 +170,7 @@ void Watcher::handlePWM()
             // Disable SCR and Pump.
             setSCR(false);
 
-            // Add Templock.
+            // Add Temp-lock.
             tempLock = true;
 
             // Print Debug Message.
@@ -247,7 +247,7 @@ void Watcher::handlePWM()
  * This method updates the title and key-value pairs displayed on the user interface.
  * It reflects the current state of critical parameters such as duty cycle, power,
  * temperature, and consumption. After setting these values, the display is refreshed
- * to ensure the information presented is up-to-date.
+ * to ensure the information presented is up to date.
  *
  * Designed for periodic invocation to maintain consistency between the system's
  * internal state and its visual representation on the dashboard.
@@ -632,7 +632,7 @@ void Watcher::loop()
  * @brief Resets the system settings and components to their default states.
  *
  * This method ensures the system is initialized with default configurations
- * by disabling the pump and SCR components. It calls respective methods for
+ * by disabling the pump and SCR components. It calls for respective methods for
  * these components to ensure consistent behavior across dependent systems.
  *
  * Typically used during setup or when resetting the system to a known state.
@@ -1346,7 +1346,7 @@ void Watcher::handlePowerBasedDuty()
             duty = duty + SCR_PWM_STEP;
     }
     // If Generation is a positive Value.
-    // eq. Importing
+    // Eq. Importing
     else
     {
         // If Power is not enough to generate.
@@ -1425,16 +1425,19 @@ void Watcher::handleConsumeBasedDuty()
     }
     else
     {
-        Guardian::print("CStandby ");
-        Guardian::print(String(remainCalculation).c_str());
-        Guardian::print(" ");
-        Guardian::println(String(consumption).c_str());
+        if (std::isfinite(startConsumed))
+        {
+            Guardian::print("CStandby ");
+            Guardian::print(String(remainCalculation).c_str());
+            Guardian::print(" ");
+            Guardian::println(String(consumption).c_str());
 
-        // Disable Machine after consumption reached.
-        setStandby(true);
+            // Disable Machine after consumption reached.
+            setStandby(true);
 
-        // Reset Duty.
-        duty = 0;
+            // Reset Duty.
+            duty = 0;
+        }
     }
 }
 

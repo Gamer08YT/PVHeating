@@ -588,6 +588,7 @@ void HomeAssistant::configureRestartInstance()
     restart.setName("Restart");
     restart.onCommand([](HAButton* sender)
     {
+        Serial.println("Restart");
         ESP.restart();
     });
 }

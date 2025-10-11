@@ -431,7 +431,7 @@ void Guardian::setProgress(int16_t i, int16_t progress)
 void Guardian::setTitle(const char* str)
 {
     display.setCursor(0, 0);
-    display.setTextSize(2);
+    display.setTextSize(1);
     display.print(str);
     display.drawLine(0, 10, 128, 10, 1);
 }
