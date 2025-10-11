@@ -26,12 +26,12 @@ public:
     static void setup();
     static bool hasError();
     static const char* getErrorTitle();
-    static void setProgress(int i, unsigned int progress);
+    static void setProgress(int16_t i, int16_t progress);
     static void setTitle(const char* str);
     static void setValue(int line, const char* key, const char* value);
-    static void setValue(int line, const char* key, const char* value, const char* suffix);
+    static void setValue(int16_t line, const char* key, const char* value, const char* suffix);
     static void update();
-    static void boot(int percentage, const char* str);
+    static void boot(int16_t percentage, const char* str);
     static void clear();
     static void print(const char* str);
     static void clearError();

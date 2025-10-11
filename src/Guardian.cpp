@@ -207,13 +207,12 @@ void Guardian::setError(int i, const char* str)
  */
 void Guardian::testScan()
 {
-    byte error, address;
     int nDevices = 0;
 
-    for (address = 1; address < 127; address++)
+    for (byte address = 1; address < 127; address++)
     {
         Wire.beginTransmission(address);
-        error = Wire.endTransmission();
+        byte error = Wire.endTransmission();
 
         if (error == 0)
         {
@@ -334,7 +333,7 @@ void Guardian::setup()
     Serial.println("I2C ready");
 
     // Display Setup.
-    if (!display.begin(DISPLAY_ADDRESS, -1))
+    if (!display.begin(DISPLAY_ADDRESS, false))
     {
         // Set Warning.
         setError(10, "Display Initialization Failed.");
@@ -347,7 +346,7 @@ void Guardian::setup()
         display.setRotation(3);
         display.setTextSize(2);
         display.setTextColor(SH110X_WHITE);
-        display.setContrast(0.5);
+        display.setContrast(0x2F);
         display.display();
 
         // Show boot Logo.
@@ -395,26 +394,25 @@ const char* Guardian::getErrorTitle()
  * @param i A placeholder integer parameter. Currently not used in the method.
  * @param progress The percentage of progress (0 to 100) to display in the progress bar.
  */
-void Guardian::setProgress(int i, unsigned int progress)
+void Guardian::setProgress(int16_t i, int16_t progress)
 {
     // Limit Progress from 0-100;
     if (progress > 100) progress = 100;
 
     // Position and Size of Bar.
-    const int x = 14;
-    const int y = i;
-    const int width = 100;
-    const int height = 10;
+    constexpr int16_t x = 14;
+    constexpr int16_t width = 100;
+    constexpr int16_t height = 10;
 
     // Optional: delete before show progress.
     // display.fillRect(x, y, width, height, BLACK);
 
     // Draw Border.
-    display.drawRect(x, y, width, height, SH110X_WHITE);
+    display.drawRect(x, i, width, height, SH110X_WHITE);
 
     // Fill Border.
-    int fillWidth = (progress * (width - 2)) / 100;
-    display.fillRect(x + 1, y + 1, fillWidth, height - 2, SH110X_WHITE);
+    const int16_t fillWidth = (progress * (width - 2)) / 100;
+    display.fillRect(x + 1, i + 1, fillWidth, height - 2, SH110X_WHITE);
 
     // Update Display.
     update();
@@ -433,7 +431,7 @@ void Guardian::setProgress(int i, unsigned int progress)
 void Guardian::setTitle(const char* str)
 {
     display.setCursor(0, 0);
-    display.setTextSize(1.5);
+    display.setTextSize(2);
     display.print(str);
     display.drawLine(0, 10, 128, 10, 1);
 }
@@ -467,7 +465,7 @@ void Guardian::setValue(int line, const char* key, const char* value)
  * @param suffix An optional suffix to further describe the value (e.g., units like "°C" or "W").
  *               Pass nullptr if no suffix is required.
  */
-void Guardian::setValue(int line, const char* key, const char* value, const char* suffix)
+void Guardian::setValue(int16_t line, const char* key, const char* value, const char* suffix)
 {
     display.setTextSize(1);
     display.setCursor(0, 13 * line);
@@ -506,7 +504,7 @@ void Guardian::update()
  * @param percentage An integer representing the boot progress value. Should be a number between 0 and 100.
  * @param str A descriptive message indicating the booting state.
  */
-void Guardian::boot(int percentage, const char* str)
+void Guardian::boot(int16_t percentage, const char* str)
 {
     display.clearDisplay();
     setTitle("Booting");
@@ -613,7 +611,8 @@ int Guardian::getErrorCode()
  *
  * @param tag A string used to label or identify the log output.
  */
-void Guardian::logHeap(const char* tag) {
+void Guardian::logHeap(const char* tag)
+{
     size_t free8 = heap_caps_get_free_size(MALLOC_CAP_8BIT);
     size_t largest8 = heap_caps_get_largest_free_block(MALLOC_CAP_8BIT);
     Serial.printf("[HEAP][%s] free=%uB largest=%uB\n",
@@ -631,7 +630,8 @@ void Guardian::logHeap(const char* tag) {
  *
  * @param tag A string tag used to identify the log message context or source.
  */
-void Guardian::logStack(const char* tag) {
+void Guardian::logStack(const char* tag)
+{
     UBaseType_t words = uxTaskGetStackHighWaterMark(nullptr);
     size_t bytes = words * sizeof(StackType_t);
     Serial.printf("[STACK][%s] high-watermark=%uB\n", tag, (unsigned)bytes);
