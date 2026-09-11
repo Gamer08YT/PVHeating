@@ -59,7 +59,7 @@ graph TD
     DigitalOut --> SCR[SCR Relais]
     ESP32 <--> Serial(Serial)
     Serial <--> Max485(Modbus<br>MAX485)
-    Max485 <--> SmartMeter[Easton SmartMeter]
+    Max485 <--> SmartMeter[Eastron SmartMeter]
     OneWire(OneWire) --> ESP32
     DS18B20(DS18B20) --> OneWire
     TempIn[Temp. In] --> DS18B20
